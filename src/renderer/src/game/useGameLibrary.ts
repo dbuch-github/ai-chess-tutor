@@ -47,7 +47,8 @@ export function useGameLibrary(game: GameApi, opponentName: string): GameLibrary
     const pgn = buildPgn(game.moves, {
       playerColor: game.playerColor,
       opponentName,
-      startedAt: game.startedAt
+      startedAt: game.startedAt,
+      twoPlayerMode: game.twoPlayerMode
     })
     window.api.librarySave(pgn).then(() => refresh())
     // game.moves bewusst nicht in den Deps – nur der Übergang von "läuft" zu

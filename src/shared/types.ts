@@ -110,6 +110,8 @@ export interface TutorMoveRequest {
   san: string
   color: 'w' | 'b'
   playerColor: 'w' | 'b'
+  /** Zwei-Spieler-Modus (OTB): beide Seiten sind menschlich, keine "Gegner-Engine". */
+  twoPlayerMode?: boolean
   classification: string
   lossPct: number
   fenBefore: string
@@ -147,6 +149,7 @@ export interface TutorSuggestRequest {
 
 export interface TutorReportMistake {
   moveNumber: number
+  color: 'w' | 'b'
   san: string
   classification: string
   lossPct: number
@@ -163,6 +166,8 @@ export interface TutorReportStats {
 export interface TutorReportRequest {
   kind: 'report'
   playerColor: 'w' | 'b'
+  /** Zwei-Spieler-Modus (OTB): Report bezieht sich auf beide Seiten statt nur auf "den Schüler". */
+  twoPlayerMode?: boolean
   result: string
   historySan: string
   mistakes: TutorReportMistake[]

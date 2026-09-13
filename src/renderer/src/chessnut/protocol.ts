@@ -116,6 +116,23 @@ export function encodeBatteryQuery(): Uint8Array {
 }
 
 /**
+ * Kodiert einen Signalton-Befehl für den eingebauten Board-Buzzer. Byte-Layout
+ * laut Chessnuts eigenem EasyLinkSDK (Funktion `cl_beep`): 0x0b 0x04, danach
+ * Frequenz (Hz) und Dauer (ms) je als 16-Bit big-endian – gegengeprüft gegen
+ * die Protokoll-Tests von Dash1971/chessnut-maia-cli (Default 1000 Hz/200 ms
+ * ergibt exakt die Bytes 0B 04 03 E8 00 C8).
+ */
+export function encodeBeepCommand(frequencyHz: number, durationMs: number): Uint8Array {
+  const freq = clampUint16(frequencyHz)
+  const duration = clampUint16(durationMs)
+  return Uint8Array.from([0x0b, 0x04, freq >> 8, freq & 0xff, duration >> 8, duration & 0xff])
+}
+
+function clampUint16(value: number): number {
+  return Math.min(0xffff, Math.max(1, Math.round(value)))
+}
+
+/**
  * Kodiert, welche Felder auf dem Brett leuchten sollen (alle anderen gehen
  * aus). Ein leeres Array schaltet alle LEDs ab.
  */

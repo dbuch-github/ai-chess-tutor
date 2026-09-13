@@ -25,6 +25,14 @@ export function snapshotsEqual(a: BoardSnapshot, b: BoardSnapshot): boolean {
   return keysA.every((k) => a[k] === b[k])
 }
 
+/** Reihenfolge-unabhängiger String-Schlüssel einer Stellung (Debounce-Vergleiche über mehrere Ticks). */
+export function snapshotKey(snapshot: BoardSnapshot): string {
+  return Object.keys(snapshot)
+    .sort()
+    .map((sq) => `${sq}${snapshot[sq]}`)
+    .join(',')
+}
+
 /**
  * Findet den einen legalen Zug, der die aktuelle Stellung in die am Brett
  * beobachtete Stellung überführt. Vergleicht komplette Zugergebnisse statt

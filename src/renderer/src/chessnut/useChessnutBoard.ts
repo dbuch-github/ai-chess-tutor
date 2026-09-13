@@ -9,6 +9,7 @@ import {
   decodeBoardPacket,
   decodeConfirmation,
   encodeBatteryQuery,
+  encodeBeepCommand,
   encodeInitCommand,
   encodeLedCommand,
   type BoardSnapshot
@@ -31,6 +32,8 @@ export interface ChessnutBoardApi {
   connect: () => Promise<void>
   disconnect: () => Promise<void>
   setLeds: (squares: string[]) => Promise<void>
+  /** Löst einen kurzen Signalton direkt am Brett aus (Frequenz in Hz, Dauer in ms). */
+  beep: (frequencyHz?: number, durationMs?: number) => Promise<void>
 }
 
 function isSupported(): boolean {
@@ -233,5 +236,24 @@ export function useChessnutBoard(): ChessnutBoardApi {
     }
   }, [])
 
-  return { status, error, deviceName, battery, snapshot, connect, disconnect, setLeds }
+  // Anders als setLeds bewusst OHNE Dedupe-Schutz gegen identische Wiederholungen –
+  // ein Signalton ist ein einmaliges Ereignis (z. B. "Schach"), kein dauerhafter
+  // Zustand wie die LEDs, und soll bei jedem Aufruf tatsächlich erklingen, auch mit
+  // denselben Parametern wie zuvor.
+  const beep = useCallback(async (frequencyHz = 1000, durationMs = 200): Promise<void> => {
+    const writeChar = writeCharRef.current
+    if (!writeChar) return
+    const payload = encodeBeepCommand(frequencyHz, durationMs) as BufferSource
+    try {
+      if (typeof writeChar.writeValueWithoutResponse === 'function') {
+        await writeChar.writeValueWithoutResponse(payload)
+      } else {
+        await writeChar.writeValue(payload)
+      }
+    } catch {
+      // Best effort – ein einzelner fehlgeschlagener Signalton soll die Partie nicht stören
+    }
+  }, [])
+
+  return { status, error, deviceName, battery, snapshot, connect, disconnect, setLeds, beep }
 }

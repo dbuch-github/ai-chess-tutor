@@ -16,7 +16,7 @@ import type {
   TutorSuggestRequest
 } from '../../shared/types'
 
-const SYSTEM_PROMPT = `Du bist ein erfahrener, freundlicher Schachtrainer. Du begleitest eine laufende Partie deines Schülers gegen eine Engine.
+const SYSTEM_PROMPT = `Du bist ein erfahrener, freundlicher Schachtrainer. Du begleitest eine laufende Schachpartie – meist einen Schüler gegen eine Engine, manchmal auch eine über das Brett gespielte Partie zwischen zwei Personen. Die jeweilige Anfrage sagt dir, welcher Fall gerade vorliegt.
 
 Regeln für deine Antworten:
 - Du bekommst zu jeder Anfrage die Fakten vorgerechnet: Stellung (FEN), Partieverlauf, Stockfish-Bewertungen und die besten Engine-Varianten. Stütze dich ausschließlich darauf.
@@ -224,19 +224,25 @@ function buildPrompt(request: TutorRequest): string {
 }
 
 function formatMovePrompt(r: TutorMoveRequest): string {
-  const who = r.color === r.playerColor ? 'Der Schüler' : 'Die Gegner-Engine'
   const moveLabel = `${r.moveNumber}${r.color === 'w' ? '.' : '…'} ${r.san}`
+  const moverSide = r.color === 'w' ? 'Weiß' : 'Schwarz'
+  const who = r.twoPlayerMode ? moverSide : r.color === r.playerColor ? 'Der Schüler' : 'Die Gegner-Engine'
+  const context = r.twoPlayerMode
+    ? `Spielphase: ${r.phase}. Dies ist eine über das Brett gespielte Partie zwischen zwei Personen (kein Engine-Gegner).`
+    : `Spielphase: ${r.phase}. Der Schüler spielt ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`
   return [
     `${who} hat gerade ${moveLabel} gespielt – laut Stockfish ${CLASS_LABELS[r.classification] ?? r.classification} (−${r.lossPct.toFixed(0)} % Gewinnchance, Bewertung aus Weiß-Sicht vorher ${r.evalBefore}, nachher ${r.evalAfter}).`,
     ``,
-    `Spielphase: ${r.phase}. Der Schüler spielt ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`,
+    context,
     `Partie bisher: ${r.historySan}`,
     `Stellung vor dem Zug (FEN): ${r.fenBefore}`,
     `Bester Zug laut Stockfish war ${r.bestMoveSan}, Hauptvariante: ${r.bestLineSan}`,
     ``,
-    r.color === r.playerColor
-      ? `Erkläre dem Schüler kurz, warum sein Zug problematisch war und welche Idee ${r.bestMoveSan} verfolgt.`
-      : `Erkläre dem Schüler kurz, warum der Engine-Zug schwach war und wie er das jetzt ausnutzen kann (bester Zug: ${r.bestMoveSan}).`
+    r.twoPlayerMode
+      ? `Erkläre kurz, warum der Zug von ${moverSide} problematisch war und welche Idee ${r.bestMoveSan} verfolgt.`
+      : r.color === r.playerColor
+        ? `Erkläre dem Schüler kurz, warum sein Zug problematisch war und welche Idee ${r.bestMoveSan} verfolgt.`
+        : `Erkläre dem Schüler kurz, warum der Engine-Zug schwach war und wie er das jetzt ausnutzen kann (bester Zug: ${r.bestMoveSan}).`
   ].join('\n')
 }
 
@@ -262,17 +268,27 @@ const CLASS_LABELS: Record<string, string> = {
 function formatReportPrompt(r: TutorReportRequest): string {
   const mistakesList = r.mistakes.length
     ? r.mistakes
-        .map((m) => `${m.moveNumber}. ${m.san} (${CLASS_LABELS[m.classification] ?? m.classification}, −${m.lossPct.toFixed(0)} %)`)
+        .map((m) => {
+          const who = r.twoPlayerMode ? `${m.color === 'w' ? 'Weiß' : 'Schwarz'}: ` : ''
+          const moveLabel = `${m.moveNumber}${m.color === 'w' ? '.' : '…'} ${m.san}`
+          return `${who}${moveLabel} (${CLASS_LABELS[m.classification] ?? m.classification}, −${m.lossPct.toFixed(0)} %)`
+        })
         .join('; ')
     : '(keine groben Fehler erkannt)'
+  const introLine = r.twoPlayerMode
+    ? `Die Partie ist zu Ende. Ergebnis: ${r.result}. Es war eine über das Brett gespielte Partie zwischen zwei Personen (Weiß und Schwarz), kein Engine-Gegner.`
+    : `Die Partie ist zu Ende. Ergebnis: ${r.result}. Der Schüler spielte ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`
+  const mistakesLabel = r.twoPlayerMode ? 'Fehler beider Seiten während der Partie' : 'Fehler des Schülers während der Partie'
+  const statsLabel = r.twoPlayerMode ? 'Statistik der Partie (beide Seiten zusammen)' : 'Statistik des Schülers'
+  const totalLabel = r.twoPlayerMode ? 'Zügen insgesamt' : 'eigenen Zügen'
   return [
-    `Die Partie ist zu Ende. Ergebnis: ${r.result}. Der Schüler spielte ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`,
+    introLine,
     `Vollständige Partie (SAN): ${r.historySan}`,
     ``,
-    `Fehler des Schülers während der Partie (Zugnummer, Zug, Klassifikation, Verlust an Gewinnchance): ${mistakesList}`,
-    `Statistik des Schülers: ${r.stats.blunders} Blunder, ${r.stats.mistakes} Fehler, ${r.stats.inaccuracies} Ungenauigkeiten, ${r.stats.bestMoves} beste Züge von ${r.stats.totalMoves} eigenen Zügen.`,
+    `${mistakesLabel} (Zugnummer, Zug, Klassifikation, Verlust an Gewinnchance): ${mistakesList}`,
+    `${statsLabel}: ${r.stats.blunders} Blunder, ${r.stats.mistakes} Fehler, ${r.stats.inaccuracies} Ungenauigkeiten, ${r.stats.bestMoves} beste Züge von ${r.stats.totalMoves} ${totalLabel}.`,
     ``,
-    `Schreibe einen Partie-Report für den Schüler mit drei Teilen:`,
+    `Schreibe einen Partie-Report ${r.twoPlayerMode ? 'für beide Spieler' : 'für den Schüler'} mit drei Teilen:`,
     `1) Wiederkehrende Fehlermuster, falls in der obigen Liste erkennbar (sonst diesen Teil weglassen).`,
     `2) Die wichtigsten kritischen Momente aus der obigen Liste, kurz erklärt.`,
     `3) Zwei bis drei konkrete, umsetzbare Lernpunkte für die nächste Partie.`,

@@ -63,7 +63,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
   }, [])
 
   const runRequest = useCallback(
-    (request: TutorRequest, preview?: MovePreview) => {
+    (request: TutorRequest, preview?: MovePreview, onComplete?: (text: string) => void) => {
       if (busyRef.current) return
       busyRef.current = true
       setBusy(true)
@@ -85,6 +85,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
               })
               .filter((m) => m.text !== '')
           )
+          if (result.ok && result.text) onComplete?.(result.text)
         })
         .finally(() => {
           busyRef.current = false
@@ -104,16 +105,20 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
       if (!move.classification) continue
       const key = `${i}:${move.uci}`
       if (commentedRef.current.has(key)) continue
-      if (!shouldComment(move, game.playerColor, mode)) {
+      if (!shouldComment(move, game.playerColor, mode, game.twoPlayerMode)) {
         commentedRef.current.add(key)
         continue
       }
       commentedRef.current.add(key)
       const built = buildMoveRequest(gameRef.current, move, i)
-      if (built) runRequest(built.request, built.preview)
+      if (built) {
+        // Kommentartext nach Eintreffen an den Zug selbst anhängen (nicht nur im Chat
+        // anzeigen) – so landet er beim PGN-Export als Zugkommentar.
+        runRequest(built.request, built.preview, (text) => gameRef.current.setMoveComment(i, move.uci, text))
+      }
       break
     }
-  }, [game.moves, game.playerColor, mode, status?.hasApiKey, runRequest])
+  }, [game.moves, game.playerColor, game.twoPlayerMode, mode, status?.hasApiKey, runRequest])
 
   const ask = useCallback(
     (question: string) => {
@@ -178,8 +183,10 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
   return { messages, busy, status, ask, suggestMove, togglePreview, refreshStatus, clear }
 }
 
-function shouldComment(move: MoveRecord, playerColor: 'w' | 'b', mode: TutorMode): boolean {
-  const isPlayer = move.color === playerColor
+function shouldComment(move: MoveRecord, playerColor: 'w' | 'b', mode: TutorMode, twoPlayerMode: boolean): boolean {
+  // Im Zwei-Spieler-Modus gibt es keine "Gegner-Engine" – beide Seiten sind
+  // menschlich und werden gleich behandelt (wie sonst nur die eigenen Züge).
+  const isPlayer = twoPlayerMode || move.color === playerColor
   if (mode === 'mistakes') {
     return isPlayer && (move.classification === 'blunder' || move.classification === 'mistake')
   }
@@ -211,6 +218,7 @@ function buildMoveRequest(
       san: move.san,
       color: move.color,
       playerColor: game.playerColor,
+      twoPlayerMode: game.twoPlayerMode,
       classification: move.classification,
       lossPct: move.lossPct,
       fenBefore: move.fenBefore,

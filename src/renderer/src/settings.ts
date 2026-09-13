@@ -30,6 +30,8 @@ export interface AppSettings {
   moveSoundEnabled: boolean
   /** Chessnut Air: besten Zug der laufenden Analyse als Blinken (Von-/Ziel-Feld im Wechsel) zeigen. */
   chessnutBestMoveBlink: boolean
+  /** Chessnut Air: Signalton bei Schach, ungültigem Zugversuch oder Zeitüberschreitung. */
+  chessnutBeepEnabled: boolean
 }
 
 /** Voreingestellte Grundzeit/Inkrement je Turnierkategorie – frei danach anpassbar. */
@@ -61,7 +63,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   clockBaseMinutes: 15,
   clockIncrementSeconds: 10,
   moveSoundEnabled: true,
-  chessnutBestMoveBlink: true
+  chessnutBestMoveBlink: true,
+  chessnutBeepEnabled: true
 }
 
 /** Feld in AppSettings, in dem das Modell für den jeweiligen Provider steht. */

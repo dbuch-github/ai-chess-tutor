@@ -21,6 +21,7 @@ import { useChessnutBoard } from './chessnut/useChessnutBoard'
 import { useChessnutSync } from './chessnut/useChessnutSync'
 import { useChessnutPreview } from './chessnut/useChessnutPreview'
 import { useChessnutBestMove } from './chessnut/useChessnutBestMove'
+import { useChessnutSignals } from './chessnut/useChessnutSignals'
 import { computeCriticalMoments, computeReportStats } from './game/gameReport'
 import { detectOpening } from './game/openingBook'
 import { buildPgn, suggestedPgnFilename } from './game/pgn'
@@ -61,6 +62,7 @@ export function App(): React.JSX.Element {
   const chessnutSync = useChessnutSync(game, chessnut)
   useChessnutPreview(chessnut, boardPreview, chessnutSync)
   useChessnutBestMove(game, chessnut, chessnutSync, boardPreview, settings.chessnutBestMoveBlink)
+  useChessnutSignals(game, chessnut, chessnutSync, settings.chessnutBeepEnabled)
 
   const applyEngineSettings = useCallback(async (s: AppSettings) => {
     const seq = ++configureSeq.current
@@ -151,6 +153,12 @@ export function App(): React.JSX.Element {
     saveSettings(next)
   }
 
+  const toggleChessnutBeep = (): void => {
+    const next = { ...settings, chessnutBeepEnabled: !settings.chessnutBeepEnabled }
+    setSettings(next)
+    saveSettings(next)
+  }
+
   const setTutorMode = (mode: TutorMode): void => {
     const next = { ...settings, tutorMode: mode }
     setSettings(next)
@@ -163,6 +171,12 @@ export function App(): React.JSX.Element {
     game.newGame(color)
   }
 
+  const startOtbGame = (): void => {
+    tutor.clear()
+    gameReport.clear()
+    game.startTwoPlayerGame()
+  }
+
   const showPgnNotice = (ok: boolean, text: string): void => {
     setPgnNotice({ ok, text })
     window.setTimeout(() => setPgnNotice((n) => (n?.text === text ? null : n)), 5000)
@@ -172,7 +186,8 @@ export function App(): React.JSX.Element {
     const pgn = buildPgn(game.moves, {
       playerColor: game.playerColor,
       opponentName: opponentStatus.name ?? 'Engine',
-      startedAt: game.startedAt
+      startedAt: game.startedAt,
+      twoPlayerMode: game.twoPlayerMode
     })
     const result = await window.api.exportPgn(pgn, suggestedPgnFilename(game.startedAt))
     if (result.ok && result.path) showPgnNotice(true, `Gespeichert: ${result.path}`)
@@ -247,10 +262,13 @@ export function App(): React.JSX.Element {
   const rankLabels = bottomColor === 'w' ? RANKS : [...RANKS].reverse()
   const fileLabels = bottomColor === 'w' ? FILES : [...FILES].reverse()
 
-  const reportStats = useMemo(() => computeReportStats(game.moves, game.playerColor), [game.moves, game.playerColor])
+  const reportStats = useMemo(
+    () => computeReportStats(game.moves, game.playerColor, game.twoPlayerMode),
+    [game.moves, game.playerColor, game.twoPlayerMode]
+  )
   const criticalMoments = useMemo(
-    () => computeCriticalMoments(game.moves, game.playerColor),
-    [game.moves, game.playerColor]
+    () => computeCriticalMoments(game.moves, game.playerColor, game.twoPlayerMode),
+    [game.moves, game.playerColor, game.twoPlayerMode]
   )
 
   const opening = useMemo(() => detectOpening(game.moves.map((m) => m.san)), [game.moves])
@@ -268,25 +286,38 @@ export function App(): React.JSX.Element {
     ? game.result
     : game.thinking
       ? 'Engine denkt …'
-      : `${colorNames[game.turn]} am Zug${game.turn === game.playerColor ? ' – du' : ''}`
+      : `${colorNames[game.turn]} am Zug${!game.twoPlayerMode && game.turn === game.playerColor ? ' – du' : ''}`
 
   return (
     <div className="app">
       <header className="topbar">
         <h1>AI Chess Tutor</h1>
         <div className="topbar-status">
-          <span className={`engine-dot ${opponentStatus.ready ? 'ok' : 'err'}`} />
-          <span className="engine-name">
-            {opponentStatus.ready
-              ? `Gegner: ${opponentStatus.name}${
-                  settings.engineKind === 'maia'
-                    ? ' (Maia)'
-                    : settings.limitStrength
-                      ? ` (Elo ${settings.elo})`
-                      : ''
-                }`
-              : (opponentStatus.error ?? 'Engine startet …')}
-          </span>
+          {game.twoPlayerMode ? (
+            <>
+              <span className={`engine-dot ${analysisStatus.ready ? 'ok' : 'err'}`} />
+              <span className="engine-name">
+                {analysisStatus.ready
+                  ? `Live-Analyse: ${analysisStatus.name}`
+                  : (analysisStatus.error ?? 'Analyse startet …')}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className={`engine-dot ${opponentStatus.ready ? 'ok' : 'err'}`} />
+              <span className="engine-name">
+                {opponentStatus.ready
+                  ? `Gegner: ${opponentStatus.name}${
+                      settings.engineKind === 'maia'
+                        ? ' (Maia)'
+                        : settings.limitStrength
+                          ? ` (Elo ${settings.elo})`
+                          : ''
+                    }`
+                  : (opponentStatus.error ?? 'Engine startet …')}
+              </span>
+            </>
+          )}
         </div>
         <div className="topbar-actions">
           <button className="btn" onClick={() => startNewGame('w')}>
@@ -294,6 +325,13 @@ export function App(): React.JSX.Element {
           </button>
           <button className="btn" onClick={() => startNewGame('b')}>
             Neue Partie als Schwarz
+          </button>
+          <button
+            className="btn"
+            onClick={startOtbGame}
+            title="Eine über das Brett gespielte Partie zwischen zwei Menschen aufzeichnen: kein Auto-Zug der Engine, beide Seiten kommen vom physischen Chessnut-Brett; Live-Analyse und Partie-Report laufen wie gewohnt."
+          >
+            🎥 OTB-Partie aufzeichnen
           </button>
           <button className="btn" onClick={toggleAnalysis}>
             {settings.showAnalysis ? 'Analyse ausblenden' : 'Analyse einblenden'}
@@ -361,14 +399,16 @@ export function App(): React.JSX.Element {
                 lastMove={game.lastMove}
                 check={game.inCheck}
                 movableColor={
-                  game.result ||
-                  game.reviewMode ||
-                  game.turn !== game.playerColor ||
-                  chessnut.status === 'connected'
+                  game.result || game.reviewMode || chessnut.status === 'connected'
                     ? undefined
-                    : game.playerColor === 'w'
-                      ? 'white'
-                      : 'black'
+                    : game.twoPlayerMode
+                      ? // Kein physisches Brett verbunden – Zug-und-Herzug für beide Seiten auf dem Bildschirm.
+                        'both'
+                      : game.turn !== game.playerColor
+                        ? undefined
+                        : game.playerColor === 'w'
+                          ? 'white'
+                          : 'black'
                 }
                 dests={game.legalDests}
                 onMove={game.makeUserMove}
@@ -392,6 +432,9 @@ export function App(): React.JSX.Element {
               sync={chessnutSync}
               bestMoveBlink={settings.chessnutBestMoveBlink}
               onToggleBestMoveBlink={toggleChessnutBestMoveBlink}
+              bestMoveAvailable={!game.twoPlayerMode}
+              beepEnabled={settings.chessnutBeepEnabled}
+              onToggleBeep={toggleChessnutBeep}
             />
           </div>
         </div>
@@ -405,6 +448,8 @@ export function App(): React.JSX.Element {
                 ▶ Weiterspielen
               </button>
             </div>
+          ) : game.twoPlayerMode && !game.result ? (
+            <div className="status-line otb">🔴 OTB-Aufzeichnung – {statusText}</div>
           ) : (
             <div className={`status-line ${game.result ? 'finished' : ''}`}>{statusText}</div>
           )}
@@ -453,6 +498,7 @@ export function App(): React.JSX.Element {
           criticalMoments={criticalMoments}
           report={gameReport}
           hasApiKey={tutor.status?.hasApiKey ?? false}
+          twoPlayerMode={game.twoPlayerMode}
           onOpenSettings={() => {
             setShowReport(false)
             setShowSettings(true)

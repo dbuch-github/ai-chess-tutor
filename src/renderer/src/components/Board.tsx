@@ -11,7 +11,8 @@ interface BoardProps {
   turnColor: 'white' | 'black'
   lastMove: [string, string] | null
   check: boolean
-  movableColor: 'white' | 'black' | undefined
+  /** 'both' = Zug-und-Herzug für beide Seiten auf dem Bildschirm (Zwei-Spieler-Modus ohne verbundenes Brett). */
+  movableColor: 'white' | 'black' | 'both' | undefined
   dests: Map<string, string[]>
   onMove: (from: string, to: string) => void
   /** Vorgeschlagener Zug (Tutor-Chat oder Analyse-Linie) – als Preview eingeblendet. */

@@ -2,13 +2,21 @@ import { useEffect, useRef, useState } from 'react'
 import { Chess } from 'chess.js'
 import type { GameApi } from '../game/useGame'
 import type { ChessnutBoardApi } from './useChessnutBoard'
-import { inferMove, mismatchedSquares, piecesOf, snapshotsEqual } from './inferMove'
+import { inferMove, mismatchedSquares, piecesOf, snapshotKey, snapshotsEqual } from './inferMove'
 
 export interface ChessnutSyncApi {
   /** true = wartet noch darauf, dass der zuletzt gespielte Zug physisch nachgezogen wird. */
   awaitingPhysicalSync: boolean
   /** Felder, an denen das physische Brett von der Soll-Stellung abweicht. */
   mismatches: string[]
+  /**
+   * Zählt hoch, sobald am Brett zweimal in Folge dieselbe von der Soll-Stellung
+   * abweichende, keinem legalen Zug entsprechende Stellung beobachtet wurde –
+   * ein vermutlicher ungültiger Zugversuch. Ein Zähler statt eines Flags, damit
+   * Konsumenten (z. B. der Signalton) per useEffect jede einzelne Änderung
+   * mitbekommen, auch wenn zwei Fehlversuche hintereinander denselben Wert hätten.
+   */
+  invalidAttempt: number
 }
 
 /**
@@ -30,9 +38,15 @@ export interface ChessnutSyncApi {
 export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): ChessnutSyncApi {
   const [awaitingPhysicalSync, setAwaitingPhysicalSync] = useState(false)
   const [mismatches, setMismatches] = useState<string[]>([])
+  const [invalidAttempt, setInvalidAttempt] = useState(0)
   const pendingCandidateRef = useRef<string | null>(null)
   const lastAppliedKeyRef = useRef<string | null>(null)
   const pendingMismatchRef = useRef<string | null>(null)
+  // Debounce für die Fehlversuch-Erkennung (analog pendingCandidateRef): erst bei
+  // zwei identischen Lesungen in Folge werten, dann bis zur nächsten Änderung
+  // nicht erneut für dieselbe Stellung melden.
+  const pendingInvalidKeyRef = useRef<string | null>(null)
+  const lastSignaledInvalidKeyRef = useRef<string | null>(null)
   // true, wenn eine weitere Positionsänderung eintraf, bevor die vorherige als
   // physisch synchron bestätigt war (z. B. weil die Engine nach "Neue Partie
   // als Schwarz" sofort zieht, noch bevor das zurückgesetzte Brett geprüft
@@ -52,6 +66,8 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     if (!connected) return
     pendingCandidateRef.current = null
     pendingMismatchRef.current = null
+    pendingInvalidKeyRef.current = null
+    lastSignaledInvalidKeyRef.current = null
     // Sonst würde z. B. nach "Neue Partie" derselbe Zug (etwa wieder e2-e4) als
     // "schon übernommen" verworfen, weil er zufällig denselben Schlüssel wie der
     // letzte Zug der vorherigen Partie hat.
@@ -112,7 +128,9 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
       return
     }
 
-    if (game.result || game.reviewMode || game.turn !== game.playerColor) {
+    // Im Zwei-Spieler-Modus (OTB-Aufzeichnung) gibt es keine feste "Spielerfarbe" –
+    // Zugerkennung läuft dann für beide Seiten, unabhängig davon, wer am Zug ist.
+    if (game.result || game.reviewMode || (!game.twoPlayerMode && game.turn !== game.playerColor)) {
       setMismatches([])
       return
     }
@@ -121,8 +139,27 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     if (!candidate) {
       pendingCandidateRef.current = null
       setMismatches([])
+      if (snapshotsEqual(piecesOf(chess), chessnut.snapshot)) {
+        // Brett entspricht (wieder) der Soll-Stellung – kein Fehlversuch zu melden.
+        pendingInvalidKeyRef.current = null
+        lastSignaledInvalidKeyRef.current = null
+      } else {
+        // Zwei identische Lesungen in Folge nötig, bevor eine Abweichung als
+        // tatsächlicher Fehlversuch gilt (nicht schon die erste – das wäre oft
+        // nur eine Übergangsstellung beim Anheben einer Figur); danach nicht bei
+        // jedem weiteren ~200ms-Tick erneut melden, solange sich nichts ändert.
+        const key = snapshotKey(chessnut.snapshot)
+        if (pendingInvalidKeyRef.current !== key) {
+          pendingInvalidKeyRef.current = key
+        } else if (lastSignaledInvalidKeyRef.current !== key) {
+          lastSignaledInvalidKeyRef.current = key
+          setInvalidAttempt((n) => n + 1)
+        }
+      }
       return
     }
+    pendingInvalidKeyRef.current = null
+    lastSignaledInvalidKeyRef.current = null
     const key = `${candidate.from}${candidate.to}${candidate.promotion ?? ''}`
     if (pendingCandidateRef.current !== key) {
       pendingCandidateRef.current = key
@@ -140,8 +177,9 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     game.result,
     game.reviewMode,
     game.turn,
-    game.playerColor
+    game.playerColor,
+    game.twoPlayerMode
   ])
 
-  return { awaitingPhysicalSync, mismatches }
+  return { awaitingPhysicalSync, mismatches, invalidAttempt }
 }

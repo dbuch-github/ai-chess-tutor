@@ -36,10 +36,11 @@ export function useGameReport(game: GameApi, hasApiKey: boolean): GameReportApi 
     const req: TutorReportRequest = {
       kind: 'report',
       playerColor: game.playerColor,
+      twoPlayerMode: game.twoPlayerMode,
       result: game.result ?? 'Partie läuft noch',
       historySan: historySan(game.moves),
-      mistakes: computeCriticalMoments(game.moves, game.playerColor),
-      stats: computeReportStats(game.moves, game.playerColor)
+      mistakes: computeCriticalMoments(game.moves, game.playerColor, game.twoPlayerMode),
+      stats: computeReportStats(game.moves, game.playerColor, game.twoPlayerMode)
     }
 
     const unsubscribe = window.api.onTutorDelta((deltaId, delta) => {

@@ -1,10 +1,13 @@
 import { Chess } from 'chess.js'
+import type { Classification } from './classify'
 import type { CapturablePiece, MoveRecord } from './useGame'
 
 export interface PgnMeta {
   playerColor: 'w' | 'b'
   opponentName: string
   startedAt: Date
+  /** Zwei-Spieler-Modus (OTB): "Weiß"/"Schwarz" statt "Spieler"/Engine-Name in den Kopfzeilen. */
+  twoPlayerMode?: boolean
 }
 
 function pad(n: number): string {
@@ -15,6 +18,28 @@ function formatPgnDate(d: Date): string {
   return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`
 }
 
+const CLASS_LABELS: Partial<Record<Classification, string>> = {
+  inaccuracy: 'Ungenauigkeit',
+  mistake: 'Fehler',
+  blunder: 'Blunder'
+}
+
+/**
+ * Baut den PGN-Kommentar zu einem Zug: Klassifikation + Gewinnchancen-Verlust
+ * (ab Ungenauigkeit aufwärts, wie in der Zugliste/im Partie-Report) und –
+ * falls vorhanden – der vom Tutor generierte Erklärtext. So bleibt die Partie
+ * auch in Lichess-Studies, ChessBase & Co. mit den Erklärungen lesbar.
+ */
+function moveComment(move: MoveRecord): string | undefined {
+  const parts: string[] = []
+  const label = move.classification ? CLASS_LABELS[move.classification] : undefined
+  if (label && move.lossPct !== undefined) {
+    parts.push(`${label} (−${move.lossPct.toFixed(0)} % Gewinnchance)`)
+  }
+  if (move.comment) parts.push(move.comment)
+  return parts.length ? parts.join(' — ') : undefined
+}
+
 /** Baut eine vollständige PGN-Zeichenkette samt Standard-Kopfzeilen aus den gespielten Zügen. */
 export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
   const chess = new Chess()
@@ -22,11 +47,18 @@ export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
   chess.setHeader('Site', 'AI Chess Tutor')
   chess.setHeader('Date', formatPgnDate(meta.startedAt))
   chess.setHeader('Round', '-')
-  chess.setHeader('White', meta.playerColor === 'w' ? 'Spieler' : meta.opponentName)
-  chess.setHeader('Black', meta.playerColor === 'b' ? 'Spieler' : meta.opponentName)
+  chess.setHeader('White', meta.twoPlayerMode ? 'Weiß' : meta.playerColor === 'w' ? 'Spieler' : meta.opponentName)
+  chess.setHeader('Black', meta.twoPlayerMode ? 'Schwarz' : meta.playerColor === 'b' ? 'Spieler' : meta.opponentName)
 
   for (const move of moves) {
     chess.move({ from: move.uci.slice(0, 2), to: move.uci.slice(2, 4), promotion: move.uci.slice(4) || undefined })
+    // setComment() hängt am fen() NACH diesem Zug – passt exakt zur PGN-Konvention,
+    // dass ein Kommentar dem vorangehenden Zug folgt. Einschränkung: Bei einer
+    // Stellungswiederholung (dieselbe FEN zweimal in der Partie) überschreibt der
+    // spätere Kommentar den früheren – in der Praxis vernachlässigbar, weil
+    // Kommentare ohnehin nur zu wenigen Zügen anfallen.
+    const comment = moveComment(move)
+    if (comment) chess.setComment(comment)
   }
 
   // Ergebnis aus der tatsächlichen Endstellung ableiten, nicht aus dem

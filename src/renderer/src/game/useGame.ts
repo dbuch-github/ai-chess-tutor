@@ -16,6 +16,8 @@ export interface MoveRecord {
   captured?: CapturablePiece
   classification?: Classification
   lossPct?: number
+  /** Vom Tutor generierter Erklärtext zu diesem Zug (falls automatisch kommentiert) – für den PGN-Export. */
+  comment?: string
 }
 
 export interface GameApi {
@@ -52,6 +54,14 @@ export interface GameApi {
   /** Erzwingt ein Ergebnis von außen (z. B. Zeitüberschreitung an der Schachuhr) – überschreibt
    *  kein bereits aus der Stellung erreichtes Ergebnis (z. B. Matt im selben Moment). */
   forceResult: (result: string) => void
+  /** Hängt nachträglich einen Tutor-Kommentar an einen bereits gespielten Zug (für den PGN-Export) –
+   *  verwirft ihn still, falls sich die Zugliste seither geändert hat (Undo, neue/importierte Partie). */
+  setMoveComment: (index: number, uci: string, comment: string) => void
+  /** Zwei-Spieler-Modus (OTB-Aufzeichnung): beide Seiten werden vom physischen Brett
+   *  übernommen, kein Auto-Zug der Engine – die App zeichnet nur auf und analysiert live. */
+  twoPlayerMode: boolean
+  /** Startet eine neue, leere Partie im Zwei-Spieler-Modus. */
+  startTwoPlayerGame: () => void
 }
 
 const START_FEN = new Chess().fen()
@@ -99,6 +109,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
   const [playerColor, setPlayerColor] = useState<'w' | 'b'>('w')
   const [startedAt, setStartedAt] = useState(() => new Date())
   const [reviewMode, setReviewMode] = useState(false)
+  const [twoPlayerMode, setTwoPlayerMode] = useState(false)
   const [lastMove, setLastMove] = useState<[string, string] | null>(null)
   const [thinking, setThinking] = useState(false)
   const [result, setResult] = useState<string | null>(null)
@@ -231,14 +242,15 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
   }, [])
 
   // Let the engine move whenever it is its turn – aber nicht bei einer
-  // importierten Partie in der reinen Ansicht (reviewMode)
+  // importierten Partie in der reinen Ansicht (reviewMode) und nicht im
+  // Zwei-Spieler-Modus (dort ziehen beide Seiten physisch am echten Brett).
   useEffect(() => {
-    if (!engineReady || result || reviewMode) return
+    if (!engineReady || result || reviewMode || twoPlayerMode) return
     const chess = chessRef.current
     if (chess.turn() !== playerColor) {
       requestEngineMove()
     }
-  }, [engineReady, fen, playerColor, result, reviewMode, requestEngineMove])
+  }, [engineReady, fen, playerColor, result, reviewMode, twoPlayerMode, requestEngineMove])
 
   const newGame = useCallback(
     (color: 'w' | 'b') => {
@@ -255,10 +267,37 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setPlayerColor(color)
       setStartedAt(new Date())
       setReviewMode(false)
+      setTwoPlayerMode(false)
       syncFromChess()
     },
     [setMovesAnd, syncFromChess]
   )
+
+  /**
+   * Startet eine leere Partie, in der beide Seiten vom physischen Chessnut-Brett
+   * übernommen werden (kein Auto-Zug der Engine) – für das digitale Mitschreiben
+   * einer real gespielten OTB-Partie zwischen zwei Menschen. Live-Analyse und
+   * Tutor-Auswertung laufen unverändert mit.
+   */
+  const startTwoPlayerGame = useCallback(() => {
+    gameIdRef.current += 1
+    thinkingRef.current = false
+    chessRef.current = new Chess()
+    evalByFenRef.current.clear()
+    setMovesAnd([])
+    setFuture([])
+    setLastMove(null)
+    setThinking(false)
+    setEngineError(null)
+    setSnapshot(null)
+    // Nur für Brett-Orientierung/Uhr-Zuordnung relevant – im Zwei-Spieler-Modus
+    // "gehört" keine Seite dem Spieler.
+    setPlayerColor('w')
+    setStartedAt(new Date())
+    setReviewMode(false)
+    setTwoPlayerMode(true)
+    syncFromChess()
+  }, [setMovesAnd, syncFromChess])
 
   const importGame = useCallback(
     (pgn: string): boolean => {
@@ -281,6 +320,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setSnapshot(null)
       setStartedAt(new Date())
       setReviewMode(true)
+      setTwoPlayerMode(false)
       // Wer an der Endstellung am Zug ist, "übernimmt" beim Fortsetzen – so
       // kann die Partie beim Verlassen des Review-Modus nahtlos weitergehen.
       setPlayerColor(replay.turn())
@@ -304,10 +344,27 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
   const makeUserMove = useCallback(
     (from: string, to: string, promotion?: string) => {
       const chess = chessRef.current
-      if (chess.turn() !== playerColor || chess.isGameOver()) return
+      if (chess.isGameOver()) return
+      // Im Zwei-Spieler-Modus darf jede Seite ziehen, wenn sie am Zug ist –
+      // "playerColor" bezeichnet dort nur die Brett-Orientierung, keine feste Seite.
+      if (!twoPlayerMode && chess.turn() !== playerColor) return
       applyMove(from, to, promotion)
     },
-    [applyMove, playerColor]
+    [applyMove, playerColor, twoPlayerMode]
+  )
+
+  const setMoveComment = useCallback(
+    (index: number, uci: string, comment: string) => {
+      const current = movesRef.current
+      // Zugliste hat sich seit dem Anstoßen der Tutor-Anfrage geändert (Undo,
+      // neue/importierte Partie) – Kommentar still verwerfen statt ihn dem
+      // falschen Zug anzuhängen.
+      if (current[index]?.uci !== uci) return
+      const next = current.slice()
+      next[index] = { ...next[index], comment }
+      setMovesAnd(next)
+    },
+    [setMovesAnd]
   )
 
   const undoMove = useCallback(() => {
@@ -382,6 +439,9 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     reviewMode,
     importGame,
     continuePlaying,
-    forceResult
+    forceResult,
+    setMoveComment,
+    twoPlayerMode,
+    startTwoPlayerGame
   }
 }

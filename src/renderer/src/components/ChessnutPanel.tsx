@@ -6,6 +6,10 @@ interface ChessnutPanelProps {
   sync: ChessnutSyncApi
   bestMoveBlink: boolean
   onToggleBestMoveBlink: () => void
+  /** false im Zwei-Spieler-Modus – der Bestzug-Toggle wird dann ausgeblendet (würde live verraten). */
+  bestMoveAvailable: boolean
+  beepEnabled: boolean
+  onToggleBeep: () => void
 }
 
 const STATUS_LABELS: Record<ChessnutBoardApi['status'], string> = {
@@ -21,7 +25,10 @@ export function ChessnutPanel({
   chessnut,
   sync,
   bestMoveBlink,
-  onToggleBestMoveBlink
+  onToggleBestMoveBlink,
+  bestMoveAvailable,
+  beepEnabled,
+  onToggleBeep
 }: ChessnutPanelProps): React.JSX.Element {
   const connected = chessnut.status === 'connected'
 
@@ -36,7 +43,7 @@ export function ChessnutPanel({
         </span>
       )}
 
-      {connected && (
+      {connected && bestMoveAvailable && (
         <label
           className="chessnut-toggle"
           title="Den besten Zug der laufenden Stockfish-Analyse auf dem Brett blinken lassen (Von- und Ziel-Feld im Wechsel), solange du am Zug bist"
@@ -46,6 +53,19 @@ export function ChessnutPanel({
             <span className="toggle-thumb" />
           </span>
           <span className="chessnut-toggle-label">Bester Zug</span>
+        </label>
+      )}
+
+      {connected && (
+        <label
+          className="chessnut-toggle"
+          title="Signalton direkt am Brett bei Schach, einem erkannten ungültigen Zugversuch oder Zeitüberschreitung"
+        >
+          <input type="checkbox" checked={beepEnabled} onChange={onToggleBeep} />
+          <span className="toggle-track" aria-hidden="true">
+            <span className="toggle-thumb" />
+          </span>
+          <span className="chessnut-toggle-label">🔔 Signalton</span>
         </label>
       )}
 

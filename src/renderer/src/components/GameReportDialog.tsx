@@ -6,6 +6,8 @@ interface GameReportDialogProps {
   criticalMoments: TutorReportMistake[]
   report: GameReportApi
   hasApiKey: boolean
+  /** Zwei-Spieler-Modus (OTB): zeigt an jedem kritischen Moment zusätzlich an, welche Seite zog. */
+  twoPlayerMode: boolean
   onOpenSettings: () => void
   onClose: () => void
 }
@@ -21,6 +23,7 @@ export function GameReportDialog({
   criticalMoments,
   report,
   hasApiKey,
+  twoPlayerMode,
   onOpenSettings,
   onClose
 }: GameReportDialogProps): React.JSX.Element {
@@ -41,8 +44,15 @@ export function GameReportDialog({
             <h3>Kritische Momente</h3>
             <ul>
               {criticalMoments.map((m) => (
-                <li key={m.moveNumber}>
-                  <span className="move-no">{m.moveNumber}.</span> {m.san}
+                <li key={`${m.moveNumber}-${m.color}`}>
+                  <span className="move-no">
+                    {m.moveNumber}
+                    {m.color === 'w' ? '.' : '…'}
+                  </span>{' '}
+                  {m.san}
+                  {twoPlayerMode && (
+                    <span className="stat-chip inline">{m.color === 'w' ? 'Weiß' : 'Schwarz'}</span>
+                  )}
                   <span className={`stat-chip inline ${m.classification === 'blunder' ? 'bad' : 'warn'}`}>
                     {CLASS_LABELS[m.classification] ?? m.classification}
                   </span>
