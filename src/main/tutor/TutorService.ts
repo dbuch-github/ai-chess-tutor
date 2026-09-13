@@ -1,0 +1,293 @@
+import { app, safeStorage } from 'electron'
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { AnthropicProvider } from './providers/AnthropicProvider'
+import { OpenAIProvider } from './providers/OpenAIProvider'
+import { GoogleProvider } from './providers/GoogleProvider'
+import type { ChatTurn, LlmProvider } from './providers/types'
+import type {
+  LlmProviderId,
+  TutorMoveRequest,
+  TutorQuestionRequest,
+  TutorReportRequest,
+  TutorRequest,
+  TutorResult,
+  TutorStatus,
+  TutorSuggestRequest
+} from '../../shared/types'
+
+const SYSTEM_PROMPT = `Du bist ein erfahrener, freundlicher Schachtrainer. Du begleitest eine laufende Partie deines Schülers gegen eine Engine.
+
+Regeln für deine Antworten:
+- Du bekommst zu jeder Anfrage die Fakten vorgerechnet: Stellung (FEN), Partieverlauf, Stockfish-Bewertungen und die besten Engine-Varianten. Stütze dich ausschließlich darauf.
+- Erfinde niemals eigene Varianten oder Zugfolgen, die nicht in den gelieferten Engine-Daten stehen. Wenn du einen konkreten Zug nennst, muss er aus den gelieferten Daten stammen.
+- Erkläre didaktisch: Welches Motiv oder welcher Plan wurde übersehen? Was ist die Idee hinter dem besseren Zug? Nutze schachliche Konzepte (Entwicklung, Zentrum, Königssicherheit, schwache Felder, Aktivität).
+- Sprich den Schüler mit "du" an. Antworte auf Deutsch.
+- Halte Zugkommentare kurz: 2 bis 4 Sätze, kein Vorgeplänkel, keine Überschriften.
+- Bei Rückfragen darfst du etwas ausführlicher werden, bleibe aber unter 150 Wörtern.
+- Die Notation in den Daten ist SAN mit englischen Figurenbuchstaben (N=Springer, B=Läufer, R=Turm, Q=Dame, K=König). Verwende in deiner Antwort dieselbe Notation.`
+
+const DEFAULT_MODELS: Record<LlmProviderId, string> = {
+  anthropic: 'claude-opus-5',
+  openai: 'gpt-5.1',
+  google: 'gemini-3.1-pro'
+}
+
+const PROVIDER_IDS: LlmProviderId[] = ['anthropic', 'openai', 'google']
+
+interface StoredConfig {
+  provider: LlmProviderId
+  models: Partial<Record<LlmProviderId, string>>
+  encryptedKeys: Partial<Record<LlmProviderId, string>>
+}
+
+/** Altes Format vor der Multi-Provider-Umstellung: nur Anthropic, flach. */
+interface LegacyStoredConfig {
+  model?: string
+  encryptedKey?: string
+}
+
+export class TutorService {
+  private anthropicProvider = new AnthropicProvider()
+  private providers: Record<LlmProviderId, LlmProvider>
+  private activeProvider: LlmProviderId = 'anthropic'
+  private models: Record<LlmProviderId, string> = { ...DEFAULT_MODELS }
+  private history: ChatTurn[] = []
+  private busy = false
+  private configPath = join(app.getPath('userData'), 'tutor-config.json')
+
+  constructor() {
+    this.providers = {
+      anthropic: this.anthropicProvider,
+      openai: new OpenAIProvider(),
+      google: new GoogleProvider()
+    }
+    this.loadConfig()
+  }
+
+  status(): TutorStatus {
+    return {
+      provider: this.activeProvider,
+      hasApiKey: this.providers[this.activeProvider].isConfigured(),
+      model: this.models[this.activeProvider],
+      hasApiKeyByProvider: {
+        anthropic: this.providers.anthropic.isConfigured(),
+        openai: this.providers.openai.isConfigured(),
+        google: this.providers.google.isConfigured()
+      }
+    }
+  }
+
+  configure(provider: LlmProviderId, model: string, apiKey?: string): TutorStatus {
+    this.activeProvider = provider
+    this.models[provider] = model.trim() || DEFAULT_MODELS[provider]
+    if (apiKey !== undefined) {
+      if (apiKey === '') {
+        this.providers[provider].clearClient()
+      } else {
+        this.providers[provider].configure(apiKey)
+      }
+      this.saveConfig({ provider, apiKey })
+    } else {
+      this.saveConfig()
+    }
+    return this.status()
+  }
+
+  /** Neue Partie: Gesprächskontext verwerfen. */
+  reset(): void {
+    this.history = []
+  }
+
+  async send(request: TutorRequest, onDelta: (text: string) => void): Promise<TutorResult> {
+    const provider = this.providers[this.activeProvider]
+    if (!provider.isConfigured()) {
+      return { ok: false, error: 'Kein API-Key hinterlegt – bitte in den Einstellungen (⚙︎) setzen.' }
+    }
+    if (this.busy) {
+      return { ok: false, error: 'Der Tutor antwortet gerade – bitte kurz warten.' }
+    }
+    this.busy = true
+    try {
+      const userText = buildPrompt(request)
+      this.history.push({ role: 'user', text: userText })
+      this.trimHistory()
+
+      // Zugkommentare/Vorschläge laufen günstig mit niedrigem Effort; der
+      // Partie-Report bündelt eine ganze Partie und darf sich das leisten,
+      // weil er nur am Partieende bzw. auf Anfrage einmal anfällt. Effort
+      // wirkt nur bei Anthropic und (als Reasoning-Effort) bei OpenAI.
+      const effort = request.kind === 'report' ? 'high' : 'low'
+      const text = await provider.send({
+        model: this.models[this.activeProvider],
+        systemPrompt: SYSTEM_PROMPT,
+        history: this.history,
+        maxTokens: effort === 'high' ? 4000 : 2000,
+        effort,
+        onDelta
+      })
+      this.history.push({ role: 'assistant', text })
+      return { ok: true, text }
+    } catch (err) {
+      // fehlgeschlagene Anfrage nicht in der Historie lassen
+      if (this.history.at(-1)?.role === 'user') this.history.pop()
+      return { ok: false, error: provider.describeError(err) }
+    } finally {
+      this.busy = false
+    }
+  }
+
+  private trimHistory(): void {
+    // Kontext klein halten: die letzten 24 Nachrichten reichen für Rückfragen
+    if (this.history.length > 24) {
+      this.history = this.history.slice(-24)
+      // Historie muss mit einer user-Nachricht beginnen
+      while (this.history.length > 0 && this.history[0].role !== 'user') {
+        this.history.shift()
+      }
+    }
+  }
+
+  private loadConfig(): void {
+    try {
+      const raw = JSON.parse(readFileSync(this.configPath, 'utf8')) as Partial<StoredConfig> & LegacyStoredConfig
+      if (!raw.provider && (raw.model || raw.encryptedKey)) {
+        // Migration: Konfiguration von vor der Multi-Provider-Umstellung (nur Anthropic)
+        this.activeProvider = 'anthropic'
+        if (raw.model) this.models.anthropic = raw.model
+        if (raw.encryptedKey) this.decryptAndConfigure('anthropic', raw.encryptedKey)
+      } else {
+        this.activeProvider = raw.provider ?? 'anthropic'
+        for (const id of PROVIDER_IDS) {
+          const model = raw.models?.[id]
+          if (model) this.models[id] = model
+          const encryptedKey = raw.encryptedKeys?.[id]
+          if (encryptedKey) this.decryptAndConfigure(id, encryptedKey)
+        }
+      }
+    } catch {
+      /* keine Konfiguration vorhanden */
+    }
+    // Dev-Komfort: Umgebungsvariablen nutzen, wenn für Anthropic kein Key gespeichert ist
+    // (bare Anthropic() löst zusätzlich ANTHROPIC_AUTH_TOKEN/OAuth-Profile auf, nicht nur die Env-Variable)
+    if (!this.anthropicProvider.isConfigured() && (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN)) {
+      this.anthropicProvider.configureFromEnv()
+    }
+  }
+
+  private decryptAndConfigure(provider: LlmProviderId, encryptedKey: string): void {
+    if (!safeStorage.isEncryptionAvailable()) return
+    try {
+      const key = safeStorage.decryptString(Buffer.from(encryptedKey, 'base64'))
+      this.providers[provider].configure(key)
+    } catch (err) {
+      console.error(`[tutor] Gespeicherter Key für ${provider} konnte nicht entschlüsselt werden:`, err)
+    }
+  }
+
+  private saveConfig(change?: { provider: LlmProviderId; apiKey: string }): void {
+    try {
+      let stored: StoredConfig
+      try {
+        stored = JSON.parse(readFileSync(this.configPath, 'utf8')) as StoredConfig
+      } catch {
+        stored = { provider: this.activeProvider, models: {}, encryptedKeys: {} }
+      }
+      stored.provider = this.activeProvider
+      stored.models = { ...stored.models, ...this.models }
+      stored.encryptedKeys = stored.encryptedKeys ?? {}
+      if (change) {
+        if (change.apiKey === '') {
+          delete stored.encryptedKeys[change.provider]
+        } else if (safeStorage.isEncryptionAvailable()) {
+          stored.encryptedKeys[change.provider] = safeStorage.encryptString(change.apiKey).toString('base64')
+        }
+      }
+      writeFileSync(this.configPath, JSON.stringify(stored))
+    } catch (err) {
+      console.error('[tutor] Konfiguration konnte nicht gespeichert werden:', err)
+    }
+  }
+}
+
+function buildPrompt(request: TutorRequest): string {
+  switch (request.kind) {
+    case 'move':
+      return formatMovePrompt(request)
+    case 'suggest':
+      return formatSuggestPrompt(request)
+    case 'report':
+      return formatReportPrompt(request)
+    case 'question':
+      return formatQuestionPrompt(request)
+  }
+}
+
+function formatMovePrompt(r: TutorMoveRequest): string {
+  const who = r.color === r.playerColor ? 'Der Schüler' : 'Die Gegner-Engine'
+  const moveLabel = `${r.moveNumber}${r.color === 'w' ? '.' : '…'} ${r.san}`
+  return [
+    `${who} hat gerade ${moveLabel} gespielt – laut Stockfish ${CLASS_LABELS[r.classification] ?? r.classification} (−${r.lossPct.toFixed(0)} % Gewinnchance, Bewertung aus Weiß-Sicht vorher ${r.evalBefore}, nachher ${r.evalAfter}).`,
+    ``,
+    `Spielphase: ${r.phase}. Der Schüler spielt ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`,
+    `Partie bisher: ${r.historySan}`,
+    `Stellung vor dem Zug (FEN): ${r.fenBefore}`,
+    `Bester Zug laut Stockfish war ${r.bestMoveSan}, Hauptvariante: ${r.bestLineSan}`,
+    ``,
+    r.color === r.playerColor
+      ? `Erkläre dem Schüler kurz, warum sein Zug problematisch war und welche Idee ${r.bestMoveSan} verfolgt.`
+      : `Erkläre dem Schüler kurz, warum der Engine-Zug schwach war und wie er das jetzt ausnutzen kann (bester Zug: ${r.bestMoveSan}).`
+  ].join('\n')
+}
+
+function formatSuggestPrompt(r: TutorSuggestRequest): string {
+  return [
+    `Der Schüler bittet um einen Zugvorschlag für die aktuelle Stellung.`,
+    ``,
+    `Aktuelle Stellung (FEN): ${r.fen}, ${r.turn === 'w' ? 'Weiß' : 'Schwarz'} am Zug. Der Schüler spielt ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`,
+    `Partie bisher: ${r.historySan || '(noch keine Züge)'}`,
+    `Stockfish-Bewertung (aus Weiß-Sicht): ${r.evalNow}`,
+    `Empfohlener Zug laut Stockfish: ${r.bestMoveSan}, Hauptvariante: ${r.bestLineSan}`,
+    ``,
+    `Erkläre kurz die Idee hinter ${r.bestMoveSan} (welcher Plan, welches Motiv). Nenne keine anderen Züge als die gelieferte Variante.`
+  ].join('\n')
+}
+
+const CLASS_LABELS: Record<string, string> = {
+  blunder: 'Blunder',
+  mistake: 'Fehler',
+  inaccuracy: 'Ungenauigkeit'
+}
+
+function formatReportPrompt(r: TutorReportRequest): string {
+  const mistakesList = r.mistakes.length
+    ? r.mistakes
+        .map((m) => `${m.moveNumber}. ${m.san} (${CLASS_LABELS[m.classification] ?? m.classification}, −${m.lossPct.toFixed(0)} %)`)
+        .join('; ')
+    : '(keine groben Fehler erkannt)'
+  return [
+    `Die Partie ist zu Ende. Ergebnis: ${r.result}. Der Schüler spielte ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`,
+    `Vollständige Partie (SAN): ${r.historySan}`,
+    ``,
+    `Fehler des Schülers während der Partie (Zugnummer, Zug, Klassifikation, Verlust an Gewinnchance): ${mistakesList}`,
+    `Statistik des Schülers: ${r.stats.blunders} Blunder, ${r.stats.mistakes} Fehler, ${r.stats.inaccuracies} Ungenauigkeiten, ${r.stats.bestMoves} beste Züge von ${r.stats.totalMoves} eigenen Zügen.`,
+    ``,
+    `Schreibe einen Partie-Report für den Schüler mit drei Teilen:`,
+    `1) Wiederkehrende Fehlermuster, falls in der obigen Liste erkennbar (sonst diesen Teil weglassen).`,
+    `2) Die wichtigsten kritischen Momente aus der obigen Liste, kurz erklärt.`,
+    `3) Zwei bis drei konkrete, umsetzbare Lernpunkte für die nächste Partie.`,
+    `Stütze dich ausschließlich auf die oben gelisteten Fehler und die Statistik – erfinde keine weiteren Zugfehler oder Varianten, die dort nicht stehen. Fließtext mit kurzen Absätzen, keine Überschriften, insgesamt maximal etwa 180 Wörter.`
+  ].join('\n')
+}
+
+function formatQuestionPrompt(r: TutorQuestionRequest): string {
+  return [
+    `Frage des Schülers: ${r.question}`,
+    ``,
+    `Aktuelle Stellung (FEN): ${r.fen}, ${r.turn === 'w' ? 'Weiß' : 'Schwarz'} am Zug. Der Schüler spielt ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`,
+    `Partie bisher: ${r.historySan || '(noch keine Züge)'}`,
+    `Stockfish-Bewertung (aus Weiß-Sicht): ${r.evalNow}`,
+    `Beste Varianten laut Stockfish:`,
+    ...r.linesSan.map((l, i) => `${i + 1}) ${l}`)
+  ].join('\n')
+}

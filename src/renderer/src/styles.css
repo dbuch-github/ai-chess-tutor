@@ -1,0 +1,1233 @@
+:root {
+  --bg: #1e2124;
+  --surface: #26292d;
+  --surface-2: #2e3237;
+  --line: #3a3f45;
+  --ink: #e6e4de;
+  --ink-soft: #9aa0a6;
+  --accent: #6fae8f;
+  --accent-ink: #14231c;
+  --bad: #d1735c;
+  --warn: #d1a35a;
+  --good: #6fae8f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ---- Top bar ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar h1 {
+  font-size: 1.05rem;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.topbar-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.engine-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.engine-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.engine-dot.ok {
+  background: var(--good);
+}
+
+.engine-dot.err {
+  background: var(--bad);
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---- Layout ---- */
+.layout {
+  display: flex;
+  flex: 1;
+  gap: 18px;
+  padding: 14px 18px 18px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Der Board-Bereich ist Größen-Container: das Brett bemisst sich
+   per cqw/cqh am tatsächlich verfügbaren Platz – ohne festen Deckel,
+   damit auch Vollbild/große Auflösungen voll genutzt werden. */
+.board-area {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  container-type: size;
+}
+
+.board-frame {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-template-areas:
+    '.    .     captop'
+    'eval ranks board'
+    '.    .     files'
+    '.    .     capbot'
+    '.    .     chessnut';
+  gap: 3px 8px;
+  width: fit-content;
+}
+
+.eval-area {
+  grid-area: eval;
+}
+
+.rank-labels {
+  grid-area: ranks;
+}
+
+.board-wrap {
+  grid-area: board;
+  /* Höhen-Chrome: 2 Geschlagenen-Leisten + Koordinaten + Chessnut-Zeile + Gaps ≈ 130px,
+     Breiten-Chrome: Eval-Bar + Rand-Koordinaten + Gaps ≈ 76px */
+  width: min(calc(100cqh - 130px), calc(100cqw - 76px));
+  min-width: 260px;
+  aspect-ratio: 1;
+}
+
+.board,
+.board .cg-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Brett-Koordinaten (außerhalb der Felder) ---- */
+.rank-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 16px;
+}
+
+.file-labels {
+  grid-area: files;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 18px;
+}
+
+.rank-labels span,
+.file-labels span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  line-height: 1;
+}
+
+/* ---- Geschlagene Figuren ---- */
+.captured-row {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding-left: 2px;
+}
+
+/* heller Schein, damit schwarze Figuren auf dunklem Grund lesbar bleiben */
+.captured-row piece.black {
+  filter: drop-shadow(0 0 1px rgba(240, 238, 230, 0.9)) drop-shadow(0 0 3px rgba(240, 238, 230, 0.35));
+}
+
+.captured-row.top {
+  grid-area: captop;
+}
+
+.captured-row.bottom {
+  grid-area: capbot;
+}
+
+/* nutzt die chessground-Sprites (.cg-wrap piece.*), aber statisch im Fluss */
+.captured-row piece {
+  position: static;
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  background-size: cover;
+  pointer-events: none;
+}
+
+.captured-row piece + piece {
+  margin-left: -7px;
+}
+
+.material-lead {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Schachuhr ---- */
+.clock-badge {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, "IBM Plex Mono", monospace;
+}
+
+.clock-badge.running {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+
+.clock-badge.low {
+  background: color-mix(in srgb, var(--bad) 20%, transparent);
+  color: var(--bad);
+}
+
+.clock-badge.low.running {
+  animation: clock-pulse 1s ease-in-out infinite;
+}
+
+@keyframes clock-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* Narrow window: sidebar moves below the board */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-area {
+    container-type: normal;
+    flex: none;
+  }
+
+  .board-frame {
+    margin: 0 auto;
+  }
+
+  .board-wrap {
+    width: min(calc(100vw - 120px), calc(100vh - 330px));
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex: none;
+  }
+
+  .move-list {
+    flex: none;
+  }
+
+  .move-rows {
+    max-height: 32vh;
+  }
+}
+
+/* ---- Eval bar ---- */
+.eval-bar {
+  position: relative;
+  width: 26px;
+  height: 100%;
+  background: #efefe6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.eval-area {
+  height: 100%;
+}
+
+.eval-bar-black {
+  background: #3c3934;
+  width: 100%;
+  transition: height 0.4s ease;
+}
+
+.eval-bar-label {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #3c3934;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 460px;
+  min-height: 0;
+}
+
+.status-line {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 600;
+}
+
+.status-line.finished {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.status-line.review {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+.status-line.review .btn {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  flex-shrink: 0;
+}
+
+.pgn-notice {
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+.pgn-notice.ok {
+  background: color-mix(in srgb, var(--good) 14%, transparent);
+  color: var(--good);
+}
+
+.pgn-notice.error {
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  color: var(--bad);
+}
+
+.opening-line {
+  padding: 2px 14px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opening-eco {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.error-line {
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  color: var(--bad);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.panel-header h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.panel-meta {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-empty {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  margin: 4px 0;
+}
+
+/* ---- Analysis lines ---- */
+.analysis-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analysis-line-btn {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  width: 100%;
+  background: none;
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 6px;
+  margin: 0 -6px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.analysis-line-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.analysis-line-btn:disabled {
+  color: var(--ink);
+  cursor: default;
+}
+
+.analysis-line-btn.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Platzhalter-Zeile, solange Stockfish diese MultiPV-Linie noch nicht geliefert
+   hat – hält die Zeilenhöhe konstant, damit die Box nicht bei jeder neuen
+   Analyse-Tiefe wächst/schrumpft. */
+.analysis-line-btn.placeholder {
+  color: var(--ink-soft);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.line-score {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.85rem;
+  min-width: 52px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.score-white {
+  color: #f0efe9;
+}
+
+.score-black {
+  color: var(--ink-soft);
+}
+
+.score-even {
+  color: var(--warn);
+}
+
+.line-moves {
+  font-size: 0.88rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Tutor ---- */
+.tutor-panel {
+  flex: 1.4;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mode-switch {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mode-btn {
+  background: transparent;
+  color: var(--ink-soft);
+  border: none;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.mode-btn + .mode-btn {
+  border-left: 1px solid var(--line);
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.move-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.move-controls .btn {
+  flex: 1;
+  font-size: 0.82rem;
+  padding: 6px 8px;
+}
+
+.preview-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+  padding: 6px 10px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+}
+
+.preview-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.swatch-blue {
+  background: #1a5ec4;
+}
+
+.swatch-red {
+  background: #b3372c;
+}
+
+.swatch-green {
+  background: #2e8f3e;
+}
+
+.swatch-purple {
+  background: #7c3f96;
+}
+
+.swatch-pink {
+  background: #d43e93;
+}
+
+.swatch-darkgreen {
+  background: #15781b;
+}
+
+.swatch-grey {
+  background: #6b6f76;
+}
+
+.tutor-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 2px;
+}
+
+/* Auch im Leerzustand (kein API-Key / noch keine Nachrichten) den verfügbaren
+   Platz füllen, damit "💡 Zugvorschlag" + Eingabezeile unten in der Box bleiben
+   statt direkt unter dem kurzen Hinweistext zu hängen. */
+.tutor-panel > .panel-empty {
+  flex: 1;
+}
+
+.tutor-msg {
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  max-width: 95%;
+}
+
+.tutor-msg.tutor {
+  background: var(--surface-2);
+  align-self: flex-start;
+  border-left: 3px solid var(--accent);
+}
+
+.tutor-msg.user {
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface-2));
+  align-self: flex-end;
+}
+
+.tutor-msg.error {
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  color: var(--bad);
+  align-self: stretch;
+}
+
+.tutor-msg .cursor {
+  opacity: 0.7;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.preview-toggle {
+  display: block;
+  margin-top: 7px;
+  background: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line));
+  border-radius: 6px;
+  padding: 3px 9px;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.preview-toggle:hover {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.preview-toggle.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* Fehlermeldungen sind bereits rot eingefärbt – der Button folgt demselben Ton */
+.tutor-msg.error .preview-toggle {
+  border-color: color-mix(in srgb, var(--bad) 55%, var(--line));
+  color: var(--bad);
+}
+
+.tutor-msg.error .preview-toggle:hover {
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+}
+
+.tutor-msg.error .preview-toggle.active {
+  background: var(--bad);
+  color: var(--surface);
+  border-color: var(--bad);
+}
+
+.tutor-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tutor-input input {
+  flex: 1 1 120px;
+  min-width: 0;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  padding: 7px 10px;
+  font-size: 0.9rem;
+}
+
+.tutor-input input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  text-decoration: underline;
+}
+
+.key-state {
+  color: var(--good);
+  font-size: 0.78rem;
+  margin-left: 6px;
+}
+
+/* ---- Move list ---- */
+.move-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.move-rows {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 1fr;
+  gap: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.move-row:nth-child(odd) {
+  background: var(--surface-2);
+}
+
+.move-no {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.move {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+.move.blunder {
+  color: var(--bad);
+}
+
+.move.mistake {
+  color: var(--warn);
+}
+
+.move.inaccuracy {
+  color: color-mix(in srgb, var(--warn) 65%, var(--ink));
+}
+
+.move.best {
+  color: var(--good);
+}
+
+.move-badge {
+  font-size: 0.7em;
+  margin-left: 2px;
+}
+
+/* Feste Spaltenbreite für das Leitsymbol – so beginnt die eigentliche
+   Notation (Zielfeld) bei jedem Zug an derselben Stelle, ob mit oder ohne
+   Figur davor. */
+.figurine-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3em;
+  flex-shrink: 0;
+}
+
+/* Figurinen-Notation: kleines Figurensymbol statt Buchstabe (nutzt die
+   chessground-Sprites, siehe .captured-row piece). chessground setzt auf
+   `piece` grundsätzlich position:absolute – hier wieder in den Textfluss holen. */
+.move piece.figurine {
+  position: static;
+  display: inline-block;
+  width: 1.05em;
+  height: 1.05em;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* schwarze Figuren brauchen auf dunklem Grund einen hellen Schein, um erkennbar zu bleiben */
+.move piece.figurine.black {
+  filter: drop-shadow(0 0 1px rgba(240, 238, 230, 0.9)) drop-shadow(0 0 3px rgba(240, 238, 230, 0.35));
+}
+
+/* ---- Settings dialog ---- */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.dialog {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 22px;
+  width: min(480px, 92vw);
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.dialog h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.dialog h3 {
+  margin: 18px 0 8px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink-soft);
+}
+
+.dialog label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.dialog label.row {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+}
+
+.dialog input[type='text'],
+.dialog input[type='password'],
+.dialog input[type='number'],
+.dialog select {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  padding: 7px 10px;
+  font-size: 0.9rem;
+  font-family: ui-monospace, monospace;
+}
+
+.dialog select {
+  font-family: inherit;
+}
+
+.dialog input:focus-visible,
+.dialog select:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.path-row {
+  display: flex;
+  gap: 8px;
+}
+
+.path-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.path-row .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  margin: -4px 0 12px;
+  max-width: none;
+}
+
+.field-hint a {
+  color: var(--accent);
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-row label {
+  flex: 1;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ---- Partie-Report ---- */
+.report-dialog {
+  width: min(560px, 92vw);
+}
+
+.report-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.stat-chip.bad {
+  background: color-mix(in srgb, var(--bad) 16%, transparent);
+  color: var(--bad);
+}
+
+.stat-chip.warn {
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: var(--warn);
+}
+
+.stat-chip.warn-soft {
+  background: var(--surface-2);
+  color: var(--ink-soft);
+}
+
+.stat-chip.good {
+  background: color-mix(in srgb, var(--good) 16%, transparent);
+  color: var(--good);
+}
+
+.stat-chip.inline {
+  padding: 1px 7px;
+  font-size: 0.72rem;
+  margin: 0 6px;
+}
+
+.report-moments ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-moments li {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.report-moments .loss {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-text {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 12px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+/* ---- Partie-Bibliothek ---- */
+.library-dialog {
+  width: min(520px, 92vw);
+}
+
+.library-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.library-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+
+.library-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.library-players {
+  font-size: 0.92rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-meta {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.library-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn.danger {
+  border-color: color-mix(in srgb, var(--bad) 45%, var(--line));
+  color: var(--bad);
+}
+
+.btn.danger:hover {
+  background: color-mix(in srgb, var(--bad) 16%, transparent);
+}
+
+/* ---- Chessnut Air (Einzeiler unter dem Brett) ---- */
+.chessnut-bar {
+  grid-area: chessnut;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.chessnut-bar-label {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.chessnut-bar-spacer {
+  flex: 1;
+}
+
+.chessnut-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.chessnut-status.connected {
+  background: color-mix(in srgb, var(--good) 18%, transparent);
+  color: var(--good);
+}
+
+.chessnut-status.connecting {
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: var(--warn);
+}
+
+.chessnut-status.error {
+  background: color-mix(in srgb, var(--bad) 18%, transparent);
+  color: var(--bad);
+}
+
+.chessnut-battery {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.chessnut-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.chessnut-toggle input {
+  /* visuell versteckt, aber weiterhin fokussier-/bedienbar */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.chessnut-toggle-label {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.toggle-track {
+  display: inline-flex;
+  align-items: center;
+  width: 30px;
+  height: 17px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 1px;
+  transition: background-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.toggle-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+
+.chessnut-toggle input:checked + .toggle-track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.chessnut-toggle input:checked + .toggle-track .toggle-thumb {
+  background: var(--accent-ink, #fff);
+  transform: translateX(13px);
+}
+
+.chessnut-toggle input:focus-visible + .toggle-track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.chessnut-mismatch-inline {
+  color: var(--warn);
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chessnut-error-inline {
+  color: var(--bad);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chessnut-bar .btn {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+}

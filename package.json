@@ -1,0 +1,37 @@
+{
+  "name": "ai-chess-tutor",
+  "version": "0.1.0",
+  "description": "LLM chess tutor with Chessnut Air support, UCI engines and live Stockfish analysis",
+  "type": "module",
+  "main": "out/main/index.js",
+  "author": "dbuch",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.125.0",
+    "@google/genai": "^2.22.0",
+    "@lichess-org/chessground": "^10.1.1",
+    "chess.js": "^1.4.0",
+    "openai": "^7.15.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/web-bluetooth": "^0.0.21",
+    "@vitejs/plugin-react": "^5.2.0",
+    "electron": "^44.3.0",
+    "electron-vite": "^5.0.0",
+    "playwright-core": "^1.63.0",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vite": "^7.3.6"
+  }
+}
