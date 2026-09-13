@@ -17,7 +17,8 @@ const BLINK_INTERVAL_MS = 500
  *
  * Tritt bewusst zurück, solange `sync.awaitingPhysicalSync` aktiv ist (das
  * physische Nachziehen eines bereits gespielten Zugs hat Vorrang vor einem
- * Vorschlag für den nächsten).
+ * Vorschlag für den nächsten) oder eine angehobene gegnerische Figur gerade
+ * ihre Bedrohungen zeigt (`sync.liftedOpponentSquare`).
  */
 export function useChessnutPreview(
   chessnut: ChessnutBoardApi,
@@ -28,7 +29,9 @@ export function useChessnutPreview(
   const to = boardPreview.active?.to
 
   useEffect(() => {
-    if (chessnut.status !== 'connected' || sync.awaitingPhysicalSync || !from || !to) return
+    if (chessnut.status !== 'connected' || sync.awaitingPhysicalSync || sync.liftedOpponentSquare || !from || !to) {
+      return
+    }
 
     const squares = [from, to]
     let visible = true
@@ -44,5 +47,5 @@ export function useChessnutPreview(
     }
     // chessnut.setLeds ist stabil (useCallback ohne echte Abhängigkeiten)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chessnut.status, sync.awaitingPhysicalSync, from, to])
+  }, [chessnut.status, sync.awaitingPhysicalSync, sync.liftedOpponentSquare, from, to])
 }

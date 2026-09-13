@@ -22,6 +22,7 @@ import { useChessnutSync } from './chessnut/useChessnutSync'
 import { useChessnutPreview } from './chessnut/useChessnutPreview'
 import { useChessnutBestMove } from './chessnut/useChessnutBestMove'
 import { useChessnutSignals } from './chessnut/useChessnutSignals'
+import { useChessnutThreatPreview } from './chessnut/useChessnutThreatPreview'
 import { computeCriticalMoments, computeReportStats } from './game/gameReport'
 import { detectOpening } from './game/openingBook'
 import { buildPgn, suggestedPgnFilename } from './game/pgn'
@@ -63,6 +64,7 @@ export function App(): React.JSX.Element {
   useChessnutPreview(chessnut, boardPreview, chessnutSync)
   useChessnutBestMove(game, chessnut, chessnutSync, boardPreview, settings.chessnutBestMoveBlink)
   useChessnutSignals(game, chessnut, chessnutSync, settings.chessnutBeepEnabled)
+  const chessnutThreatPreview = useChessnutThreatPreview(game, chessnut, chessnutSync)
 
   const applyEngineSettings = useCallback(async (s: AppSettings) => {
     const seq = ++configureSeq.current
@@ -413,6 +415,7 @@ export function App(): React.JSX.Element {
                 dests={game.legalDests}
                 onMove={game.makeUserMove}
                 suggestion={boardPreview.active}
+                threatPreview={chessnutThreatPreview}
               />
             </div>
             <div className="file-labels">

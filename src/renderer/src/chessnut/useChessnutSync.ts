@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Chess } from 'chess.js'
 import type { GameApi } from '../game/useGame'
 import type { ChessnutBoardApi } from './useChessnutBoard'
-import { inferMove, mismatchedSquares, piecesOf, snapshotKey, snapshotsEqual } from './inferMove'
+import { inferMove, liftedPieceSquare, mismatchedSquares, piecesOf, snapshotKey, snapshotsEqual } from './inferMove'
 
 export interface ChessnutSyncApi {
   /** true = wartet noch darauf, dass der zuletzt gespielte Zug physisch nachgezogen wird. */
@@ -17,6 +17,13 @@ export interface ChessnutSyncApi {
    * mitbekommen, auch wenn zwei Fehlversuche hintereinander denselben Wert hätten.
    */
   invalidAttempt: number
+  /**
+   * Feld einer gerade vom Brett gehobenen gegnerischen Figur (Farbe ≠
+   * game.playerColor), solange alle anderen Felder weiterhin der Soll-Stellung
+   * entsprechen – eine erkannte "welche Figuren bedroht das?"-Geste, kein
+   * Zugversuch. Null, sobald sie wieder abgesetzt wird oder sich sonst etwas ändert.
+   */
+  liftedOpponentSquare: string | null
 }
 
 /**
@@ -39,6 +46,7 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
   const [awaitingPhysicalSync, setAwaitingPhysicalSync] = useState(false)
   const [mismatches, setMismatches] = useState<string[]>([])
   const [invalidAttempt, setInvalidAttempt] = useState(0)
+  const [liftedOpponentSquare, setLiftedOpponentSquare] = useState<string | null>(null)
   const pendingCandidateRef = useRef<string | null>(null)
   const lastAppliedKeyRef = useRef<string | null>(null)
   const pendingMismatchRef = useRef<string | null>(null)
@@ -68,6 +76,7 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     pendingMismatchRef.current = null
     pendingInvalidKeyRef.current = null
     lastSignaledInvalidKeyRef.current = null
+    setLiftedOpponentSquare(null)
     // Sonst würde z. B. nach "Neue Partie" derselbe Zug (etwa wieder e2-e4) als
     // "schon übernommen" verworfen, weil er zufällig denselben Schlüssel wie der
     // letzte Zug der vorherigen Partie hat.
@@ -92,6 +101,9 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     const chess = new Chess(game.fen)
 
     if (awaitingPhysicalSync) {
+      // Solange das physische Nachziehen eines bereits gespielten Zugs aussteht,
+      // beanspruchen die Korrektur-LEDs oben die Anzeige – keine Bedrohungs-Vorschau parallel dazu.
+      setLiftedOpponentSquare(null)
       if (snapshotsEqual(piecesOf(chess), chessnut.snapshot)) {
         pendingMismatchRef.current = null
         preferFullDiffRef.current = false
@@ -132,6 +144,7 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     // Zugerkennung läuft dann für beide Seiten, unabhängig davon, wer am Zug ist.
     if (game.result || game.reviewMode || (!game.twoPlayerMode && game.turn !== game.playerColor)) {
       setMismatches([])
+      setLiftedOpponentSquare(null)
       return
     }
 
@@ -143,23 +156,37 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
         // Brett entspricht (wieder) der Soll-Stellung – kein Fehlversuch zu melden.
         pendingInvalidKeyRef.current = null
         lastSignaledInvalidKeyRef.current = null
+        setLiftedOpponentSquare(null)
       } else {
-        // Zwei identische Lesungen in Folge nötig, bevor eine Abweichung als
-        // tatsächlicher Fehlversuch gilt (nicht schon die erste – das wäre oft
-        // nur eine Übergangsstellung beim Anheben einer Figur); danach nicht bei
-        // jedem weiteren ~200ms-Tick erneut melden, solange sich nichts ändert.
-        const key = snapshotKey(chessnut.snapshot)
-        if (pendingInvalidKeyRef.current !== key) {
-          pendingInvalidKeyRef.current = key
-        } else if (lastSignaledInvalidKeyRef.current !== key) {
-          lastSignaledInvalidKeyRef.current = key
-          setInvalidAttempt((n) => n + 1)
+        // Genau eine gegnerische Figur fehlt, sonst stimmt alles – das ist keine
+        // Zugabsicht, sondern die bewusste "was bedroht das?"-Geste: kurz anheben,
+        // um die Bedrohungen zu sehen, dann wieder absetzen. Kein Fehlversuch.
+        const opponentColor = game.playerColor === 'w' ? 'b' : 'w'
+        const liftedSquare = liftedPieceSquare(chess, chessnut.snapshot, opponentColor)
+        if (liftedSquare) {
+          pendingInvalidKeyRef.current = null
+          lastSignaledInvalidKeyRef.current = null
+          setLiftedOpponentSquare(liftedSquare)
+        } else {
+          setLiftedOpponentSquare(null)
+          // Zwei identische Lesungen in Folge nötig, bevor eine Abweichung als
+          // tatsächlicher Fehlversuch gilt (nicht schon die erste – das wäre oft
+          // nur eine Übergangsstellung beim Anheben einer Figur); danach nicht bei
+          // jedem weiteren ~200ms-Tick erneut melden, solange sich nichts ändert.
+          const key = snapshotKey(chessnut.snapshot)
+          if (pendingInvalidKeyRef.current !== key) {
+            pendingInvalidKeyRef.current = key
+          } else if (lastSignaledInvalidKeyRef.current !== key) {
+            lastSignaledInvalidKeyRef.current = key
+            setInvalidAttempt((n) => n + 1)
+          }
         }
       }
       return
     }
     pendingInvalidKeyRef.current = null
     lastSignaledInvalidKeyRef.current = null
+    setLiftedOpponentSquare(null)
     const key = `${candidate.from}${candidate.to}${candidate.promotion ?? ''}`
     if (pendingCandidateRef.current !== key) {
       pendingCandidateRef.current = key
@@ -181,5 +208,5 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
     game.twoPlayerMode
   ])
 
-  return { awaitingPhysicalSync, mismatches, invalidAttempt }
+  return { awaitingPhysicalSync, mismatches, invalidAttempt, liftedOpponentSquare }
 }

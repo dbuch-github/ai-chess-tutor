@@ -56,6 +56,30 @@ export function inferMove(chess: Chess, observed: BoardSnapshot): InferredMove |
   return matches.length === 1 ? matches[0] : null
 }
 
+/**
+ * Erkennt, ob genau eine Figur der angegebenen Farbe vom Brett gehoben wurde:
+ * ihr Feld ist jetzt leer, alle anderen Felder entsprechen weiterhin der
+ * Soll-Stellung. Liefert deren Feld, sonst null – auch bei mehr als einer
+ * Abweichung, oder wenn die abweichende Figur zur anderen Farbe gehört (dann
+ * ist es kein reines "Anheben zum Ansehen", sondern z. B. ein Zugversuch).
+ */
+export function liftedPieceSquare(chess: Chess, observed: BoardSnapshot, color: 'w' | 'b'): string | null {
+  const expected = piecesOf(chess)
+  const squares = new Set([...Object.keys(expected), ...Object.keys(observed)])
+  let lifted: string | null = null
+  for (const sq of squares) {
+    if (expected[sq] === observed[sq]) continue
+    if (lifted !== null) return null // mehr als ein Feld weicht ab
+    if (observed[sq] !== undefined) return null // Feld trägt jetzt etwas anderes, keine reine Entnahme
+    const piece = expected[sq]
+    if (!piece) return null
+    const pieceColor: 'w' | 'b' = piece === piece.toUpperCase() ? 'w' : 'b'
+    if (pieceColor !== color) return null
+    lifted = sq
+  }
+  return lifted
+}
+
 /** Felder, an denen die beobachtete von der Soll-Stellung abweicht (für LED-Korrekturhinweise). */
 export function mismatchedSquares(chess: Chess, observed: BoardSnapshot): string[] {
   const expected = piecesOf(chess)

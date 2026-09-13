@@ -4,6 +4,7 @@ import type { Api } from '@lichess-org/chessground/api'
 import type { DrawShape } from '@lichess-org/chessground/draw'
 import type { Key } from '@lichess-org/chessground/types'
 import type { ActivePreview } from '../game/useBoardPreview'
+import type { ThreatPreview } from '../chessnut/useChessnutThreatPreview'
 
 interface BoardProps {
   fen: string
@@ -17,6 +18,8 @@ interface BoardProps {
   onMove: (from: string, to: string) => void
   /** Vorgeschlagener Zug (Tutor-Chat oder Analyse-Linie) – als Preview eingeblendet. */
   suggestion?: ActivePreview | null
+  /** Am physischen Chessnut-Brett gehobene gegnerische Figur samt ihren Bedrohungen. */
+  threatPreview?: ThreatPreview | null
 }
 
 export function Board(props: BoardProps): React.JSX.Element {
@@ -64,9 +67,10 @@ export function Board(props: BoardProps): React.JSX.Element {
   }, [props.fen, props.orientation, props.turnColor, props.lastMove, props.check, props.movableColor, props.dests])
 
   useEffect(() => {
-    const s = props.suggestion
-    apiRef.current?.setAutoShapes(s ? suggestionToShapes(s) : [])
-  }, [props.suggestion])
+    const shapes = props.suggestion ? suggestionToShapes(props.suggestion) : []
+    if (props.threatPreview) shapes.push(...threatPreviewToShapes(props.threatPreview))
+    apiRef.current?.setAutoShapes(shapes)
+  }, [props.suggestion, props.threatPreview])
 
   return <div ref={containerRef} className="board" />
 }
@@ -106,5 +110,16 @@ function suggestionToShapes(s: ActivePreview): DrawShape[] {
     shapes.push({ orig: mv.from as Key, dest: mv.to as Key, brush: followBrushes[i] ?? 'paleGrey' })
   })
 
+  return shapes
+}
+
+/**
+ * Zeigt eine am physischen Brett gehobene gegnerische Figur (gelber Kreis auf
+ * ihrem Feld) und alle davon bedrohten eigenen Figuren (rote Kreise, dieselbe
+ * Farbe wie "gegnerische Figur wird neu angegriffen" bei einem Zugvorschlag).
+ */
+function threatPreviewToShapes(t: ThreatPreview): DrawShape[] {
+  const shapes: DrawShape[] = [{ orig: t.from as Key, brush: 'yellow' }]
+  for (const sq of t.attacks) shapes.push({ orig: sq as Key, brush: 'red' })
   return shapes
 }

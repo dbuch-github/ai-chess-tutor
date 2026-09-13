@@ -24,9 +24,11 @@ const STEP_MS = 500
  * anderer Kandidat aufblitzen). Tritt zurück, solange eine andere
  * Zuständigkeit die LEDs braucht: physischer Sync nach einem Zug
  * (`sync.awaitingPhysicalSync`) oder eine angeklickte Zugvorschau
- * (`boardPreview.active`). Im Zwei-Spieler-Modus (OTB-Aufzeichnung, beide
- * Seiten menschlich) grundsätzlich aus – sonst würde der Bestzug live auf dem
- * gemeinsam sichtbaren Brett verraten, während der Gegner noch am Zug ist.
+ * (`boardPreview.active`) oder eine angehobene gegnerische Figur, deren
+ * Bedrohungen gerade angezeigt werden (`sync.liftedOpponentSquare`). Im
+ * Zwei-Spieler-Modus (OTB-Aufzeichnung, beide Seiten menschlich) grundsätzlich
+ * aus – sonst würde der Bestzug live auf dem gemeinsam sichtbaren Brett
+ * verraten, während der Gegner noch am Zug ist.
  */
 export function useChessnutBestMove(
   game: GameApi,
@@ -48,6 +50,7 @@ export function useChessnutBestMove(
     enabled &&
     chessnut.status === 'connected' &&
     !sync.awaitingPhysicalSync &&
+    !sync.liftedOpponentSquare &&
     !boardPreview.active &&
     !game.result &&
     !game.reviewMode &&
