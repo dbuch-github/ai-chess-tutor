@@ -829,8 +829,9 @@ body {
 
 /* Figurinen-Notation: kleines Figurensymbol statt Buchstabe (nutzt die
    chessground-Sprites, siehe .captured-row piece). chessground setzt auf
-   `piece` grundsätzlich position:absolute – hier wieder in den Textfluss holen. */
-.move piece.figurine {
+   `piece` grundsätzlich position:absolute – hier wieder in den Textfluss holen.
+   Gilt sowohl in der Zugliste als auch in Tutor-Fließtext (figurineText). */
+piece.figurine {
   position: static;
   display: inline-block;
   width: 1.05em;
@@ -839,9 +840,24 @@ body {
   pointer-events: none;
 }
 
+/* Im Fließtext (.figurine-inline) gibt es keinen umgebenden Flex-Container,
+   der die Figur wie in der Zugliste (.move, .figurine-slot) zentrieren
+   könnte – dort mittig auf der Textgrundlinie ausrichten (übliche Technik
+   für quadratische Icons in Fließtext, siehe z. B. Bootstrap Icons). */
+.figurine-inline piece.figurine {
+  vertical-align: -0.2em;
+  margin: 0 0.05em;
+}
+
 /* schwarze Figuren brauchen auf dunklem Grund einen hellen Schein, um erkennbar zu bleiben */
-.move piece.figurine.black {
+piece.figurine.black {
   filter: drop-shadow(0 0 1px rgba(240, 238, 230, 0.9)) drop-shadow(0 0 3px rgba(240, 238, 230, 0.35));
+}
+
+/* Figurinen-Notation innerhalb von Fließtext (Tutor-Chat, Partie-Report):
+   Symbol und Zielfeld sollen wie ein Wort zusammenbleiben. */
+.figurine-inline {
+  white-space: nowrap;
 }
 
 /* ---- Settings dialog ---- */
@@ -962,7 +978,7 @@ body {
 
 /* ---- Partie-Report ---- */
 .report-dialog {
-  width: min(560px, 92vw);
+  width: min(680px, 92vw);
 }
 
 .report-stats {
@@ -1014,14 +1030,108 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 14px;
 }
 
 .report-moments li {
   display: flex;
   align-items: center;
+  gap: 14px;
   font-size: 0.9rem;
   margin: 0;
+}
+
+/* Zugnummer, Figurine, Klassifikation etc. bleiben untereinander im normalen
+   Textfluss (kein Flex-Item-Abstand dazwischen) – nur zum Stellungsbild hin
+   bekommt der ganze Block über .report-moments li einen Abstand. */
+.moment-details {
+  display: block;
+}
+
+/* Rahmen ums Stellungsbild inkl. Rand-Koordinaten (siehe PositionThumbnail.tsx):
+   Reihen-Ziffern links, Feld-Buchstaben unten, per Grid ums Brett herum. */
+.thumb-frame {
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 3px;
+  flex-shrink: 0;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.thumb-ranks {
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+}
+
+.thumb-ranks span {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1px;
+}
+
+.thumb-files {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.thumb-files span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1px;
+}
+
+/* Kleines Stellungsbild vor dem besprochenen Zug (siehe PositionThumbnail.tsx),
+   nutzt dieselben Figuren-Sprites wie die Zugliste/das Hauptbrett. */
+.position-thumb {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: 256px;
+  height: 256px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+/* Pfeile/Ringe der Zug-Analyse (siehe PositionThumbnail.tsx/ImpactOverlay),
+   liegt über dem gesamten 8x8-Grid. */
+.thumb-impact {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.thumb-square.light {
+  background: #f0d9b5;
+}
+
+.thumb-square.dark {
+  background: #b58863;
+}
+
+.thumb-square.highlight.light {
+  background: linear-gradient(rgba(155, 199, 0, 0.41), rgba(155, 199, 0, 0.41)), #f0d9b5;
+}
+
+.thumb-square.highlight.dark {
+  background: linear-gradient(rgba(155, 199, 0, 0.41), rgba(155, 199, 0, 0.41)), #b58863;
+}
+
+piece.thumb-piece {
+  position: static;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  pointer-events: none;
 }
 
 .report-moments .loss {

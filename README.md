@@ -35,7 +35,14 @@ npm install
 npm run dev        # Dev-Modus mit HMR
 npm run build      # Produktionsbuild nach out/
 npm run typecheck
+npm test           # Engine-, PGN-, Chessnut- und React-Regressionstests
 ```
+
+Die React-Tests starten einen isolierten Headless-Chrome-Prozess. Chrome/Chromium wird
+an üblichen macOS-/Linux-Pfaden gesucht; alternativ den Binary-Pfad über `CHROME_PATH`
+setzen. Ohne verfügbaren Browser wird nur dieser Test als übersprungen gemeldet.
+Die Tests verwenden eine lokale Test-Engine und simulierte Brettmeldungen; sie benötigen
+weder LLM-API-Keys noch ein verbundenes Chessnut-Brett.
 
 ## Aufbau
 
@@ -204,9 +211,10 @@ gestreamte Zusammenfassung: wiederkehrende Fehlermuster, die kritischsten Moment
 ## PGN-Export & -Import
 
 - **„💾 PGN exportieren“** (ab 1 Zug aktiv): schreibt die aktuelle Partie inkl. Kopfzeilen
-  (Datum, Spieler/Engine-Name, Ergebnis aus der tatsächlichen Endstellung abgeleitet) über
+  (Datum, Spieler/Engine-Name, Ergebnis inklusive Zeitüberschreitung) über
   einen nativen Speichern-Dialog auf die Platte.
-- **„📂 PGN importieren“**: lädt eine beliebige PGN-Datei (eigene Exporte oder von anderswo,
+- **„📂 PGN importieren“**: erhält auch FEN-Startstellungen, Zugkommentare und gespeicherte
+  Ergebnisse. Lädt eine beliebige PGN-Datei (eigene Exporte oder von anderswo,
   z. B. Lichess/Chess.com) und zeigt sie im **Review-Modus**: Brett, Zugliste, Stockfish-Analyse,
   Eröffnungserkennung und Tutor (Zugvorschlag, Rückfragen, Partie-Report) funktionieren normal
   auf der importierten Partie, das Brett ist aber schreibgeschützt und der Gegner zieht nicht

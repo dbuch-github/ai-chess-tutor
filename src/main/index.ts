@@ -160,11 +160,11 @@ app.whenReady().then(() => {
   ipcMain.handle('analysis:configure', (_e, config: AnalysisConfig) =>
     engines.configureAnalysis(config)
   )
-  ipcMain.handle('opponent:move', (_e, movesUci: string[]) =>
-    engines.requestOpponentMove(movesUci)
+  ipcMain.handle('opponent:move', (_e, movesUci: string[], initialFen?: string) =>
+    engines.requestOpponentMove(movesUci, initialFen)
   )
-  ipcMain.handle('analysis:position', (_e, fen: string, movesUci: string[]) =>
-    engines.setAnalysisPosition(fen, movesUci)
+  ipcMain.handle('analysis:position', (_e, fen: string, movesUci: string[], initialFen?: string) =>
+    engines.setAnalysisPosition(fen, movesUci, initialFen)
   )
 
   const tutor = new TutorService()

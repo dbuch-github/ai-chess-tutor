@@ -4,6 +4,7 @@ import type { AnalysisLine, AnalysisSnapshot } from '../../../shared/types'
 import { classifyMove, MIN_CLASSIFY_DEPTH, type Classification } from './classify'
 import { pickBookMove } from './openingBook'
 import { parsePgn } from './pgn'
+import { boardOutcome, type GameOutcome } from './result'
 
 export type CapturablePiece = 'p' | 'n' | 'b' | 'r' | 'q'
 
@@ -22,6 +23,9 @@ export interface MoveRecord {
 
 export interface GameApi {
   fen: string
+  initialFen: string
+  initialComment?: string
+  outcome: GameOutcome | null
   turn: 'w' | 'b'
   playerColor: 'w' | 'b'
   moves: MoveRecord[]
@@ -53,7 +57,7 @@ export interface GameApi {
   continuePlaying: () => void
   /** Erzwingt ein Ergebnis von außen (z. B. Zeitüberschreitung an der Schachuhr) – überschreibt
    *  kein bereits aus der Stellung erreichtes Ergebnis (z. B. Matt im selben Moment). */
-  forceResult: (result: string) => void
+  forceResult: (result: GameOutcome) => void
   /** Hängt nachträglich einen Tutor-Kommentar an einen bereits gespielten Zug (für den PGN-Export) –
    *  verwirft ihn still, falls sich die Zugliste seither geändert hat (Undo, neue/importierte Partie). */
   setMoveComment: (index: number, uci: string, comment: string) => void
@@ -76,20 +80,10 @@ function legalDestsOf(chess: Chess): Map<string, string[]> {
   return dests
 }
 
-function resultOf(chess: Chess): string | null {
-  if (!chess.isGameOver()) return null
-  if (chess.isCheckmate()) {
-    return chess.turn() === 'w' ? 'Schwarz gewinnt durch Matt' : 'Weiß gewinnt durch Matt'
-  }
-  if (chess.isStalemate()) return 'Remis durch Patt'
-  if (chess.isThreefoldRepetition()) return 'Remis durch Stellungswiederholung'
-  if (chess.isInsufficientMaterial()) return 'Remis: ungenügendes Material'
-  if (chess.isDrawByFiftyMoves()) return 'Remis: 50-Züge-Regel'
-  return 'Remis'
-}
-
 export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi {
   const chessRef = useRef(new Chess())
+  const initialFenRef = useRef(START_FEN)
+  const [initialComment, setInitialComment] = useState<string>()
   const gameIdRef = useRef(0)
   const thinkingRef = useRef(false)
   // Best line seen per position, used to classify moves once both sides are analyzed
@@ -112,7 +106,13 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
   const [twoPlayerMode, setTwoPlayerMode] = useState(false)
   const [lastMove, setLastMove] = useState<[string, string] | null>(null)
   const [thinking, setThinking] = useState(false)
-  const [result, setResult] = useState<string | null>(null)
+  const [outcome, setOutcome] = useState<GameOutcome | null>(null)
+  const outcomeRef = useRef<GameOutcome | null>(null)
+  const setResult = useCallback((next: GameOutcome | null) => {
+    outcomeRef.current = next
+    setOutcome(next)
+  }, [])
+  const result = outcome?.description ?? null
   const [engineError, setEngineError] = useState<string | null>(null)
   const [snapshot, setSnapshot] = useState<AnalysisSnapshot | null>(null)
   const [legalDests, setLegalDests] = useState<Map<string, string[]>>(() =>
@@ -123,9 +123,9 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     const chess = chessRef.current
     setFen(chess.fen())
     setLegalDests(legalDestsOf(chess))
-    setResult(resultOf(chess))
+    setResult(boardOutcome(chess))
     if (moved !== undefined) setLastMove(moved ? [moved.from, moved.to] : null)
-  }, [])
+  }, [setResult])
 
   const applyMove = useCallback(
     (from: string, to: string, promotion?: string): boolean => {
@@ -164,7 +164,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     try {
       // Eröffnungsbuch zuerst versuchen – spart den Engine-Aufruf und sorgt
       // für Zugvielfalt/Theorie statt stets desselben Engine-Bestzugs.
-      if (useOpeningBook) {
+      if (useOpeningBook && initialFenRef.current === START_FEN) {
         const bookSan = pickBookMove(chess.history())
         if (bookSan) {
           try {
@@ -180,7 +180,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       }
       const history = chess.history({ verbose: true })
       const movesUci = history.map((m) => m.from + m.to + (m.promotion ?? ''))
-      const bestmove = await window.api.requestOpponentMove(movesUci)
+      const bestmove = await window.api.requestOpponentMove(movesUci, initialFenRef.current)
       if (gameIdRef.current !== gameId) return
       if (bestmove && bestmove !== '(none)') {
         applyMove(bestmove.slice(0, 2), bestmove.slice(2, 4), bestmove.slice(4) || undefined)
@@ -202,8 +202,10 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
   useEffect(() => {
     const chess = chessRef.current
     const movesUci = chess.history({ verbose: true }).map((m) => m.from + m.to + (m.promotion ?? ''))
-    window.api.setAnalysisPosition(fen, movesUci)
-  }, [fen])
+    window.api.setAnalysisPosition(fen, movesUci, initialFenRef.current).catch((err) => {
+      setEngineError(err instanceof Error ? err.message : String(err))
+    })
+  }, [fen, startedAt])
 
   // Receive analysis snapshots: display + record evals + classify pending moves
   useEffect(() => {
@@ -257,6 +259,8 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       gameIdRef.current += 1
       thinkingRef.current = false
       chessRef.current = new Chess()
+      initialFenRef.current = START_FEN
+      setInitialComment(undefined)
       evalByFenRef.current.clear()
       setMovesAnd([])
       setFuture([])
@@ -283,6 +287,8 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     gameIdRef.current += 1
     thinkingRef.current = false
     chessRef.current = new Chess()
+    initialFenRef.current = START_FEN
+    setInitialComment(undefined)
     evalByFenRef.current.clear()
     setMovesAnd([])
     setFuture([])
@@ -312,6 +318,8 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       gameIdRef.current += 1
       thinkingRef.current = false
       chessRef.current = replay
+      initialFenRef.current = imported.initialFen
+      setInitialComment(imported.initialComment)
       evalByFenRef.current.clear()
       setMovesAnd(imported.moves)
       setFuture([])
@@ -326,31 +334,36 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setPlayerColor(replay.turn())
       const lastImported = imported.moves.at(-1)
       syncFromChess(lastImported ? { from: lastImported.uci.slice(0, 2), to: lastImported.uci.slice(2, 4) } : null)
+      setResult(imported.outcome)
       return true
     },
-    [setMovesAnd, syncFromChess]
+    [setMovesAnd, syncFromChess, setResult]
   )
 
-  const continuePlaying = useCallback(() => setReviewMode(false), [])
+  const continuePlaying = useCallback(() => {
+    setPlayerColor(chessRef.current.turn())
+    setResult(boardOutcome(chessRef.current))
+    setReviewMode(false)
+  }, [setResult])
 
-  const forceResult = useCallback((text: string) => {
+  const forceResult = useCallback((forced: GameOutcome) => {
     // Verhindert, dass eine noch laufende Engine-Antwort danach eintrifft und etwas ändert
     gameIdRef.current += 1
     thinkingRef.current = false
     setThinking(false)
-    setResult((prev) => prev ?? text)
-  }, [])
+    setResult(outcomeRef.current ?? boardOutcome(chessRef.current) ?? forced)
+  }, [setResult])
 
   const makeUserMove = useCallback(
     (from: string, to: string, promotion?: string) => {
       const chess = chessRef.current
-      if (chess.isGameOver()) return
+      if (chess.isGameOver() || outcomeRef.current || reviewMode) return
       // Im Zwei-Spieler-Modus darf jede Seite ziehen, wenn sie am Zug ist –
       // "playerColor" bezeichnet dort nur die Brett-Orientierung, keine feste Seite.
       if (!twoPlayerMode && chess.turn() !== playerColor) return
       applyMove(from, to, promotion)
     },
-    [applyMove, playerColor, twoPlayerMode]
+    [applyMove, playerColor, twoPlayerMode, reviewMode]
   )
 
   const setMoveComment = useCallback(
@@ -418,6 +431,9 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
 
   return {
     fen,
+    initialFen: initialFenRef.current,
+    initialComment,
+    outcome,
     turn: fen.split(' ')[1] === 'b' ? 'b' : 'w',
     playerColor,
     moves,

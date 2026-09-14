@@ -153,6 +153,17 @@ export interface TutorReportMistake {
   san: string
   classification: string
   lossPct: number
+  /** Stellung vor dem Zug (FEN) – fürs Stellungsbild im Partie-Report. */
+  fenBefore: string
+  /** Stellung nach dem Zug (FEN) – wird im Stellungsbild gezeigt, mit dem Zug
+   *  selbst als "letzter Zug" hervorgehoben. */
+  fenAfter: string
+  /** Zug in UCI-Notation (z. B. "e2e4") – markiert Von-/Nach-Feld im Stellungsbild. */
+  uci: string
+  /** Letzter gegnerischer Zug, der zu fenBefore geführt hat (UCI), falls vorhanden. */
+  prevUci?: string
+  /** Stellung vor prevUci – zur Berechnung von dessen Wirkung (z. B. welche Drohung er aufbaut). */
+  prevFenBefore?: string
 }
 
 export interface TutorReportStats {

@@ -43,3 +43,46 @@ export function figurineSan(san: string, color: 'w' | 'b'): FigurineSan {
 
   return { leadIcon, text }
 }
+
+// Erkennt Figurenzüge (Leitbuchstabe N/B/R/Q/K, optionale Unterscheidung/
+// Schlagangabe, Zielfeld, optionale Umwandlung, optionales Schach-/Mattzeichen)
+// innerhalb von Fließtext. Bauernzüge ohne Leitbuchstaben bleiben unverändert.
+const MOVE_TOKEN = /\b([NBRQK])([a-h]|[1-8])?(x)?([a-h][1-8])(?:=([NBRQ]))?([+#])?/g
+
+/**
+ * Übersetzt Figurenzüge innerhalb eines Fließtexts (z. B. eine Tutor-Antwort)
+ * in Figurinen-Notation, analog zu {@link figurineSan}. Da im Fließtext nicht
+ * zuverlässig erkennbar ist, welche Seite gerade zieht, wird – wie bei
+ * gedruckter Figurinennotation üblich – ein einheitliches Symbolset
+ * verwendet, unabhängig von der tatsächlichen Figurenfarbe.
+ */
+export function figurineText(text: string, color: 'w' | 'b' = 'w'): React.ReactNode {
+  const parts: React.ReactNode[] = []
+  let lastIndex = 0
+  let key = 0
+
+  for (const match of text.matchAll(MOVE_TOKEN)) {
+    const idx = match.index ?? 0
+    if (idx > lastIndex) parts.push(text.slice(lastIndex, idx))
+
+    const [full, piece, disambig, capture, dest, promo, suffix] = match
+    parts.push(
+      <span className="figurine-inline" key={key++}>
+        <PieceIcon letter={piece} color={color} />
+        {disambig ?? ''}
+        {capture ?? ''}
+        {dest}
+        {promo && (
+          <>
+            =<PieceIcon letter={promo} color={color} />
+          </>
+        )}
+        {suffix ?? ''}
+      </span>
+    )
+    lastIndex = idx + full.length
+  }
+
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex))
+  return parts
+}

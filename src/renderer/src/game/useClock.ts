@@ -85,7 +85,11 @@ export function useChessClock(game: GameApi, config: ClockConfig): ClockApi {
       setRemaining(next)
       if (next[running] <= 0) {
         window.clearInterval(id)
-        game.forceResult(running === 'w' ? 'Schwarz gewinnt durch Zeitüberschreitung' : 'Weiß gewinnt durch Zeitüberschreitung')
+        game.forceResult({
+          result: running === 'w' ? '0-1' : '1-0',
+          description: running === 'w' ? 'Schwarz gewinnt durch Zeitüberschreitung' : 'Weiß gewinnt durch Zeitüberschreitung',
+          termination: 'time forfeit'
+        })
       }
     }, TICK_MS)
     return () => window.clearInterval(id)

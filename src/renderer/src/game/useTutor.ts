@@ -42,6 +42,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
   const [status, setStatus] = useState<TutorStatus | null>(null)
   const commentedRef = useRef(new Set<string>())
   const busyRef = useRef(false)
+  const generationRef = useRef(0)
   const gameRef = useRef(game)
   gameRef.current = game
 
@@ -64,7 +65,8 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
 
   const runRequest = useCallback(
     (request: TutorRequest, preview?: MovePreview, onComplete?: (text: string) => void) => {
-      if (busyRef.current) return
+      if (busyRef.current) return false
+      const generation = generationRef.current
       busyRef.current = true
       setBusy(true)
       const id = nextId++
@@ -85,19 +87,20 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
               })
               .filter((m) => m.text !== '')
           )
-          if (result.ok && result.text) onComplete?.(result.text)
+          if (generationRef.current === generation && result.ok && result.text) onComplete?.(result.text)
         })
         .finally(() => {
           busyRef.current = false
           setBusy(false)
         })
+      return true
     },
     [boardPreview]
   )
 
   // Auto-Kommentare: neu klassifizierte Züge je nach Modus kommentieren
   useEffect(() => {
-    if (mode === 'off' || !status?.hasApiKey) return
+    if (mode === 'off' || !status?.hasApiKey || busyRef.current) return
     const moves = game.moves
     // rückwärts den jüngsten kommentierwürdigen, noch nicht kommentierten Zug suchen
     for (let i = moves.length - 1; i >= 0; i--) {
@@ -109,16 +112,17 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
         commentedRef.current.add(key)
         continue
       }
-      commentedRef.current.add(key)
       const built = buildMoveRequest(gameRef.current, move, i)
       if (built) {
         // Kommentartext nach Eintreffen an den Zug selbst anhängen (nicht nur im Chat
         // anzeigen) – so landet er beim PGN-Export als Zugkommentar.
-        runRequest(built.request, built.preview, (text) => gameRef.current.setMoveComment(i, move.uci, text))
+        if (runRequest(built.request, built.preview, (text) => gameRef.current.setMoveComment(i, move.uci, text))) {
+          commentedRef.current.add(key)
+        }
       }
       break
     }
-  }, [game.moves, game.playerColor, game.twoPlayerMode, mode, status?.hasApiKey, runRequest])
+  }, [game.moves, game.playerColor, game.twoPlayerMode, mode, status?.hasApiKey, runRequest, busy])
 
   const ask = useCallback(
     (question: string) => {
@@ -174,6 +178,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
   )
 
   const clear = useCallback(() => {
+    generationRef.current += 1
     setMessages([])
     commentedRef.current.clear()
     boardPreview.hide()
@@ -214,7 +219,7 @@ function buildMoveRequest(
   return {
     request: {
       kind: 'move',
-      moveNumber: Math.floor(index / 2) + 1,
+      moveNumber: Number(move.fenBefore.split(' ')[5]),
       san: move.san,
       color: move.color,
       playerColor: game.playerColor,

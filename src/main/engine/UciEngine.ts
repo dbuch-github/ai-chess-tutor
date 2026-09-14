@@ -10,7 +10,9 @@ import type { AnalysisLine } from '../../shared/types'
 export class UciEngine extends EventEmitter {
   name = ''
   private proc: ChildProcessWithoutNullStreams | null = null
-  private bestMoveResolvers: Array<(mv: string) => void> = []
+  private pendingMove: { resolve: (mv: string) => void; reject: (err: Error) => void } | null = null
+  private stopWaiters = new Set<{ resolve: () => void; reject: (err: Error) => void }>()
+  private stopTimer: NodeJS.Timeout | null = null
   private searching = false
 
   get running(): boolean {
@@ -21,13 +23,22 @@ export class UciEngine extends EventEmitter {
     await this.quit()
     const proc = spawn(enginePath, [], { stdio: ['pipe', 'pipe', 'pipe'] })
     this.proc = proc
-    proc.on('error', (err) => this.emit('error', err))
+    proc.on('error', (err) => {
+      if (this.proc !== proc) return
+      this.finishSearch(undefined, err)
+      this.emit('error', err)
+    })
     // EPIPE beim Schreiben in einen bereits beendeten Prozess darf nicht crashen
     proc.stdin.on('error', () => {})
     proc.on('exit', () => {
-      if (this.proc === proc) this.proc = null
+      if (this.proc === proc) {
+        this.proc = null
+        this.finishSearch(undefined, new Error('Engine process exited'))
+      }
     })
-    readline.createInterface({ input: proc.stdout }).on('line', (line) => this.onLine(line))
+    readline.createInterface({ input: proc.stdout }).on('line', (line) => {
+      if (this.proc === proc) this.onLine(line)
+    })
 
     await new Promise<void>((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -79,28 +90,34 @@ export class UciEngine extends EventEmitter {
     this.send('ucinewgame')
   }
 
-  position(movesUci: string[]): void {
-    this.send(movesUci.length ? `position startpos moves ${movesUci.join(' ')}` : 'position startpos')
+  position(movesUci: string[], initialFen?: string): void {
+    const base = initialFen ? `fen ${initialFen}` : 'startpos'
+    this.send(`position ${base}${movesUci.length ? ` moves ${movesUci.join(' ')}` : ''}`)
   }
 
   goMovetime(ms: number): Promise<string> {
-    return new Promise((resolve) => {
-      this.searching = true
-      this.bestMoveResolvers.push(resolve)
-      this.send(`go movetime ${ms}`)
-    })
+    return this.go(`go movetime ${ms}`)
   }
 
   /** Für Maia/lc0: Suche auf einen Knoten begrenzen, damit die reine Policy statt einer echten Suche zieht. */
   goNodes(nodes: number): Promise<string> {
-    return new Promise((resolve) => {
+    return this.go(`go nodes ${nodes}`)
+  }
+
+  private go(command: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!this.proc || this.searching) {
+        reject(new Error('Engine is unavailable or still searching'))
+        return
+      }
       this.searching = true
-      this.bestMoveResolvers.push(resolve)
-      this.send(`go nodes ${nodes}`)
+      this.pendingMove = { resolve, reject }
+      this.send(command)
     })
   }
 
   goInfinite(): void {
+    if (!this.proc || this.searching) throw new Error('Engine is unavailable or still searching')
     this.searching = true
     this.send('go infinite')
   }
@@ -108,22 +125,42 @@ export class UciEngine extends EventEmitter {
   /** Stop a running search and wait until the engine acknowledged with bestmove. */
   async stopSearch(): Promise<void> {
     if (!this.searching || !this.proc) return
-    await new Promise<void>((resolve) => {
-      const timer = setTimeout(resolve, 1000)
-      this.bestMoveResolvers.push(() => {
-        clearTimeout(timer)
-        resolve()
-      })
+    await new Promise<void>((resolve, reject) => {
+      this.stopWaiters.add({ resolve, reject })
+      if (this.stopTimer) return
+      this.stopTimer = setTimeout(() => {
+        // Ohne Bestätigung ist der UCI-Strom nicht mehr zuordenbar. Keine neue
+        // Suche auf diesem Prozess starten und verspätete Antworten ignorieren.
+        const proc = this.proc
+        this.proc = null
+        this.finishSearch(undefined, new Error('Engine stop timeout'))
+        proc?.kill('SIGKILL')
+      }, 1000)
       this.send('stop')
     })
+  }
+
+  private finishSearch(move?: string, error?: Error): void {
+    this.searching = false
+    if (this.stopTimer) clearTimeout(this.stopTimer)
+    this.stopTimer = null
+    const pending = this.pendingMove
+    this.pendingMove = null
+    const waiters = [...this.stopWaiters]
+    this.stopWaiters.clear()
+    if (error) pending?.reject(error)
+    else pending?.resolve(move ?? '(none)')
+    for (const waiter of waiters) {
+      if (error) waiter.reject(error)
+      else waiter.resolve()
+    }
   }
 
   async quit(): Promise<void> {
     const proc = this.proc
     if (!proc) return
     this.proc = null
-    this.searching = false
-    this.bestMoveResolvers = []
+    this.finishSearch(undefined, new Error('Engine stopped'))
     try {
       proc.stdin.write('quit\n')
     } catch {
@@ -146,10 +183,8 @@ export class UciEngine extends EventEmitter {
     } else if (line === 'readyok') {
       this.emit('readyok')
     } else if (line.startsWith('bestmove')) {
-      this.searching = false
       const mv = line.split(/\s+/)[1] ?? '(none)'
-      const resolve = this.bestMoveResolvers.shift()
-      resolve?.(mv)
+      this.finishSearch(mv)
     } else if (line.startsWith('info ') && line.includes(' pv ')) {
       const info = parseInfoLine(line)
       if (info) this.emit('info', info)

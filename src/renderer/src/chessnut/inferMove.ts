@@ -56,6 +56,25 @@ export function inferMove(chess: Chess, observed: BoardSnapshot): InferredMove |
   return matches.length === 1 ? matches[0] : null
 }
 
+/** Eine legale Bewegung darf beliebig lange unvollständig auf dem Brett stehen.
+ * Nur die vom Zug betroffenen Figuren dürfen fehlen oder schon am Ziel stehen.
+ * Das deckt auch Schlagzüge, Rochade, En-passant und den Figurentausch bei Promotion ab.
+ */
+export function isMoveInProgress(chess: Chess, observed: BoardSnapshot): boolean {
+  const before = piecesOf(chess)
+  return chess.moves({ verbose: true }).some((move) => {
+    const after = piecesOf(new Chess(move.after))
+    const squares = new Set([...Object.keys(before), ...Object.keys(after), ...Object.keys(observed)])
+    return [...squares].every((sq) => {
+      if (before[sq] === after[sq]) return observed[sq] === before[sq]
+      // Vor dem Figurentausch darf der Bauer bereits auf dem Umwandlungsfeld stehen.
+      const promotionPawn = move.promotion && sq === move.to ? before[move.from] : undefined
+      return observed[sq] === undefined || observed[sq] === before[sq] || observed[sq] === after[sq]
+        || (promotionPawn !== undefined && observed[sq] === promotionPawn)
+    })
+  })
+}
+
 /**
  * Erkennt, ob genau eine Figur der angegebenen Farbe vom Brett gehoben wurde:
  * ihr Feld ist jetzt leer, alle anderen Felder entsprechen weiterhin der

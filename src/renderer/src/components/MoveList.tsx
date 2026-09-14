@@ -34,8 +34,10 @@ export function MoveList({ moves }: { moves: MoveRecord[] }): React.JSX.Element 
   }, [moves.length])
 
   const rows: { no: number; white?: MoveRecord; black?: MoveRecord }[] = []
-  for (let i = 0; i < moves.length; i += 2) {
-    rows.push({ no: i / 2 + 1, white: moves[i], black: moves[i + 1] })
+  for (const move of moves) {
+    const no = Number(move.fenBefore.split(' ')[5])
+    if (rows.at(-1)?.no !== no) rows.push({ no })
+    rows[rows.length - 1][move.color === 'w' ? 'white' : 'black'] = move
   }
 
   return (

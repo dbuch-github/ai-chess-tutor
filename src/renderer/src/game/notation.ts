@@ -28,9 +28,10 @@ export function pvToSan(fen: string, pvUci: string[], maxPlies = MAX_PV_PLIES): 
 /** Partieverlauf als nummerierter SAN-String: "1. e4 e5 2. Nf3 …". */
 export function historySan(moves: MoveRecord[]): string {
   const parts: string[] = []
-  for (let i = 0; i < moves.length; i += 2) {
-    const no = i / 2 + 1
-    parts.push(`${no}. ${moves[i].san}${moves[i + 1] ? ' ' + moves[i + 1].san : ''}`)
+  for (const [index, move] of moves.entries()) {
+    const no = Number(move.fenBefore.split(' ')[5])
+    const prefix = move.color === 'w' ? `${no}. ` : index === 0 ? `${no}… ` : ''
+    parts.push(prefix + move.san)
   }
   return parts.join(' ')
 }

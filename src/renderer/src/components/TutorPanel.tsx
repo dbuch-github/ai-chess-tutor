@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import type { TutorApi, TutorMessage } from '../game/useTutor'
 import type { BoardPreviewApi } from '../game/useBoardPreview'
 import type { TutorMode } from '../settings'
+import { figurineText } from './Figurine'
+import { VisualLegend } from './VisualLegend'
 
 interface TutorPanelProps {
   tutor: TutorApi
@@ -34,7 +36,7 @@ function MessageBubble({
   const isActive = boardPreview.isActive(`msg-${message.id}`)
   return (
     <div className={`tutor-msg ${message.role}`}>
-      {message.text}
+      {figurineText(message.text)}
       {message.streaming && <span className="cursor">▍</span>}
       {message.preview && !message.streaming && (
         <button
@@ -44,34 +46,6 @@ function MessageBubble({
           {isActive ? '✕ Vorschlag ausblenden' : `↗ ${message.preview.sanMove} auf dem Brett zeigen`}
         </button>
       )}
-    </div>
-  )
-}
-
-function VisualLegend(): React.JSX.Element {
-  return (
-    <div className="preview-legend">
-      <span>
-        <i className="swatch swatch-blue" /> Zug (& Folgezüge blasser)
-      </span>
-      <span>
-        <i className="swatch swatch-red" /> greift an
-      </span>
-      <span>
-        <i className="swatch swatch-green" /> deckt
-      </span>
-      <span>
-        <i className="swatch swatch-purple" /> fesselt
-      </span>
-      <span>
-        <i className="swatch swatch-darkgreen" /> deckt auf
-      </span>
-      <span>
-        <i className="swatch swatch-grey" /> wird schwach
-      </span>
-      <span>
-        <i className="swatch swatch-pink" /> Schach
-      </span>
     </div>
   )
 }
@@ -155,7 +129,7 @@ export function TutorPanel({
           Analyse-Linien oben lassen sich anklicken.
         </p>
       ) : (
-        <div className="tutor-messages">
+        <div className="tutor-messages cg-wrap">
           {tutor.messages.map((m) => (
             <MessageBubble key={m.id} message={m} tutor={tutor} boardPreview={boardPreview} />
           ))}

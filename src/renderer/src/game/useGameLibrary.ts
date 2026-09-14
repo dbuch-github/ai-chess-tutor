@@ -45,6 +45,9 @@ export function useGameLibrary(game: GameApi, opponentName: string): GameLibrary
     savedForGameRef.current = game.startedAt.getTime()
 
     const pgn = buildPgn(game.moves, {
+      initialFen: game.initialFen,
+      initialComment: game.initialComment,
+      outcome: game.outcome,
       playerColor: game.playerColor,
       opponentName,
       startedAt: game.startedAt,

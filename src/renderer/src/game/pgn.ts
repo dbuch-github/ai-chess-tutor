@@ -1,8 +1,12 @@
 import { Chess } from 'chess.js'
 import type { Classification } from './classify'
 import type { CapturablePiece, MoveRecord } from './useGame'
+import { boardOutcome, importedOutcome, type GameOutcome } from './result'
 
 export interface PgnMeta {
+  initialFen?: string
+  initialComment?: string
+  outcome?: GameOutcome | null
   playerColor: 'w' | 'b'
   opponentName: string
   startedAt: Date
@@ -42,7 +46,8 @@ function moveComment(move: MoveRecord): string | undefined {
 
 /** Baut eine vollständige PGN-Zeichenkette samt Standard-Kopfzeilen aus den gespielten Zügen. */
 export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
-  const chess = new Chess()
+  const chess = new Chess(meta.initialFen ?? moves[0]?.fenBefore)
+  if (meta.initialComment) chess.setComment(meta.initialComment)
   chess.setHeader('Event', 'AI Chess Tutor Partie')
   chess.setHeader('Site', 'AI Chess Tutor')
   chess.setHeader('Date', formatPgnDate(meta.startedAt))
@@ -61,16 +66,10 @@ export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
     if (comment) chess.setComment(comment)
   }
 
-  // Ergebnis aus der tatsächlichen Endstellung ableiten, nicht aus dem
-  // deutschsprachigen Anzeigetext (game.result) parsen.
-  chess.setHeader('Result', pgnResultOf(chess))
+  const outcome = boardOutcome(chess) ?? meta.outcome
+  chess.setHeader('Result', outcome?.result ?? '*')
+  if (outcome?.termination) chess.setHeader('Termination', outcome.termination)
   return chess.pgn()
-}
-
-function pgnResultOf(chess: Chess): string {
-  if (chess.isCheckmate()) return chess.turn() === 'w' ? '0-1' : '1-0'
-  if (chess.isDraw()) return '1/2-1/2'
-  return '*'
 }
 
 /** Ein passender Dateiname für den Speichern-Dialog, z. B. "2026-09-12-ai-chess-tutor.pgn". */
@@ -80,6 +79,9 @@ export function suggestedPgnFilename(startedAt: Date): string {
 }
 
 export interface ImportedGame {
+  initialFen: string
+  initialComment?: string
+  outcome: GameOutcome | null
   moves: MoveRecord[]
   /**
    * Die Partie tatsächlich durchgespielte Instanz (nicht nur die Endstellung
@@ -94,20 +96,17 @@ export function parsePgn(pgn: string): ImportedGame {
   const check = new Chess()
   check.loadPgn(pgn) // wirft eine aussagekräftige Fehlermeldung bei ungültigem PGN
 
-  const uciMoves = check.history({ verbose: true }).map((m) => m.from + m.to + (m.promotion ?? ''))
-  const replay = new Chess()
-  const moves: MoveRecord[] = []
-  for (const uci of uciMoves) {
-    const fenBefore = replay.fen()
-    const move = replay.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci.slice(4) || undefined })
-    moves.push({
-      san: move.san,
-      uci,
-      color: move.color,
-      fenBefore,
-      fenAfter: replay.fen(),
-      captured: move.captured as CapturablePiece | undefined
-    })
-  }
-  return { moves, chess: replay }
+  const history = check.history({ verbose: true })
+  const comments = new Map(check.getComments().map(({ fen, comment }) => [fen, comment]))
+  const initialFen = history[0]?.before ?? check.fen()
+  const moves: MoveRecord[] = history.map((move) => ({
+    san: move.san,
+    uci: move.from + move.to + (move.promotion ?? ''),
+    color: move.color,
+    fenBefore: move.before,
+    fenAfter: move.after,
+    captured: move.captured as CapturablePiece | undefined,
+    comment: comments.get(move.after)
+  }))
+  return { moves, chess: check, initialFen, initialComment: comments.get(initialFen), outcome: importedOutcome(check) }
 }

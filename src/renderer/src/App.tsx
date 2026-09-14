@@ -1,3 +1,4 @@
+import { Chess } from 'chess.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Board } from './components/Board'
 import { EvalBar } from './components/EvalBar'
@@ -186,6 +187,9 @@ export function App(): React.JSX.Element {
 
   const handleExportPgn = async (): Promise<void> => {
     const pgn = buildPgn(game.moves, {
+      initialFen: game.initialFen,
+      initialComment: game.initialComment,
+      outcome: game.outcome,
       playerColor: game.playerColor,
       opponentName: opponentStatus.name ?? 'Engine',
       startedAt: game.startedAt,
@@ -273,7 +277,8 @@ export function App(): React.JSX.Element {
     [game.moves, game.playerColor, game.twoPlayerMode]
   )
 
-  const opening = useMemo(() => detectOpening(game.moves.map((m) => m.san)), [game.moves])
+  const opening = useMemo(() => game.initialFen === new Chess().fen()
+    ? detectOpening(game.moves.map((m) => m.san)) : null, [game.moves, game.initialFen])
 
   const currentLine = game.getEval(game.fen)
   const canSuggest =
@@ -502,6 +507,7 @@ export function App(): React.JSX.Element {
           report={gameReport}
           hasApiKey={tutor.status?.hasApiKey ?? false}
           twoPlayerMode={game.twoPlayerMode}
+          playerColor={game.playerColor}
           onOpenSettings={() => {
             setShowReport(false)
             setShowSettings(true)

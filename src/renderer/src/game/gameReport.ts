@@ -27,7 +27,7 @@ export function computeCriticalMoments(
   bothSides = false
 ): TutorReportMistake[] {
   return moves
-    .map((move, index) => ({ move, moveNumber: Math.floor(index / 2) + 1 }))
+    .map((move, index) => ({ move, index, moveNumber: Number(move.fenBefore.split(' ')[5]) }))
     .filter(
       ({ move }) =>
         (bothSides || move.color === playerColor) &&
@@ -37,11 +37,18 @@ export function computeCriticalMoments(
     .sort((a, b) => (b.move.lossPct ?? 0) - (a.move.lossPct ?? 0))
     .slice(0, MAX_CRITICAL_MOMENTS)
     .sort((a, b) => a.moveNumber - b.moveNumber)
-    .map(({ move, moveNumber }) => ({
+    .map(({ move, index, moveNumber }) => ({
       moveNumber,
       color: move.color,
       san: move.san,
       classification: move.classification!,
-      lossPct: move.lossPct!
+      lossPct: move.lossPct!,
+      fenBefore: move.fenBefore,
+      fenAfter: move.fenAfter,
+      uci: move.uci,
+      // Letzter gegnerischer Zug, der zu fenBefore geführt hat (falls vorhanden) –
+      // fürs Stellungsbild im Partie-Report, zum besseren Verständnis der Ausgangslage.
+      prevUci: moves[index - 1]?.uci,
+      prevFenBefore: moves[index - 1]?.fenBefore
     }))
 }

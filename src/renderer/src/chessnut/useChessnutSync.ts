@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Chess } from 'chess.js'
 import type { GameApi } from '../game/useGame'
 import type { ChessnutBoardApi } from './useChessnutBoard'
-import { inferMove, liftedPieceSquare, mismatchedSquares, piecesOf, snapshotKey, snapshotsEqual } from './inferMove'
+import { inferMove, isMoveInProgress, liftedPieceSquare, mismatchedSquares, piecesOf, snapshotKey, snapshotsEqual } from './inferMove'
 
 export interface ChessnutSyncApi {
   /** true = wartet noch darauf, dass der zuletzt gespielte Zug physisch nachgezogen wird. */
@@ -169,6 +169,11 @@ export function useChessnutSync(game: GameApi, chessnut: ChessnutBoardApi): Ches
           setLiftedOpponentSquare(liftedSquare)
         } else {
           setLiftedOpponentSquare(null)
+          if (liftedPieceSquare(chess, chessnut.snapshot, chess.turn()) || isMoveInProgress(chess, chessnut.snapshot)) {
+            pendingInvalidKeyRef.current = null
+            lastSignaledInvalidKeyRef.current = null
+            return
+          }
           // Zwei identische Lesungen in Folge nötig, bevor eine Abweichung als
           // tatsächlicher Fehlversuch gilt (nicht schon die erste – das wäre oft
           // nur eine Übergangsstellung beim Anheben einer Figur); danach nicht bei

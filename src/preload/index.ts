@@ -39,10 +39,10 @@ const api = {
     ipcRenderer.invoke('opponent:configure', config),
   configureAnalysis: (config: AnalysisConfig): Promise<ConfigureResult> =>
     ipcRenderer.invoke('analysis:configure', config),
-  requestOpponentMove: (movesUci: string[]): Promise<string> =>
-    ipcRenderer.invoke('opponent:move', movesUci),
-  setAnalysisPosition: (fen: string, movesUci: string[]): Promise<void> =>
-    ipcRenderer.invoke('analysis:position', fen, movesUci),
+  requestOpponentMove: (movesUci: string[], initialFen?: string): Promise<string> =>
+    ipcRenderer.invoke('opponent:move', movesUci, initialFen),
+  setAnalysisPosition: (fen: string, movesUci: string[], initialFen?: string): Promise<void> =>
+    ipcRenderer.invoke('analysis:position', fen, movesUci, initialFen),
   onAnalysisSnapshot: (callback: (snapshot: AnalysisSnapshot) => void): (() => void) => {
     const listener = (_e: Electron.IpcRendererEvent, snapshot: AnalysisSnapshot): void =>
       callback(snapshot)
