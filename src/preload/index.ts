@@ -21,7 +21,8 @@ const api = {
     ipcRenderer.invoke('engine:defaultPath', binaryName),
   selectFile: (title: string, defaultPath?: string): Promise<string | null> =>
     ipcRenderer.invoke('dialog:selectFile', title, defaultPath),
-  getDefaultMaiaWeightsPath: (): Promise<string> => ipcRenderer.invoke('engine:defaultMaiaWeightsPath'),
+  getDefaultMaiaWeightsPath: (level?: number): Promise<string> =>
+    ipcRenderer.invoke('engine:defaultMaiaWeightsPath', level),
   exportPgn: (pgn: string, suggestedName: string): Promise<PgnExportResult> =>
     ipcRenderer.invoke('pgn:export', pgn, suggestedName),
   importPgn: (): Promise<PgnImportResult> => ipcRenderer.invoke('pgn:import'),

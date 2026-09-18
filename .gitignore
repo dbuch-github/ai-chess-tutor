@@ -3,3 +3,6 @@ out/
 dist/
 *.log
 .DS_Store
+
+# Von scripts/fetch-engines.mjs geladene Binaries/Netze (Drittanbieter, nicht einchecken)
+resources/engines/

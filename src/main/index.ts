@@ -72,8 +72,21 @@ function createWindow(): void {
   }
 }
 
-/** Sucht ein Kommandozeilen-Binary an den üblichen Homebrew-/System-Pfaden. */
+/**
+ * Von scripts/fetch-engines.mjs in resources/engines/ abgelegte Binaries, die
+ * electron-builder als extraResources in Contents/Resources/engines/ packt - dort
+ * laufen sie ohne Homebrew auf jedem Zielrechner. Nur im gepackten Build vorhanden.
+ */
+function bundledEnginePath(binaryName: string): string | null {
+  if (!app.isPackaged) return null
+  const p = join(process.resourcesPath, 'engines', binaryName)
+  return existsSync(p) ? p : null
+}
+
+/** Sucht ein Kommandozeilen-Binary zuerst gebündelt, sonst an den üblichen Homebrew-/System-Pfaden. */
 function detectEnginePath(binaryName: string): Promise<string | null> {
+  const bundled = bundledEnginePath(binaryName)
+  if (bundled) return Promise.resolve(bundled)
   const candidates = [
     `/opt/homebrew/bin/${binaryName}`,
     `/usr/local/bin/${binaryName}`,
@@ -99,14 +112,18 @@ async function selectFile(title: string, defaultPath?: string): Promise<string |
 }
 
 /**
- * Voreingestellter Pfad zu einer Maia-Gewichtsdatei: im "maia"-Unterordner
- * des App-eigenen userData-Verzeichnisses (dort haben wir die Netze
- * abgelegt). Rein rechnerisch ermittelt statt hartcodiert, damit er auf
- * jedem Rechner/Betriebssystem stimmt – ein wörtliches "~/Library/…" würde
- * von Node nicht expandiert und wäre schlicht ein ungültiger Pfad.
+ * Pfad zur Maia-Gewichtsdatei einer Spielstärke: bevorzugt aus den gebündelten
+ * Ressourcen (alle Stärken 1100-1900 liegen dort, siehe scripts/fetch-engines.mjs),
+ * sonst - wie vor dem Installer - im "maia"-Unterordner des userData-Verzeichnisses,
+ * für wer die Datei manuell dort abgelegt hat. Rein rechnerisch ermittelt statt
+ * hartcodiert, damit "~/Library/…" auf jedem Rechner/Betriebssystem stimmt.
  */
-function defaultMaiaWeightsPath(): string {
-  return join(app.getPath('userData'), 'maia', 'maia-1200.pb.gz')
+function defaultMaiaWeightsPath(level = 1200): string {
+  const bundled = app.isPackaged
+    ? join(process.resourcesPath, 'engines', 'maia', `maia-${level}.pb.gz`)
+    : null
+  if (bundled && existsSync(bundled)) return bundled
+  return join(app.getPath('userData'), 'maia', `maia-${level}.pb.gz`)
 }
 
 async function exportPgn(pgn: string, suggestedName: string): Promise<PgnExportResult> {
@@ -143,7 +160,7 @@ async function importPgn(): Promise<PgnImportResult> {
 app.whenReady().then(() => {
   ipcMain.handle('engine:defaultPath', (_e, binaryName?: string) => detectEnginePath(binaryName || 'stockfish'))
   ipcMain.handle('dialog:selectFile', (_e, title: string, defaultPath?: string) => selectFile(title, defaultPath))
-  ipcMain.handle('engine:defaultMaiaWeightsPath', () => defaultMaiaWeightsPath())
+  ipcMain.handle('engine:defaultMaiaWeightsPath', (_e, level?: number) => defaultMaiaWeightsPath(level))
   ipcMain.handle('pgn:export', (_e, pgn: string, suggestedName: string) => exportPgn(pgn, suggestedName))
   ipcMain.handle('pgn:import', () => importPgn())
   ipcMain.handle('library:save', (_e, pgn: string) => librarySave(pgn))

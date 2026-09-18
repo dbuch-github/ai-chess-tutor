@@ -25,8 +25,9 @@ Konzept: <https://claude.ai/code/artifact/23e3435a-beed-47d3-97e9-984325955f0f>
 ## Voraussetzungen
 
 - Node.js ≥ 22
-- Stockfish (`brew install stockfish`) – wird automatisch unter
-  `/opt/homebrew/bin/stockfish` gefunden; andere Pfade über die Einstellungen (⚙︎) setzen.
+- Für die Entwicklung (`npm run dev`): Stockfish (`brew install stockfish`) – wird automatisch
+  unter `/opt/homebrew/bin/stockfish` gefunden; andere Pfade über die Einstellungen (⚙︎) setzen.
+  Der gepackte Installer (siehe unten) bringt Stockfish, lc0 und Maia bereits mit.
 
 ## Entwicklung
 
@@ -37,6 +38,35 @@ npm run build      # Produktionsbuild nach out/
 npm run typecheck
 npm test           # Engine-, PGN-, Chessnut- und React-Regressionstests
 ```
+
+## Installer (macOS, Apple Silicon)
+
+```bash
+npm run dist        # lädt Engines + Netze, baut die .app und packt sie als .dmg unter dist/
+```
+
+`npm run dist` ruft zuerst `scripts/fetch-engines.mjs` auf, das einmalig (danach werden
+vorhandene Dateien übersprungen) nach `resources/engines/mac-arm64/` lädt:
+
+- **Stockfish** – offizielles GitHub-Release (`sf_19`, macOS-Binary, auf die arm64-Slice
+  verkleinert)
+- **lc0** – aus der lokalen Homebrew-Bottle kopiert (`brew install lc0`, falls noch nicht
+  vorhanden); die Homebrew-Metal-Variante bindet nur macOS-Systemframeworks, läuft also auch
+  ohne Homebrew auf dem Zielrechner
+- **Maia-Netze** – alle neun offiziellen Spielstärken 1100–1900 von
+  [CSSLab/maia-chess](https://github.com/CSSLab/maia-chess/releases) (v1.0)
+
+Diese Dateien werden nicht eingecheckt (siehe `.gitignore`) und landen über `extraResources`
+in `Contents/Resources/engines/` der gepackten App; die Einstellungen (⚙︎) finden Stockfish/lc0
+und die gewählte Maia-Stärke dort automatisch, kein manuelles Setup nötig. In der App gibt's
+unter „Gegner-Engine → Maia" eine Stärkeauswahl (Elo ≈ 1100–1900), die den passenden
+Netz-Pfad setzt.
+
+Die App ist **unsigniert** (kein Apple-Developer-Zertifikat hinterlegt) – beim ersten Start
+zeigt macOS eine Gatekeeper-Warnung. Öffnen per Rechtsklick → „Öffnen" (statt Doppelklick),
+oder vorher `xattr -cr "AI Chess Tutor.app"` ausführen. Gebaut wird nur für Apple Silicon
+(arm64) – lc0 gibt es für macOS ausschließlich als Homebrew-Bottle, und die aktuellen
+Bottles sind arm64-only.
 
 Die React-Tests starten einen isolierten Headless-Chrome-Prozess. Chrome/Chromium wird
 an üblichen macOS-/Linux-Pfaden gesucht; alternativ den Binary-Pfad über `CHROME_PATH`
@@ -90,11 +120,14 @@ src/
 ⚙︎ → „Gegner-Engine“ bietet drei Engine-Arten:
 
 - **Stockfish** (Default): wie bisher, mit Elo-Begrenzung.
-- **Maia** ([lc0](https://github.com/LeelaChessZero/lc0) + [Maia-Netz](https://github.com/CSSLab/maia-chess),
-  `brew install lc0`, Gewichte separat herunterladen): spielt menschenähnlich, da auf Millionen
-  menschlicher Partien trainiert. Läuft mit `go nodes 1` (Suche deaktiviert, reine
-  Netz-Vorhersage) statt Bedenkzeit – die Spielstärke (1100–1900) steckt in der gewählten
-  `.pb.gz`-Datei, nicht in einer Elo-Option.
+- **Maia** ([lc0](https://github.com/LeelaChessZero/lc0) + [Maia-Netz](https://github.com/CSSLab/maia-chess)):
+  spielt menschenähnlich, da auf Millionen menschlicher Partien trainiert. Läuft mit
+  `go nodes 1` (Suche deaktiviert, reine Netz-Vorhersage) statt Bedenkzeit – die Spielstärke
+  (1100–1900) steckt in der gewählten `.pb.gz`-Datei, nicht in einer Elo-Option; im
+  gepackten Installer sind lc0 und alle neun Stärken bereits enthalten und über die
+  Stärkeauswahl in den Einstellungen wählbar (siehe „Installer" oben). Im Dev-Modus
+  (`npm run dev`) braucht es stattdessen `brew install lc0` und manuell heruntergeladene
+  Gewichte.
 - **Andere UCI-Engine:** freier Pfad, wie zuvor.
 
 **Eröffnungsbuch** (Checkbox, Default an): Der Gegner zieht in den ersten 10 Vollzügen nach

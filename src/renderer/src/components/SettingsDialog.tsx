@@ -15,6 +15,9 @@ const ENGINE_KINDS: { value: EngineKind; label: string }[] = [
   { value: 'custom', label: 'Andere UCI-Engine' }
 ]
 
+/** Bei CSSLab/maia-chess offiziell verfügbare Netz-Stärken (siehe scripts/fetch-engines.mjs). */
+const MAIA_LEVELS = [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
+
 const CLOCK_MODES: { value: ClockMode; label: string }[] = [
   { value: 'unlimited', label: 'Frei (keine Zeitkontrolle)' },
   { value: 'classical', label: CLOCK_PRESETS.classical.label },
@@ -33,6 +36,12 @@ const TUTOR_PROVIDERS: { value: LlmProviderId; label: string; keyPlaceholder: st
 function dirnameOf(path: string): string | undefined {
   const idx = path.lastIndexOf('/')
   return idx > 0 ? path.slice(0, idx) : undefined
+}
+
+/** Spielstärke aus einem "…/maia-1500.pb.gz"-Pfad, falls erkennbar. */
+function levelFromWeightsPath(path: string): number | null {
+  const m = /maia-(\d+)\.pb\.gz$/.exec(path)
+  return m ? Number(m[1]) : null
 }
 
 export function SettingsDialog({
@@ -89,7 +98,7 @@ export function SettingsDialog({
 
   return (
     <div className="dialog-backdrop" onClick={onClose}>
-      <div className="dialog" onClick={(e) => e.stopPropagation()}>
+      <div className="dialog settings-dialog" onClick={(e) => e.stopPropagation()}>
         <h2>Engine-Einstellungen</h2>
 
         <h3>Gegner-Engine</h3>
@@ -137,6 +146,23 @@ export function SettingsDialog({
               </div>
             </label>
             <label>
+              Spielstärke
+              <select
+                id="maia-level"
+                value={levelFromWeightsPath(draft.weightsPath) ?? levelFromWeightsPath(defaultWeightsPath) ?? 1200}
+                onChange={async (e) => {
+                  const level = Number(e.target.value)
+                  update('weightsPath', await window.api.getDefaultMaiaWeightsPath(level))
+                }}
+              >
+                {MAIA_LEVELS.map((level) => (
+                  <option key={level} value={level}>
+                    Elo ≈ {level}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
               Maia-Gewichtsdatei (.pb.gz)
               <div className="path-row">
                 <input
@@ -163,8 +189,9 @@ export function SettingsDialog({
               </div>
             </label>
             <p className="field-hint">
-              Leer lassen verwendet den Standard oben (Elo ≈ 1200). Weitere Spielstärken
-              (1100–1900) liegen schon im selben Ordner, andere gibt es unter{' '}
+              Die Stärkeauswahl oben setzt automatisch den passenden Pfad; eigene Netze (z. B.
+              andere Stärken oder Varianten) lassen sich hier auch manuell wählen – weitere gibt es
+              unter{' '}
               <a href="https://github.com/CSSLab/maia-chess/releases" target="_blank" rel="noreferrer">
                 github.com/CSSLab/maia-chess
               </a>
