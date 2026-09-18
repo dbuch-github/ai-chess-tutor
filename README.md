@@ -234,7 +234,7 @@ Node-Modul wie `noble` nötig – dadurch kein Neukompilieren bei Electron-Updat
 
 ## Partie-Report
 
-„📋 Partie-Report" in der Kopfleiste (ab 2 Zügen aktiv) öffnet einen Dialog mit rein lokal
+„Partie-Report" in der Kopfleiste (ab 2 Zügen aktiv) öffnet einen Dialog mit rein lokal
 berechneten Statistiken (Blunder/Fehler/Ungenauigkeiten/beste Züge, jeweils eigene Züge) und
 den bis zu vier gravierendsten eigenen Fehlern als „kritische Momente" – beides ohne LLM-Aufruf.
 „Report erstellen" schickt das an den Tutor (`effort: high`, bis zu 4000 Tokens) für eine
@@ -243,10 +243,10 @@ gestreamte Zusammenfassung: wiederkehrende Fehlermuster, die kritischsten Moment
 
 ## PGN-Export & -Import
 
-- **„💾 PGN exportieren“** (ab 1 Zug aktiv): schreibt die aktuelle Partie inkl. Kopfzeilen
-  (Datum, Spieler/Engine-Name, Ergebnis inklusive Zeitüberschreitung) über
+- **„PGN exportieren“** (Kopfleiste → „Datei", ab 1 Zug aktiv): schreibt die aktuelle Partie
+  inkl. Kopfzeilen (Datum, Spieler/Engine-Name, Ergebnis inklusive Zeitüberschreitung) über
   einen nativen Speichern-Dialog auf die Platte.
-- **„📂 PGN importieren“**: erhält auch FEN-Startstellungen, Zugkommentare und gespeicherte
+- **„PGN importieren“** (Kopfleiste → „Datei"): erhält auch FEN-Startstellungen, Zugkommentare und gespeicherte
   Ergebnisse. Lädt eine beliebige PGN-Datei (eigene Exporte oder von anderswo,
   z. B. Lichess/Chess.com) und zeigt sie im **Review-Modus**: Brett, Zugliste, Stockfish-Analyse,
   Eröffnungserkennung und Tutor (Zugvorschlag, Rückfragen, Partie-Report) funktionieren normal
@@ -261,7 +261,7 @@ gestreamte Zusammenfassung: wiederkehrende Fehlermuster, die kritischsten Moment
   als PGN unter `userData/games/<Zeitstempel>.pgn` abgelegt – kein manueller Schritt nötig.
   Importierte Partien im Review-Modus lösen dabei **kein** erneutes Speichern aus, auch nicht
   beim anschließenden „Weiterspielen“ einer bereits beendeten Partie.
-- **„📚 Bibliothek“** in der Kopfleiste öffnet eine Liste aller gespeicherten Partien
+- **„Bibliothek“** (Kopfleiste → „Datei") öffnet eine Liste aller gespeicherten Partien
   (neueste zuerst) mit Datum, Spielern, Ergebnis und Halbzug-Anzahl.
 - **„Öffnen“** lädt die Partie in den Review-Modus (wie ein PGN-Import); **„Löschen“**
   entfernt die Datei dauerhaft von der Platte.
