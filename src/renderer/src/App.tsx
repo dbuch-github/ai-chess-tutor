@@ -5,6 +5,8 @@ import { EvalBar } from './components/EvalBar'
 import { AnalysisPanel } from './components/AnalysisPanel'
 import { MoveList } from './components/MoveList'
 import { SettingsDialog } from './components/SettingsDialog'
+import { TopbarDropdown } from './components/TopbarDropdown'
+import { BoardIcon, BooksIcon, CameraIcon, ChartIcon, ExportIcon, FolderIcon, GearIcon, ImportIcon, KingIcon, ReportIcon } from './components/icons'
 import { CapturedRow, PIECE_VALUES } from './components/CapturedRow'
 import { TutorPanel } from './components/TutorPanel'
 import { GameReportDialog } from './components/GameReportDialog'
@@ -327,21 +329,39 @@ export function App(): React.JSX.Element {
           )}
         </div>
         <div className="topbar-actions">
-          <button className="btn" onClick={() => startNewGame('w')}>
-            Neue Partie als Weiß
-          </button>
-          <button className="btn" onClick={() => startNewGame('b')}>
-            Neue Partie als Schwarz
-          </button>
-          <button
-            className="btn"
-            onClick={startOtbGame}
-            title="Eine über das Brett gespielte Partie zwischen zwei Menschen aufzeichnen: kein Auto-Zug der Engine, beide Seiten kommen vom physischen Chessnut-Brett; Live-Analyse und Partie-Report laufen wie gewohnt."
+          <TopbarDropdown
+            label={
+              <>
+                <BoardIcon /> Neue Partie
+              </>
+            }
           >
-            🎥 OTB-Partie aufzeichnen
-          </button>
-          <button className="btn" onClick={toggleAnalysis}>
-            {settings.showAnalysis ? 'Analyse ausblenden' : 'Analyse einblenden'}
+            <button className="menu-item" onClick={() => startNewGame('w')}>
+              <span className="menu-item-label">
+                <KingIcon color="w" /> Als Weiß spielen
+              </span>
+            </button>
+            <button className="menu-item" onClick={() => startNewGame('b')}>
+              <span className="menu-item-label">
+                <KingIcon color="b" /> Als Schwarz spielen
+              </span>
+            </button>
+            <div className="menu-sep" />
+            <button className="menu-item" onClick={startOtbGame}>
+              <span className="menu-item-label">
+                <CameraIcon /> OTB-Partie aufzeichnen
+              </span>
+              <span className="menu-item-cap">
+                Zwei Personen am physischen Brett, kein Engine-Zug – Live-Analyse und Report laufen wie gewohnt
+              </span>
+            </button>
+          </TopbarDropdown>
+          <button
+            className={`btn ${settings.showAnalysis ? 'pressed' : ''}`}
+            onClick={toggleAnalysis}
+            aria-pressed={settings.showAnalysis}
+          >
+            <ChartIcon /> Analyse
           </button>
           <button
             className="btn"
@@ -349,31 +369,40 @@ export function App(): React.JSX.Element {
             disabled={game.moves.length < 2}
             title="Zusammenfassung der Partie mit Fehlermustern und Lernpunkten"
           >
-            📋 Partie-Report
+            <ReportIcon /> Partie-Report
           </button>
-          <button
-            className="btn"
-            onClick={handleExportPgn}
-            disabled={game.moves.length === 0}
-            title="Partie als PGN-Datei speichern"
+          <TopbarDropdown
+            label={
+              <>
+                <FolderIcon /> Datei
+              </>
+            }
           >
-            💾 PGN exportieren
-          </button>
-          <button className="btn" onClick={handleImportPgn} title="PGN-Datei laden und ansehen">
-            📂 PGN importieren
-          </button>
-          <button
-            className="btn"
-            onClick={() => {
-              library.refresh()
-              setShowLibrary(true)
-            }}
-            title="Automatisch gespeicherte Partien ansehen"
-          >
-            📚 Bibliothek
-          </button>
-          <button className="btn" onClick={() => setShowSettings(true)} aria-label="Einstellungen">
-            ⚙︎
+            <button className="menu-item" onClick={handleExportPgn} disabled={game.moves.length === 0}>
+              <span className="menu-item-label">
+                <ExportIcon /> PGN exportieren
+              </span>
+            </button>
+            <button className="menu-item" onClick={handleImportPgn}>
+              <span className="menu-item-label">
+                <ImportIcon /> PGN importieren
+              </span>
+            </button>
+            <div className="menu-sep" />
+            <button
+              className="menu-item"
+              onClick={() => {
+                library.refresh()
+                setShowLibrary(true)
+              }}
+            >
+              <span className="menu-item-label">
+                <BooksIcon /> Bibliothek
+              </span>
+            </button>
+          </TopbarDropdown>
+          <button className="btn btn-settings" onClick={() => setShowSettings(true)} aria-label="Einstellungen">
+            <GearIcon />
           </button>
         </div>
       </header>
