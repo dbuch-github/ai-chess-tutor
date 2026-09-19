@@ -3,19 +3,22 @@ import type { SupportedLocale } from '../../../shared/types'
 import { loadSettings, saveSettings } from '../settings'
 import { TopbarDropdown } from './TopbarDropdown'
 
+// Alphabetisch nach Eigenname sortiert (wie in den meisten Sprachauswahl-Menüs üblich) –
+// lateinschriftige Sprachen zuerst untereinander alphabetisch, danach Griechisch,
+// Kyrillisch, Arabisch, Devanagari und Chinesisch in dieser Schrift-Reihenfolge.
 const LANGUAGES: { code: SupportedLocale; flag: string; name: string }[] = [
-  { code: 'en', flag: '🇬🇧', name: 'English' },
   { code: 'de', flag: '🇩🇪', name: 'Deutsch' },
-  { code: 'fr', flag: '🇫🇷', name: 'Français' },
+  { code: 'en', flag: '🇬🇧', name: 'English' },
   { code: 'es', flag: '🇪🇸', name: 'Español' },
+  { code: 'fr', flag: '🇫🇷', name: 'Français' },
+  { code: 'hr', flag: '🇭🇷', name: 'Hrvatski' },
   { code: 'it', flag: '🇮🇹', name: 'Italiano' },
-  { code: 'pt', flag: '🇵🇹', name: 'Português' },
-  { code: 'ru', flag: '🇷🇺', name: 'Русский' },
   { code: 'pl', flag: '🇵🇱', name: 'Polski' },
+  { code: 'pt', flag: '🇵🇹', name: 'Português' },
+  { code: 'sr', flag: '🇷🇸', name: 'Srpski' },
   { code: 'tr', flag: '🇹🇷', name: 'Türkçe' },
   { code: 'el', flag: '🇬🇷', name: 'Ελληνικά' },
-  { code: 'hr', flag: '🇭🇷', name: 'Hrvatski' },
-  { code: 'sr', flag: '🇷🇸', name: 'Srpski' },
+  { code: 'ru', flag: '🇷🇺', name: 'Русский' },
   { code: 'ar', flag: '🇸🇦', name: 'العربية' },
   { code: 'hi', flag: '🇮🇳', name: 'हिन्दी' },
   { code: 'zh', flag: '🇨🇳', name: '中文' }
