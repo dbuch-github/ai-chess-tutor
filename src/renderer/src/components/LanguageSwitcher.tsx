@@ -22,7 +22,7 @@ export function LanguageSwitcher(): React.JSX.Element {
   }
 
   return (
-    <TopbarDropdown label={<span className="lang-flag">{current.flag}</span>}>
+    <TopbarDropdown label={<span className="lang-flag">{current.flag}</span>} align="right">
       {LANGUAGES.map((lang) => (
         <button
           key={lang.code}

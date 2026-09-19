@@ -4,6 +4,10 @@ interface TopbarDropdownProps {
   label: React.ReactNode
   children: React.ReactNode
   disabled?: boolean
+  /** 'right': Menü an der rechten statt linken Kante des Buttons ausrichten –
+   *  für Dropdowns nahe am rechten Fensterrand (z. B. Sprachauswahl), damit
+   *  das Menü nicht über den Fensterrand hinausragt. Default 'left'. */
+  align?: 'left' | 'right'
 }
 
 /**
@@ -12,7 +16,7 @@ interface TopbarDropdownProps {
  * einen Menüpunkt (Event-Delegation – Menüpunkte brauchen keinen eigenen
  * Close-Handler).
  */
-export function TopbarDropdown({ label, children, disabled }: TopbarDropdownProps): React.JSX.Element {
+export function TopbarDropdown({ label, children, disabled, align = 'left' }: TopbarDropdownProps): React.JSX.Element {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -40,7 +44,7 @@ export function TopbarDropdown({ label, children, disabled }: TopbarDropdownProp
       {open && (
         // cg-wrap: falls ein Menüpunkt eine echte Figuren-Sprite nutzt (siehe icons.tsx/KingIcon),
         // zieht sich die von chessground geladenen Sprites, siehe Figurine.tsx für dieselbe Technik.
-        <div className="menu cg-wrap" onClick={() => setOpen(false)}>
+        <div className={`menu cg-wrap ${align === 'right' ? 'menu-align-right' : ''}`} onClick={() => setOpen(false)}>
           {children}
         </div>
       )}
