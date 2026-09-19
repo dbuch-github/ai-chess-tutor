@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#262a2e"/>
+      <stop offset="1" stop-color="#1a1d20"/>
+    </linearGradient>
+    <linearGradient id="knight" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#8fc9ac"/>
+      <stop offset="1" stop-color="#4d8b6f"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <path fill="url(#knight)" stroke="#132018" stroke-width="7" stroke-linejoin="round" d="
+    M170,450
+    L170,400
+    C150,370 150,330 165,300
+    C140,270 150,230 135,200
+    Q150,140 215,95
+    Q260,80 270,140
+    Q285,170 330,190
+    Q382,202 397,233
+    Q347,264 328,292
+    Q300,328 300,360
+    Q290,390 300,420
+    L310,450
+    Z"/>
+
+  <!-- back-of-mane shading -->
+  <path fill="#3d755c" d="M135,200 Q150,140 215,95 Q190,150 165,300 C150,230 140,270 135,200 Z"/>
+
+  <!-- robot visor across the eye -->
+  <rect x="228" y="148" width="72" height="24" rx="12" fill="#0e1a14"/>
+  <rect x="234" y="153" width="60" height="14" rx="7" fill="#c9fbe3"/>
+  <circle cx="266" cy="160" r="5" fill="#132018"/>
+
+  <!-- antenna -->
+  <line x1="222" y1="98" x2="244" y2="52" stroke="#4d8b6f" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="247" cy="44" r="11" fill="#8fc9ac" stroke="#132018" stroke-width="4"/>
+
+  <!-- base with chip pins -->
+  <rect x="160" y="440" width="160" height="30" rx="6" fill="#356048" stroke="#132018" stroke-width="7"/>
+  <g stroke="#132018" stroke-width="5" stroke-linecap="round">
+    <line x1="185" y1="450" x2="185" y2="462"/>
+    <line x1="215" y1="450" x2="215" y2="462"/>
+    <line x1="245" y1="450" x2="245" y2="462"/>
+    <line x1="275" y1="450" x2="275" y2="462"/>
+  </g>
+</svg>

@@ -17,6 +17,17 @@ import type {
 
 let mainWindow: BrowserWindow | null = null
 
+/**
+ * Im gepackten Build liefert build/icon.icns (electron-builder-Konvention) das App-Icon
+ * automatisch übers Info.plist. Im Dev-Modus (`npm run dev`, kein App-Bundle) fehlt das -
+ * daher hier manuell setzen.
+ */
+function applyDevDockIcon(): void {
+  if (app.isPackaged || process.platform !== 'darwin') return
+  const iconPath = join(import.meta.dirname, '../../resources/icon.png')
+  if (existsSync(iconPath)) app.dock?.setIcon(iconPath)
+}
+
 // Web Bluetooth (navigator.bluetooth im Renderer, z. B. für den Chessnut Air)
 // zeigt in Electron keinen eigenen Geräteauswahl-Dialog - ohne diesen Handler
 // würde requestDevice() für immer hängen. Bei genau einem passenden Gerät
@@ -198,6 +209,7 @@ app.whenReady().then(() => {
     })
   )
 
+  applyDevDockIcon()
   createWindow()
 
   app.on('activate', () => {
