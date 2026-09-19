@@ -24,7 +24,17 @@ const LANGUAGE_NAMES: Record<SupportedLocale, string> = {
   de: 'Deutsch',
   fr: 'Französisch',
   es: 'Spanisch',
-  it: 'Italienisch'
+  it: 'Italienisch',
+  pt: 'Portugiesisch',
+  ru: 'Russisch',
+  ar: 'Arabisch',
+  pl: 'Polnisch',
+  tr: 'Türkisch',
+  zh: 'Mandarin-Chinesisch',
+  hi: 'Hindi',
+  el: 'Griechisch',
+  sr: 'Serbisch',
+  hr: 'Kroatisch'
 }
 
 /** Kurze Statusmeldungen, die direkt im Tutor-Chat landen (siehe send() unten). */
@@ -33,14 +43,34 @@ const NO_API_KEY_MESSAGE: Record<SupportedLocale, string> = {
   de: 'Kein API-Key hinterlegt – bitte in den Einstellungen (⚙︎) setzen.',
   fr: "Aucune clé API définie – merci d'en ajouter une dans les paramètres (⚙︎).",
   es: 'No hay una clave de API configurada – añade una en Ajustes (⚙︎).',
-  it: 'Nessuna chiave API impostata – aggiungine una nelle Impostazioni (⚙︎).'
+  it: 'Nessuna chiave API impostata – aggiungine una nelle Impostazioni (⚙︎).',
+  pt: 'Nenhuma chave de API definida – adicione uma nas Configurações (⚙︎).',
+  ru: 'API-ключ не задан – добавьте его в настройках (⚙︎).',
+  ar: 'لم يتم تعيين مفتاح API – يرجى إضافة واحد في الإعدادات (⚙︎).',
+  pl: 'Nie ustawiono klucza API – dodaj go w Ustawieniach (⚙︎).',
+  tr: "API anahtarı ayarlanmadı – lütfen Ayarlar'da (⚙︎) bir tane ekleyin.",
+  zh: '尚未设置 API 密钥——请在设置 (⚙︎) 中添加一个。',
+  hi: 'कोई API कुंजी सेट नहीं है – कृपया सेटिंग्स (⚙︎) में एक जोड़ें।',
+  el: 'Δεν έχει οριστεί κλειδί API – προσθέστε ένα στις Ρυθμίσεις (⚙︎).',
+  sr: 'API ključ nije podešen – dodaj ga u Podešavanjima (⚙︎).',
+  hr: 'API ključ nije postavljen – dodaj ga u Postavkama (⚙︎).'
 }
 const TUTOR_BUSY_MESSAGE: Record<SupportedLocale, string> = {
   en: 'The tutor is already answering – please wait a moment.',
   de: 'Der Tutor antwortet gerade – bitte kurz warten.',
   fr: "Le tuteur est en train de répondre – merci de patienter un instant.",
   es: 'El tutor ya está respondiendo – espera un momento.',
-  it: 'Il tutor sta già rispondendo – attendi un momento.'
+  it: 'Il tutor sta già rispondendo – attendi un momento.',
+  pt: 'O tutor já está respondendo – aguarde um momento.',
+  ru: 'Тренер уже отвечает – подождите немного.',
+  ar: 'المعلم يجيب حاليًا – يرجى الانتظار لحظة.',
+  pl: 'Trener właśnie odpowiada – proszę chwilę poczekać.',
+  tr: 'Öğretmen şu anda yanıt veriyor – lütfen biraz bekleyin.',
+  zh: '导师正在回答——请稍候片刻。',
+  hi: 'शिक्षक अभी उत्तर दे रहे हैं – कृपया थोड़ा इंतज़ार करें।',
+  el: 'Ο δάσκαλος απαντά ήδη – περιμένετε λίγο.',
+  sr: 'Trener upravo odgovara – sačekaj trenutak.',
+  hr: 'Trener upravo odgovara – pričekaj trenutak.'
 }
 
 /**

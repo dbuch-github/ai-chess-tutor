@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Beyaz",
+    "black": "Siyah",
+    "close": "Kapat",
+    "engine": "Motor",
+    "unknownError": "Bilinmeyen hata"
+  },
+  "app": {
+    "liveAnalysis": "Canlı analiz: {{name}}",
+    "analysisStarting": "Analiz başlatılıyor…",
+    "opponent": "Rakip: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Motor başlatılıyor…",
+    "noEngineFound": "Motor bulunamadı – yolu Ayarlar'da belirleyin",
+    "noLc0Found": "lc0 bulunamadı – yolu Ayarlar'da belirleyin",
+    "noStockfishFound": "Stockfish bulunamadı",
+    "engineError": "Motor hatası: {{message}}",
+    "analysisError": "Analiz: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Yeni oyun",
+    "playAsWhite": "Beyazlarla oyna",
+    "playAsBlack": "Siyahlarla oyna",
+    "recordOtb": "Fiziksel tahtada oyun kaydet",
+    "recordOtbHint": "Fiziksel tahtada iki kişi, motor hamlesi yok – canlı analiz ve rapor her zamanki gibi çalışır",
+    "file": "Dosya",
+    "exportPgn": "PGN dışa aktar",
+    "importPgn": "PGN içe aktar",
+    "library": "Kitaplık",
+    "analysis": "Analiz",
+    "report": "Oyun raporu",
+    "reportHint": "Hata kalıpları ve öğrenme noktalarıyla oyun özeti",
+    "settings": "Ayarlar",
+    "language": "Dil seçin"
+  },
+  "status": {
+    "engineThinking": "Motor düşünüyor…",
+    "toMove": "{{color}} oynuyor",
+    "toMoveYou": "{{color}} oynuyor – sıra sende",
+    "otbRecording": "🔴 Tahta kaydı – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 İçe aktarılan oyun – yalnızca görüntüleme",
+    "continuePlaying": "▶ Oyuna devam et"
+  },
+  "opening": {
+    "detected": "{{total}} yarı hamleden {{matched}} tanesi tanındı"
+  },
+  "pgnNotice": {
+    "saved": "Kaydedildi: {{path}}",
+    "saveFailed": "Kaydetme başarısız oldu: {{message}}",
+    "importFailed": "İçe aktarma başarısız oldu: {{message}}",
+    "invalidFile": "Dosya geçerli bir PGN içermiyor.",
+    "loadFailed": "Oyun yüklenemedi.",
+    "invalidSavedFile": "Kaydedilen dosya geçerli bir PGN içermiyor.",
+    "imported": "Oyun içe aktarıldı – görüntüleme, analiz ve öğretmen hazır.",
+    "loadedFromLibrary": "Oyun kitaplıktan yüklendi – görüntüleme, analiz ve öğretmen hazır."
+  },
+  "tutor": {
+    "unknownEval": "bilinmiyor",
+    "title": "Öğretmen",
+    "modeAriaLabel": "Öğretmen modu",
+    "modeOffLabel": "Sessiz",
+    "modeOffHint": "Yalnızca istek üzerine",
+    "modeMistakesLabel": "Hatalar",
+    "modeMistakesHint": "Hatalarını ve gaflarını yorumlar",
+    "modeChattyLabel": "Aktif",
+    "modeChattyHint": "Ayrıca yanlışlıkları ve motor hatalarını da",
+    "undoMove": "↶ Geri al",
+    "undoHint": "Son hamleyi geri al",
+    "redoMove": "↷ Yinele",
+    "redoHint": "Geri alınan hamleyi geri getir",
+    "emptyPlaceholder": "Hatalarında sesleneceğim – ya da doğrudan sor, örn. “Buradaki plan nedir?” Yukarıdaki analiz satırlarına da tıklayabilirsin.",
+    "hidePreview": "✕ Öneriyi gizle",
+    "showPreview": "↗ {{move}} hamlesini tahtada göster",
+    "suggestMove": "💡 Hamle öner",
+    "suggestMoveHintReady": "Açıklamalı bir hamle önerisi iste",
+    "suggestMoveHintWait": "Yalnızca sıra sendeyken ve analiz hazır olduğunda",
+    "questionPlaceholder": "Öğretmene soru…",
+    "send": "Gönder"
+  },
+  "notation": {
+    "opening": "Açılış",
+    "middlegame": "Orta oyun",
+    "endgame": "Oyun sonu"
+  },
+  "report": {
+    "gameInProgress": "Oyun hâlâ devam ediyor",
+    "title": "Oyun raporu",
+    "blunderCount": "{{count}} gaf",
+    "mistakeCount": "{{count}} hata",
+    "inaccuracyCount": "{{count}} yanlışlık",
+    "bestMoveCount": "{{count}} en iyi hamle",
+    "criticalMoments": "Kritik anlar",
+    "noApiKey": "API anahtarı ayarlanmadı.",
+    "setKeyNow": "Şimdi Ayarlar'da belirle",
+    "placeholder": "Oyunu özetler: tekrarlayan hata kalıpları, en kritik anlar ve bir sonraki oyun için somut öğrenme noktaları.",
+    "generate": "Rapor oluştur",
+    "regenerate": "Yeniden oluştur"
+  },
+  "settings": {
+    "title": "Motor ayarları",
+    "opponentEngine": "Rakip motoru",
+    "engineKind": "Motor türü",
+    "engineKindStockfish": "Stockfish (klasik, Elo sınırlı)",
+    "engineKindMaia": "Maia (lc0, insan gibi oyun)",
+    "engineKindCustom": "Diğer UCI motoru",
+    "pathToLc0": "lc0 yolu",
+    "chooseLc0Binary": "lc0 çalıştırılabilir dosyasını seç",
+    "browse": "Gözat…",
+    "strength": "Oyun gücü",
+    "maiaWeightsFile": "Maia ağırlık dosyası (.pb.gz)",
+    "chooseMaiaWeights": "Maia ağırlık dosyasını seç",
+    "maiaPathPlaceholder": "/yol/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Yukarıdaki güç seçici ilgili yolu otomatik olarak ayarlar; özel ağlar (örn. diğer güçler veya varyantlar) burada elle de seçilebilir – daha fazlası şurada bulunur: ",
+    "maiaHintAfterLink": ". Maia, arama yapmadan doğrudan ağdan hamle yapar – güç, seçilen dosyada gömülüdür, başka bir yapılandırma gerekmez.",
+    "pathToEngine": "Motor yolu",
+    "chooseEngine": "Motor seç",
+    "limitStrength": "Oyun gücünü sınırla (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Hamle başına süre (ms)",
+    "openingBook": "Açılış kitabı",
+    "useOpeningBookForOpponent": "Rakip için kullan (ilk 10 tam hamle)",
+    "openingBookHint": "Rakip o zaman her zaman motorun en iyi hamlesini izlemek yerine bilinen açılış hatlarından rastgele oynar – daha gerçekçi ve çeşitli. Bundan sonra motor devralır.",
+    "clock": "Satranç saati (zaman kontrolü)",
+    "timeControl": "Zaman kontrolü",
+    "baseTimeMinutes": "Temel süre (dakika)",
+    "incrementSeconds": "Ek süre (saniye/hamle)",
+    "clockHintUnlimited": "Saatsiz serbest oyun – her tarafın düşünmek için sınırsız süresi var.",
+    "clockHintTimed": "Bir tarafın süresi biterse, oyunu hemen zaman aşımıyla kaybeder. Kaydetmek her iki saati de burada seçilen temel süreye sıfırlar.",
+    "sound": "Ses",
+    "moveSoundLabel": "Her hamlede tıklama sesi",
+    "analysisEngine": "Analiz motoru (Stockfish)",
+    "pathToStockfish": "Stockfish yolu",
+    "chooseStockfish": "Stockfish seç",
+    "llmTutor": "LLM öğretmeni",
+    "provider": "Sağlayıcı",
+    "model": "Model",
+    "apiKey": "API anahtarı",
+    "apiKeySavedKeychain": "✓ kaydedildi (Keychain)",
+    "apiKeyReplacePlaceholder": "Değiştirmek için yeni bir anahtar girin",
+    "apiKeyAvailableAt": "API anahtarı şurada bulunur: {{hint}}.",
+    "deleteStoredKey": "Kaydedilen anahtarı sil",
+    "cancel": "İptal",
+    "saveAndApply": "Kaydet ve uygula"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Serbest (zaman kontrolü yok)",
+      "classical": "Klasik (turnuva satrancı)",
+      "rapid": "Hızlı (Rapid)",
+      "blitz": "Blitz",
+      "bullet": "Bullet"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Beyaz mat ile kazandı",
+    "checkmateBlack": "Siyah mat ile kazandı",
+    "stalemate": "Pat nedeniyle berabere",
+    "threefold": "Üç kez tekrar nedeniyle berabere",
+    "insufficientMaterial": "Berabere: yetersiz materyal",
+    "fiftyMoves": "Berabere: 50 hamle kuralı",
+    "draw": "Berabere",
+    "wins": "{{winner}} kazandı",
+    "winsByTimeForfeit": "{{winner}} zaman aşımıyla kazandı"
+  },
+  "pgn": {
+    "white": "Beyaz",
+    "black": "Siyah",
+    "player": "Oyuncu",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % kazanma olasılığı)"
+  },
+  "moveList": {
+    "title": "Oyun",
+    "noMoves": "Henüz hamle yok.",
+    "discardedContinuation": "Vazgeçilen devam"
+  },
+  "library": {
+    "title": "Oyun kitaplığı",
+    "loading": "Yükleniyor…",
+    "empty": "Henüz kaydedilmiş oyun yok. Oyunlar bittiğinde otomatik olarak kaydedilir.",
+    "halfMoves": "{{count}} yarı hamle",
+    "open": "Aç",
+    "delete": "Sil",
+    "resultWhiteWins": "Beyaz kazandı",
+    "resultBlackWins": "Siyah kazandı",
+    "resultDraw": "Berabere",
+    "resultOpen": "Devam ediyor"
+  },
+  "info": {
+    "author": "Yazar: Daniel Buch",
+    "licenseFreeSoftware": "Şu lisans altında özgür yazılım:",
+    "licenseSuffix": "(veya sonraki) – garanti verilmez.",
+    "sourceCode": "GitHub'da kaynak kodu"
+  },
+  "bluetooth": {
+    "chooseDevice": "Bluetooth cihazı seç",
+    "multipleFound": "Birden fazla uygun cihaz bulundu – hangisi bağlansın?",
+    "connect": "Bağlan"
+  },
+  "chessnut": {
+    "statusUnsupported": "Desteklenmiyor",
+    "statusDisconnected": "Bağlantı kesildi",
+    "statusConnecting": "Bağlanıyor…",
+    "statusConnected": "Bağlandı",
+    "statusError": "Hata",
+    "bestMoveHint": "Sıra sendeyken devam eden Stockfish analizinin en iyi hamlesini tahtada yanıp söndürür (başlangıç/hedef kare sırayla)",
+    "bestMoveLabel": "En iyi hamle",
+    "beepHint": "Şah çekildiğinde, geçersiz bir hamle denemesi algılandığında veya süre dolduğunda doğrudan tahtada sinyal sesi",
+    "beepLabel": "🔔 Sinyal sesi",
+    "pleaseReplay": "Lütfen tekrar oynayın: {{squares}}",
+    "disconnect": "Bağlantıyı kes",
+    "connect": "Bağlan"
+  },
+  "analysis": {
+    "title": "Stockfish analizi",
+    "depth": "Derinlik {{depth}}",
+    "showOnBoard": "Tahtada göster"
+  },
+  "legend": {
+    "move": "Hamle",
+    "moveFollowUp": " (ve sonraki hamleler daha soluk)",
+    "attacks": "saldırıyor",
+    "defends": "koruyor",
+    "pins": "şişliyor",
+    "discovers": "açığa çıkarıyor",
+    "becomesWeak": "zayıflıyor",
+    "check": "Şah"
+  },
+  "evalBar": {
+    "whiteWinPct": "Beyaz {{pct}} % kazanma şansına sahip"
+  }
+}

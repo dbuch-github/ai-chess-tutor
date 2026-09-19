@@ -184,6 +184,10 @@ body {
   left: 0;
   min-width: 250px;
   max-width: calc(100vw - 24px);
+  /* Menüs mit vielen Einträgen (z. B. die 15-sprachige Sprachauswahl) sollen
+     scrollen statt unten aus dem Fenster hinauszuragen. */
+  max-height: min(70vh, 440px);
+  overflow-y: auto;
   background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: 8px;

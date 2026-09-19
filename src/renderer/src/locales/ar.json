@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "الأبيض",
+    "black": "الأسود",
+    "close": "إغلاق",
+    "engine": "المحرك",
+    "unknownError": "خطأ غير معروف"
+  },
+  "app": {
+    "liveAnalysis": "تحليل مباشر: {{name}}",
+    "analysisStarting": "بدء التحليل…",
+    "opponent": "الخصم: {{name}}",
+    "eloSuffix": " (تصنيف إيلو {{elo}})",
+    "engineStarting": "بدء تشغيل المحرك…",
+    "noEngineFound": "لم يتم العثور على محرك – حدد المسار في الإعدادات",
+    "noLc0Found": "لم يتم العثور على lc0 – حدد المسار في الإعدادات",
+    "noStockfishFound": "لم يتم العثور على Stockfish",
+    "engineError": "خطأ في المحرك: {{message}}",
+    "analysisError": "التحليل: {{message}}"
+  },
+  "topbar": {
+    "newGame": "لعبة جديدة",
+    "playAsWhite": "اللعب بالأبيض",
+    "playAsBlack": "اللعب بالأسود",
+    "recordOtb": "تسجيل لعبة على رقعة حقيقية",
+    "recordOtbHint": "شخصان على الرقعة الفعلية، دون حركة من المحرك – يستمر التحليل المباشر والتقرير كالمعتاد",
+    "file": "ملف",
+    "exportPgn": "تصدير PGN",
+    "importPgn": "استيراد PGN",
+    "library": "المكتبة",
+    "analysis": "التحليل",
+    "report": "تقرير اللعبة",
+    "reportHint": "ملخص للعبة يتضمن أنماط الأخطاء ونقاط التعلم",
+    "settings": "الإعدادات",
+    "language": "اختيار اللغة"
+  },
+  "status": {
+    "engineThinking": "المحرك يفكر…",
+    "toMove": "دور {{color}}",
+    "toMoveYou": "دور {{color}} – أنت",
+    "otbRecording": "🔴 تسجيل على الرقعة – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 لعبة مستوردة – للعرض فقط",
+    "continuePlaying": "▶ متابعة اللعب"
+  },
+  "opening": {
+    "detected": "تم التعرف على {{matched}} من أصل {{total}} نصف حركة"
+  },
+  "pgnNotice": {
+    "saved": "تم الحفظ: {{path}}",
+    "saveFailed": "فشل الحفظ: {{message}}",
+    "importFailed": "فشل الاستيراد: {{message}}",
+    "invalidFile": "الملف لا يحتوي على PGN صالح.",
+    "loadFailed": "تعذّر تحميل اللعبة.",
+    "invalidSavedFile": "الملف المحفوظ لا يحتوي على PGN صالح.",
+    "imported": "تم استيراد اللعبة – العرض والتحليل والمعلم جاهزون.",
+    "loadedFromLibrary": "تم تحميل اللعبة من المكتبة – العرض والتحليل والمعلم جاهزون."
+  },
+  "tutor": {
+    "unknownEval": "غير معروف",
+    "title": "المعلم",
+    "modeAriaLabel": "وضع المعلم",
+    "modeOffLabel": "صامت",
+    "modeOffHint": "عند الطلب فقط",
+    "modeMistakesLabel": "الأخطاء",
+    "modeMistakesHint": "يعلّق على أخطائك وأخطائك الفادحة",
+    "modeChattyLabel": "نشط",
+    "modeChattyHint": "وأيضًا عدم الدقة وأخطاء المحرك",
+    "undoMove": "↶ تراجع",
+    "undoHint": "التراجع عن آخر حركة",
+    "redoMove": "↷ إعادة",
+    "redoHint": "استعادة الحركة التي تم التراجع عنها",
+    "emptyPlaceholder": "سأتحدث عند حدوث أخطاء – أو اسألني مباشرة، مثل «ما هي الخطة هنا؟». يمكنك أيضًا النقر على خطوط التحليل أعلاه.",
+    "hidePreview": "✕ إخفاء الاقتراح",
+    "showPreview": "↗ إظهار {{move}} على الرقعة",
+    "suggestMove": "💡 اقتراح حركة",
+    "suggestMoveHintReady": "طلب اقتراح حركة مع شرح",
+    "suggestMoveHintWait": "فقط عندما يكون دورك ويكون التحليل جاهزًا",
+    "questionPlaceholder": "سؤال للمعلم…",
+    "send": "إرسال"
+  },
+  "notation": {
+    "opening": "الافتتاح",
+    "middlegame": "وسط اللعبة",
+    "endgame": "نهاية اللعبة"
+  },
+  "report": {
+    "gameInProgress": "اللعبة لا تزال جارية",
+    "title": "تقرير اللعبة",
+    "blunderCount": "{{count}} أخطاء فادحة",
+    "mistakeCount": "{{count}} أخطاء",
+    "inaccuracyCount": "{{count}} حالات عدم دقة",
+    "bestMoveCount": "{{count}} أفضل الحركات",
+    "criticalMoments": "اللحظات الحاسمة",
+    "noApiKey": "لم يتم تعيين مفتاح API.",
+    "setKeyNow": "قم بتعيينه الآن في الإعدادات",
+    "placeholder": "يلخّص اللعبة: أنماط الأخطاء المتكررة، أهم اللحظات الحاسمة، ونقاط تعلم ملموسة للعبة القادمة.",
+    "generate": "إنشاء التقرير",
+    "regenerate": "إعادة الإنشاء"
+  },
+  "settings": {
+    "title": "إعدادات المحرك",
+    "opponentEngine": "محرك الخصم",
+    "engineKind": "نوع المحرك",
+    "engineKindStockfish": "Stockfish (كلاسيكي، محدود بتصنيف إيلو)",
+    "engineKindMaia": "Maia (lc0، لعب يشبه الإنسان)",
+    "engineKindCustom": "محرك UCI آخر",
+    "pathToLc0": "مسار lc0",
+    "chooseLc0Binary": "اختيار الملف التنفيذي لـ lc0",
+    "browse": "استعراض…",
+    "strength": "قوة اللعب",
+    "maiaWeightsFile": "ملف أوزان Maia (.pb.gz)",
+    "chooseMaiaWeights": "اختيار ملف أوزان Maia",
+    "maiaPathPlaceholder": "/المسار/إلى/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "يحدد منتقي القوة أعلاه المسار المطابق تلقائيًا؛ يمكن أيضًا اختيار الشبكات المخصصة (مثل قوى أو أنواع أخرى) يدويًا هنا – يتوفر المزيد على ",
+    "maiaHintAfterLink": ". يلعب Maia مباشرة من الشبكة دون بحث – القوة مضمّنة في الملف المختار، ولا حاجة لأي إعداد إضافي.",
+    "pathToEngine": "مسار المحرك",
+    "chooseEngine": "اختيار المحرك",
+    "limitStrength": "تحديد قوة اللعب (UCI_Elo)",
+    "elo": "تصنيف إيلو",
+    "moveTimeMs": "الوقت لكل حركة (ملي ثانية)",
+    "openingBook": "كتاب الافتتاحيات",
+    "useOpeningBookForOpponent": "استخدامه للخصم (أول 10 حركات كاملة)",
+    "openingBookHint": "يلعب الخصم عندئذٍ بشكل عشوائي من خطوط افتتاح معروفة بدلاً من اتباع أفضل حركة للمحرك دائمًا – أكثر واقعية وتنوعًا. بعد ذلك يتولى المحرك الأمر.",
+    "clock": "ساعة الشطرنج (التحكم بالوقت)",
+    "timeControl": "التحكم بالوقت",
+    "baseTimeMinutes": "الوقت الأساسي (دقائق)",
+    "incrementSeconds": "الزيادة (ثوانٍ/حركة)",
+    "clockHintUnlimited": "لعب حر دون ساعة – لكل طرف وقت غير محدود للتفكير.",
+    "clockHintTimed": "إذا نفد وقت أحد الطرفين، يخسر اللعبة فورًا بسبب انتهاء الوقت. الحفظ يعيد ضبط كلتا الساعتين إلى الوقت الأساسي المحدد هنا.",
+    "sound": "الصوت",
+    "moveSoundLabel": "صوت نقرة عند كل حركة",
+    "analysisEngine": "محرك التحليل (Stockfish)",
+    "pathToStockfish": "مسار Stockfish",
+    "chooseStockfish": "اختيار Stockfish",
+    "llmTutor": "معلم LLM",
+    "provider": "المزوّد",
+    "model": "النموذج",
+    "apiKey": "مفتاح API",
+    "apiKeySavedKeychain": "✓ محفوظ (Keychain)",
+    "apiKeyReplacePlaceholder": "أدخل مفتاحًا جديدًا لاستبداله",
+    "apiKeyAvailableAt": "مفتاح API متاح على {{hint}}.",
+    "deleteStoredKey": "حذف المفتاح المحفوظ",
+    "cancel": "إلغاء",
+    "saveAndApply": "حفظ وتطبيق"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "حر (دون تحكم بالوقت)",
+      "classical": "كلاسيكي (شطرنج البطولات)",
+      "rapid": "سريع (Rapid)",
+      "blitz": "بليتز",
+      "bullet": "بوليت"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "الأبيض يفوز بكش ملك",
+    "checkmateBlack": "الأسود يفوز بكش ملك",
+    "stalemate": "تعادل بالتجميد (Stalemate)",
+    "threefold": "تعادل بتكرار الوضعية ثلاث مرات",
+    "insufficientMaterial": "تعادل: مواد غير كافية",
+    "fiftyMoves": "تعادل: قاعدة الخمسين حركة",
+    "draw": "تعادل",
+    "wins": "يفوز {{winner}}",
+    "winsByTimeForfeit": "يفوز {{winner}} بانتهاء الوقت"
+  },
+  "pgn": {
+    "white": "الأبيض",
+    "black": "الأسود",
+    "player": "اللاعب",
+    "moveCommentLossPct": "{{label}} (−{{pct}}% من احتمالية الفوز)"
+  },
+  "moveList": {
+    "title": "اللعبة",
+    "noMoves": "لا توجد حركات بعد.",
+    "discardedContinuation": "استمرار مهمل"
+  },
+  "library": {
+    "title": "مكتبة الألعاب",
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد ألعاب محفوظة بعد. يتم حفظ الألعاب تلقائيًا عند انتهائها.",
+    "halfMoves": "{{count}} نصف حركة",
+    "open": "فتح",
+    "delete": "حذف",
+    "resultWhiteWins": "الأبيض يفوز",
+    "resultBlackWins": "الأسود يفوز",
+    "resultDraw": "تعادل",
+    "resultOpen": "مستمرة"
+  },
+  "info": {
+    "author": "المؤلف: Daniel Buch",
+    "licenseFreeSoftware": "برنامج حر بموجب رخصة",
+    "licenseSuffix": "(أو إصدار لاحق) – دون أي ضمان.",
+    "sourceCode": "الكود المصدري على GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "اختيار جهاز بلوتوث",
+    "multipleFound": "تم العثور على عدة أجهزة مطابقة – ما الجهاز الذي يجب توصيله؟",
+    "connect": "اتصال"
+  },
+  "chessnut": {
+    "statusUnsupported": "غير مدعوم",
+    "statusDisconnected": "غير متصل",
+    "statusConnecting": "جارٍ الاتصال…",
+    "statusConnected": "متصل",
+    "statusError": "خطأ",
+    "bestMoveHint": "يُومض بأفضل حركة من تحليل Stockfish الجاري على الرقعة (تبديل بين مربع الانطلاق والهدف) طالما أن الدور دورك",
+    "bestMoveLabel": "أفضل حركة",
+    "beepHint": "صوت تنبيه مباشرة على الرقعة عند الكش، أو محاولة حركة غير صالحة تم اكتشافها، أو انتهاء الوقت",
+    "beepLabel": "🔔 صوت تنبيه",
+    "pleaseReplay": "يرجى إعادة اللعب: {{squares}}",
+    "disconnect": "قطع الاتصال",
+    "connect": "اتصال"
+  },
+  "analysis": {
+    "title": "تحليل Stockfish",
+    "depth": "العمق {{depth}}",
+    "showOnBoard": "إظهار على الرقعة"
+  },
+  "legend": {
+    "move": "حركة",
+    "moveFollowUp": " (والحركات التالية أفتح لونًا)",
+    "attacks": "يهاجم",
+    "defends": "يدافع",
+    "pins": "يثبّت",
+    "discovers": "يكشف",
+    "becomesWeak": "يصبح ضعيفًا",
+    "check": "كش"
+  },
+  "evalBar": {
+    "whiteWinPct": "الأبيض يفوز بنسبة {{pct}} %"
+  }
+}

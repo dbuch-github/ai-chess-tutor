@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Beli",
+    "black": "Crni",
+    "close": "Zatvori",
+    "engine": "Motor",
+    "unknownError": "Nepoznata greška"
+  },
+  "app": {
+    "liveAnalysis": "Analiza uživo: {{name}}",
+    "analysisStarting": "Pokretanje analize…",
+    "opponent": "Protivnik: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Pokretanje motora…",
+    "noEngineFound": "Motor nije pronađen – podesite putanju u Podešavanjima",
+    "noLc0Found": "lc0 nije pronađen – podesite putanju u Podešavanjima",
+    "noStockfishFound": "Stockfish nije pronađen",
+    "engineError": "Greška motora: {{message}}",
+    "analysisError": "Analiza: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Nova partija",
+    "playAsWhite": "Igraj belim figurama",
+    "playAsBlack": "Igraj crnim figurama",
+    "recordOtb": "Snimi partiju za fizičkom tablom",
+    "recordOtbHint": "Dvoje ljudi za fizičkom tablom, bez poteza motora – analiza uživo i izveštaj rade kao inače",
+    "file": "Datoteka",
+    "exportPgn": "Izvezi PGN",
+    "importPgn": "Uvezi PGN",
+    "library": "Biblioteka",
+    "analysis": "Analiza",
+    "report": "Izveštaj o partiji",
+    "reportHint": "Rezime partije sa obrascima grešaka i tačkama za učenje",
+    "settings": "Podešavanja",
+    "language": "Izaberi jezik"
+  },
+  "status": {
+    "engineThinking": "Motor razmišlja…",
+    "toMove": "Na potezu su {{color}}",
+    "toMoveYou": "Na potezu su {{color}} – ti si na potezu",
+    "otbRecording": "🔴 Snimanje partije – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Uvezena partija – samo za pregled",
+    "continuePlaying": "▶ Nastavi igru"
+  },
+  "opening": {
+    "detected": "Prepoznato {{matched}} od {{total}} polupoteza"
+  },
+  "pgnNotice": {
+    "saved": "Sačuvano: {{path}}",
+    "saveFailed": "Čuvanje nije uspelo: {{message}}",
+    "importFailed": "Uvoz nije uspeo: {{message}}",
+    "invalidFile": "Datoteka ne sadrži važeći PGN.",
+    "loadFailed": "Partija nije mogla da se učita.",
+    "invalidSavedFile": "Sačuvana datoteka ne sadrži važeći PGN.",
+    "imported": "Partija je uvezena – pregled, analiza i trener su spremni.",
+    "loadedFromLibrary": "Partija je učitana iz biblioteke – pregled, analiza i trener su spremni."
+  },
+  "tutor": {
+    "unknownEval": "nepoznato",
+    "title": "Trener",
+    "modeAriaLabel": "Režim trenera",
+    "modeOffLabel": "Tih",
+    "modeOffHint": "Samo na zahtev",
+    "modeMistakesLabel": "Greške",
+    "modeMistakesHint": "Komentariše tvoje greške i krupne previde",
+    "modeChattyLabel": "Aktivan",
+    "modeChattyHint": "Takođe i netačnosti i greške motora",
+    "undoMove": "↶ Poništi",
+    "undoHint": "Poništi poslednji potez",
+    "redoMove": "↷ Ponovi",
+    "redoHint": "Vrati poništeni potez",
+    "emptyPlaceholder": "Javiću se kod grešaka – ili me pitaj direktno, npr. „Koji je plan ovde?“. Takođe možeš kliknuti na linije analize iznad.",
+    "hidePreview": "✕ Sakrij predlog",
+    "showPreview": "↗ Prikaži {{move}} na tabli",
+    "suggestMove": "💡 Predloži potez",
+    "suggestMoveHintReady": "Zatraži predlog poteza sa objašnjenjem",
+    "suggestMoveHintWait": "Samo kada si na potezu i analiza je spremna",
+    "questionPlaceholder": "Pitanje za trenera…",
+    "send": "Pošalji"
+  },
+  "notation": {
+    "opening": "Otvaranje",
+    "middlegame": "Sredina igre",
+    "endgame": "Završnica"
+  },
+  "report": {
+    "gameInProgress": "Partija je još u toku",
+    "title": "Izveštaj o partiji",
+    "blunderCount": "{{count}} krupnih previda",
+    "mistakeCount": "{{count}} grešaka",
+    "inaccuracyCount": "{{count}} netačnosti",
+    "bestMoveCount": "{{count}} najboljih poteza",
+    "criticalMoments": "Kritični trenuci",
+    "noApiKey": "API ključ nije podešen.",
+    "setKeyNow": "Podesi ga sada u Podešavanjima",
+    "placeholder": "Sažima partiju: ponavljajuće obrasce grešaka, najkritičnije trenutke i konkretne pouke za sledeću partiju.",
+    "generate": "Generiši izveštaj",
+    "regenerate": "Generiši ponovo"
+  },
+  "settings": {
+    "title": "Podešavanja motora",
+    "opponentEngine": "Motor protivnika",
+    "engineKind": "Vrsta motora",
+    "engineKindStockfish": "Stockfish (klasičan, ograničen Elo rejtingom)",
+    "engineKindMaia": "Maia (lc0, igra slična ljudskoj)",
+    "engineKindCustom": "Drugi UCI motor",
+    "pathToLc0": "Putanja do lc0",
+    "chooseLc0Binary": "Izaberi izvršnu datoteku lc0",
+    "browse": "Pregledaj…",
+    "strength": "Jačina igre",
+    "maiaWeightsFile": "Maia datoteka težina (.pb.gz)",
+    "chooseMaiaWeights": "Izaberi Maia datoteku težina",
+    "maiaPathPlaceholder": "/putanja/do/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Birač jačine iznad automatski podešava odgovarajuću putanju; prilagođene mreže (npr. druge jačine ili varijante) takođe se mogu ručno izabrati ovde – još ih ima na ",
+    "maiaHintAfterLink": ". Maia igra direktno iz mreže bez pretrage – jačina je ugrađena u izabranu datoteku, nije potrebno dodatno podešavanje.",
+    "pathToEngine": "Putanja do motora",
+    "chooseEngine": "Izaberi motor",
+    "limitStrength": "Ograniči jačinu igre (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Vreme po potezu (ms)",
+    "openingBook": "Knjiga otvaranja",
+    "useOpeningBookForOpponent": "Koristi za protivnika (prvih 10 punih poteza)",
+    "openingBookHint": "Protivnik tada nasumično igra iz poznatih linija otvaranja umesto da uvek prati najbolji potez motora – realističnije i raznovrsnije. Nakon toga preuzima motor.",
+    "clock": "Šahovski sat (kontrola vremena)",
+    "timeControl": "Kontrola vremena",
+    "baseTimeMinutes": "Osnovno vreme (minuti)",
+    "incrementSeconds": "Inkrement (sekundi/potez)",
+    "clockHintUnlimited": "Slobodna igra bez sata – svaka strana ima neograničeno vreme za razmišljanje.",
+    "clockHintTimed": "Ako jednoj strani istekne vreme, odmah gubi partiju usled isteka vremena. Čuvanje resetuje oba sata na ovde izabrano osnovno vreme.",
+    "sound": "Zvuk",
+    "moveSoundLabel": "Zvuk klika pri svakom potezu",
+    "analysisEngine": "Motor za analizu (Stockfish)",
+    "pathToStockfish": "Putanja do Stockfish-a",
+    "chooseStockfish": "Izaberi Stockfish",
+    "llmTutor": "LLM trener",
+    "provider": "Provajder",
+    "model": "Model",
+    "apiKey": "API ključ",
+    "apiKeySavedKeychain": "✓ sačuvano (Keychain)",
+    "apiKeyReplacePlaceholder": "Unesi novi ključ da bi ga zamenio",
+    "apiKeyAvailableAt": "API ključ je dostupan na {{hint}}.",
+    "deleteStoredKey": "Obriši sačuvani ključ",
+    "cancel": "Otkaži",
+    "saveAndApply": "Sačuvaj i primeni"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Slobodno (bez kontrole vremena)",
+      "classical": "Klasično (turnirski šah)",
+      "rapid": "Brzopotezni (Rapid)",
+      "blitz": "Blic",
+      "bullet": "Bulet"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Beli pobeđuju matom",
+    "checkmateBlack": "Crni pobeđuju matom",
+    "stalemate": "Nerešeno zbog pata",
+    "threefold": "Nerešeno zbog trostrukog ponavljanja pozicije",
+    "insufficientMaterial": "Nerešeno: nedovoljno materijala",
+    "fiftyMoves": "Nerešeno: pravilo 50 poteza",
+    "draw": "Nerešeno",
+    "wins": "{{winner}} pobeđuju",
+    "winsByTimeForfeit": "{{winner}} pobeđuju usled isteka vremena"
+  },
+  "pgn": {
+    "white": "Beli",
+    "black": "Crni",
+    "player": "Igrač",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % verovatnoće pobede)"
+  },
+  "moveList": {
+    "title": "Partija",
+    "noMoves": "Još uvek nema poteza.",
+    "discardedContinuation": "Odbačen nastavak"
+  },
+  "library": {
+    "title": "Biblioteka partija",
+    "loading": "Učitavanje…",
+    "empty": "Još uvek nema sačuvanih partija. Partije se automatski čuvaju kada se završe.",
+    "halfMoves": "{{count}} polupoteza",
+    "open": "Otvori",
+    "delete": "Obriši",
+    "resultWhiteWins": "Beli pobeđuju",
+    "resultBlackWins": "Crni pobeđuju",
+    "resultDraw": "Nerešeno",
+    "resultOpen": "U toku"
+  },
+  "info": {
+    "author": "Autor: Daniel Buch",
+    "licenseFreeSoftware": "Slobodan softver pod licencom",
+    "licenseSuffix": "(ili novijom) – bez ikakve garancije.",
+    "sourceCode": "Izvorni kod na GitHub-u"
+  },
+  "bluetooth": {
+    "chooseDevice": "Izaberi Bluetooth uređaj",
+    "multipleFound": "Pronađeno je više odgovarajućih uređaja – koji povezati?",
+    "connect": "Poveži"
+  },
+  "chessnut": {
+    "statusUnsupported": "Nije podržano",
+    "statusDisconnected": "Nije povezano",
+    "statusConnecting": "Povezivanje…",
+    "statusConnected": "Povezano",
+    "statusError": "Greška",
+    "bestMoveHint": "Treperi najboljim potezom trenutne Stockfish analize na tabli (naizmenično polje polaska/cilja) dok si na potezu",
+    "bestMoveLabel": "Najbolji potez",
+    "beepHint": "Zvučni signal direktno na tabli za šah, otkriven pokušaj nevažećeg poteza ili istek vremena",
+    "beepLabel": "🔔 Zvučni signal",
+    "pleaseReplay": "Molimo ponovi potez: {{squares}}",
+    "disconnect": "Prekini vezu",
+    "connect": "Poveži"
+  },
+  "analysis": {
+    "title": "Stockfish analiza",
+    "depth": "Dubina {{depth}}",
+    "showOnBoard": "Prikaži na tabli"
+  },
+  "legend": {
+    "move": "Potez",
+    "moveFollowUp": " (& naredni potezi bleđi)",
+    "attacks": "napada",
+    "defends": "brani",
+    "pins": "vezuje",
+    "discovers": "otkriva",
+    "becomesWeak": "postaje slabo",
+    "check": "Šah"
+  },
+  "evalBar": {
+    "whiteWinPct": "Beli pobeđuju sa {{pct}} %"
+  }
+}

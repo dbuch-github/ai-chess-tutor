@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Białe",
+    "black": "Czarne",
+    "close": "Zamknij",
+    "engine": "Silnik",
+    "unknownError": "Nieznany błąd"
+  },
+  "app": {
+    "liveAnalysis": "Analiza na żywo: {{name}}",
+    "analysisStarting": "Uruchamianie analizy…",
+    "opponent": "Przeciwnik: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Uruchamianie silnika…",
+    "noEngineFound": "Nie znaleziono silnika – ustaw ścieżkę w Ustawieniach",
+    "noLc0Found": "Nie znaleziono lc0 – ustaw ścieżkę w Ustawieniach",
+    "noStockfishFound": "Nie znaleziono Stockfisha",
+    "engineError": "Błąd silnika: {{message}}",
+    "analysisError": "Analiza: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Nowa partia",
+    "playAsWhite": "Graj białymi",
+    "playAsBlack": "Graj czarnymi",
+    "recordOtb": "Zarejestruj partię przy szachownicy",
+    "recordOtbHint": "Dwie osoby przy fizycznej szachownicy, bez ruchu silnika – analiza na żywo i raport działają jak zwykle",
+    "file": "Plik",
+    "exportPgn": "Eksportuj PGN",
+    "importPgn": "Importuj PGN",
+    "library": "Biblioteka",
+    "analysis": "Analiza",
+    "report": "Raport z partii",
+    "reportHint": "Podsumowanie partii z wzorcami błędów i punktami do nauki",
+    "settings": "Ustawienia",
+    "language": "Wybierz język"
+  },
+  "status": {
+    "engineThinking": "Silnik myśli…",
+    "toMove": "{{color}} mają ruch",
+    "toMoveYou": "{{color}} mają ruch – Twój ruch",
+    "otbRecording": "🔴 Nagrywanie partii przy szachownicy – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Zaimportowana partia – tylko podgląd",
+    "continuePlaying": "▶ Kontynuuj grę"
+  },
+  "opening": {
+    "detected": "Rozpoznano {{matched}} z {{total}} półruchów"
+  },
+  "pgnNotice": {
+    "saved": "Zapisano: {{path}}",
+    "saveFailed": "Zapis nie powiódł się: {{message}}",
+    "importFailed": "Import nie powiódł się: {{message}}",
+    "invalidFile": "Plik nie zawiera prawidłowego PGN.",
+    "loadFailed": "Nie udało się wczytać partii.",
+    "invalidSavedFile": "Zapisany plik nie zawiera prawidłowego PGN.",
+    "imported": "Partia zaimportowana – podgląd, analiza i trener są gotowe.",
+    "loadedFromLibrary": "Partia wczytana z biblioteki – podgląd, analiza i trener są gotowe."
+  },
+  "tutor": {
+    "unknownEval": "nieznana",
+    "title": "Trener",
+    "modeAriaLabel": "Tryb trenera",
+    "modeOffLabel": "Cicho",
+    "modeOffHint": "Tylko na żądanie",
+    "modeMistakesLabel": "Błędy",
+    "modeMistakesHint": "Komentuje Twoje błędy i przeoczenia",
+    "modeChattyLabel": "Aktywny",
+    "modeChattyHint": "Także niedokładności i błędy silnika",
+    "undoMove": "↶ Cofnij",
+    "undoHint": "Cofnij ostatni ruch",
+    "redoMove": "↷ Ponów",
+    "redoHint": "Przywróć cofnięty ruch",
+    "emptyPlaceholder": "Odezwę się przy błędach – albo zapytaj mnie bezpośrednio, np. „Jaki jest tu plan?”. Możesz też klikać linie analizy powyżej.",
+    "hidePreview": "✕ Ukryj sugestię",
+    "showPreview": "↗ Pokaż {{move}} na szachownicy",
+    "suggestMove": "💡 Zasugeruj ruch",
+    "suggestMoveHintReady": "Poproś o sugestię ruchu z wyjaśnieniem",
+    "suggestMoveHintWait": "Dopiero gdy jest Twoja kolej i analiza jest gotowa",
+    "questionPlaceholder": "Pytanie do trenera…",
+    "send": "Wyślij"
+  },
+  "notation": {
+    "opening": "Debiut",
+    "middlegame": "Gra środkowa",
+    "endgame": "Końcówka"
+  },
+  "report": {
+    "gameInProgress": "Partia wciąż trwa",
+    "title": "Raport z partii",
+    "blunderCount": "{{count}} rażących błędów",
+    "mistakeCount": "{{count}} błędów",
+    "inaccuracyCount": "{{count}} niedokładności",
+    "bestMoveCount": "{{count}} najlepszych ruchów",
+    "criticalMoments": "Kluczowe momenty",
+    "noApiKey": "Nie ustawiono klucza API.",
+    "setKeyNow": "Ustaw go teraz w Ustawieniach",
+    "placeholder": "Podsumowuje partię: powtarzające się wzorce błędów, najważniejsze momenty i konkretne wnioski na następną partię.",
+    "generate": "Wygeneruj raport",
+    "regenerate": "Wygeneruj ponownie"
+  },
+  "settings": {
+    "title": "Ustawienia silnika",
+    "opponentEngine": "Silnik przeciwnika",
+    "engineKind": "Rodzaj silnika",
+    "engineKindStockfish": "Stockfish (klasyczny, ograniczony Elo)",
+    "engineKindMaia": "Maia (lc0, gra jak człowiek)",
+    "engineKindCustom": "Inny silnik UCI",
+    "pathToLc0": "Ścieżka do lc0",
+    "chooseLc0Binary": "Wybierz plik binarny lc0",
+    "browse": "Przeglądaj…",
+    "strength": "Siła gry",
+    "maiaWeightsFile": "Plik wag Maia (.pb.gz)",
+    "chooseMaiaWeights": "Wybierz plik wag Maia",
+    "maiaPathPlaceholder": "/ścieżka/do/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Wybór siły powyżej automatycznie ustawia odpowiednią ścieżkę; własne sieci (np. inne poziomy siły lub warianty) można też wybrać tutaj ręcznie – więcej dostępnych jest na ",
+    "maiaHintAfterLink": ". Maia wykonuje ruchy bezpośrednio z sieci bez przeszukiwania – siła gry jest zapisana w wybranym pliku, dalsza konfiguracja nie jest potrzebna.",
+    "pathToEngine": "Ścieżka do silnika",
+    "chooseEngine": "Wybierz silnik",
+    "limitStrength": "Ogranicz siłę gry (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Czas na ruch (ms)",
+    "openingBook": "Księga debiutów",
+    "useOpeningBookForOpponent": "Użyj dla przeciwnika (pierwsze 10 pełnych ruchów)",
+    "openingBookHint": "Przeciwnik gra wtedy losowo ze znanych linii debiutowych zamiast zawsze podążać za najlepszym ruchem silnika – bardziej realistycznie i różnorodnie. Potem przejmuje silnik.",
+    "clock": "Zegar szachowy (kontrola czasu)",
+    "timeControl": "Kontrola czasu",
+    "baseTimeMinutes": "Czas podstawowy (minuty)",
+    "incrementSeconds": "Dodatek (sekundy/ruch)",
+    "clockHintUnlimited": "Swobodna gra bez zegara – każda strona ma nieograniczony czas na namysł.",
+    "clockHintTimed": "Gdy czas jednej ze stron się skończy, natychmiast przegrywa partię na czas. Zapis resetuje oba zegary do wybranego tutaj czasu podstawowego.",
+    "sound": "Dźwięk",
+    "moveSoundLabel": "Dźwięk kliknięcia przy każdym ruchu",
+    "analysisEngine": "Silnik analizy (Stockfish)",
+    "pathToStockfish": "Ścieżka do Stockfisha",
+    "chooseStockfish": "Wybierz Stockfisha",
+    "llmTutor": "Trener LLM",
+    "provider": "Dostawca",
+    "model": "Model",
+    "apiKey": "Klucz API",
+    "apiKeySavedKeychain": "✓ zapisany (Keychain)",
+    "apiKeyReplacePlaceholder": "Wpisz nowy klucz, aby go zastąpić",
+    "apiKeyAvailableAt": "Klucz API dostępny na {{hint}}.",
+    "deleteStoredKey": "Usuń zapisany klucz",
+    "cancel": "Anuluj",
+    "saveAndApply": "Zapisz i zastosuj"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Swobodna (bez kontroli czasu)",
+      "classical": "Klasyczne (szachy turniejowe)",
+      "rapid": "Szybkie (Rapid)",
+      "blitz": "Blitz",
+      "bullet": "Bullet"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Białe wygrywają matem",
+    "checkmateBlack": "Czarne wygrywają matem",
+    "stalemate": "Remis przez pata",
+    "threefold": "Remis przez trzykrotne powtórzenie pozycji",
+    "insufficientMaterial": "Remis: niewystarczający materiał",
+    "fiftyMoves": "Remis: zasada 50 posunięć",
+    "draw": "Remis",
+    "wins": "{{winner}} wygrywają",
+    "winsByTimeForfeit": "{{winner}} wygrywają na czas"
+  },
+  "pgn": {
+    "white": "Białe",
+    "black": "Czarne",
+    "player": "Gracz",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % szans na wygraną)"
+  },
+  "moveList": {
+    "title": "Partia",
+    "noMoves": "Jeszcze brak ruchów.",
+    "discardedContinuation": "Odrzucona kontynuacja"
+  },
+  "library": {
+    "title": "Biblioteka partii",
+    "loading": "Wczytywanie…",
+    "empty": "Brak zapisanych partii. Partie są zapisywane automatycznie po zakończeniu.",
+    "halfMoves": "{{count}} półruchów",
+    "open": "Otwórz",
+    "delete": "Usuń",
+    "resultWhiteWins": "Białe wygrywają",
+    "resultBlackWins": "Czarne wygrywają",
+    "resultDraw": "Remis",
+    "resultOpen": "W toku"
+  },
+  "info": {
+    "author": "Autor: Daniel Buch",
+    "licenseFreeSoftware": "Wolne oprogramowanie na licencji",
+    "licenseSuffix": "(lub późniejszej) – bez gwarancji.",
+    "sourceCode": "Kod źródłowy na GitHubie"
+  },
+  "bluetooth": {
+    "chooseDevice": "Wybierz urządzenie Bluetooth",
+    "multipleFound": "Znaleziono kilka pasujących urządzeń – które połączyć?",
+    "connect": "Połącz"
+  },
+  "chessnut": {
+    "statusUnsupported": "Niewspierane",
+    "statusDisconnected": "Rozłączone",
+    "statusConnecting": "Łączenie…",
+    "statusConnected": "Połączone",
+    "statusError": "Błąd",
+    "bestMoveHint": "Miga najlepszym ruchem z bieżącej analizy Stockfisha na szachownicy (pole początkowe/docelowe na przemian), dopóki jest Twoja kolej",
+    "bestMoveLabel": "Najlepszy ruch",
+    "beepHint": "Sygnał dźwiękowy bezpośrednio na szachownicy przy szachu, wykrytej próbie nieprawidłowego ruchu lub przekroczeniu czasu",
+    "beepLabel": "🔔 Sygnał dźwiękowy",
+    "pleaseReplay": "Powtórz ruch: {{squares}}",
+    "disconnect": "Rozłącz",
+    "connect": "Połącz"
+  },
+  "analysis": {
+    "title": "Analiza Stockfisha",
+    "depth": "Głębokość {{depth}}",
+    "showOnBoard": "Pokaż na szachownicy"
+  },
+  "legend": {
+    "move": "Ruch",
+    "moveFollowUp": " (i kolejne ruchy bledsze)",
+    "attacks": "atakuje",
+    "defends": "broni",
+    "pins": "wiąże",
+    "discovers": "odsłania",
+    "becomesWeak": "staje się słabe",
+    "check": "Szach"
+  },
+  "evalBar": {
+    "whiteWinPct": "Białe wygrywają w {{pct}} %"
+  }
+}

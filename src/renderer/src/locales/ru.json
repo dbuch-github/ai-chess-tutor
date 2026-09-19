@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Белые",
+    "black": "Чёрные",
+    "close": "Закрыть",
+    "engine": "Движок",
+    "unknownError": "Неизвестная ошибка"
+  },
+  "app": {
+    "liveAnalysis": "Анализ вживую: {{name}}",
+    "analysisStarting": "Запуск анализа…",
+    "opponent": "Соперник: {{name}}",
+    "eloSuffix": " (Эло {{elo}})",
+    "engineStarting": "Запуск движка…",
+    "noEngineFound": "Движок не найден – укажите путь в настройках",
+    "noLc0Found": "lc0 не найден – укажите путь в настройках",
+    "noStockfishFound": "Stockfish не найден",
+    "engineError": "Ошибка движка: {{message}}",
+    "analysisError": "Анализ: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Новая партия",
+    "playAsWhite": "Играть белыми",
+    "playAsBlack": "Играть чёрными",
+    "recordOtb": "Записать партию за доской",
+    "recordOtbHint": "Два человека за настоящей доской, без хода движка – живой анализ и отчёт работают как обычно",
+    "file": "Файл",
+    "exportPgn": "Экспорт PGN",
+    "importPgn": "Импорт PGN",
+    "library": "Библиотека",
+    "analysis": "Анализ",
+    "report": "Отчёт о партии",
+    "reportHint": "Итоги партии с типичными ошибками и выводами для обучения",
+    "settings": "Настройки",
+    "language": "Выбрать язык"
+  },
+  "status": {
+    "engineThinking": "Движок думает…",
+    "toMove": "{{color}} ходят",
+    "toMoveYou": "{{color}} ходят – ваш ход",
+    "otbRecording": "🔴 Запись партии за доской – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Импортированная партия – только просмотр",
+    "continuePlaying": "▶ Продолжить игру"
+  },
+  "opening": {
+    "detected": "Распознано {{matched}} из {{total}} полуходов"
+  },
+  "pgnNotice": {
+    "saved": "Сохранено: {{path}}",
+    "saveFailed": "Не удалось сохранить: {{message}}",
+    "importFailed": "Не удалось импортировать: {{message}}",
+    "invalidFile": "Файл не содержит корректный PGN.",
+    "loadFailed": "Не удалось загрузить партию.",
+    "invalidSavedFile": "Сохранённый файл не содержит корректный PGN.",
+    "imported": "Партия импортирована – просмотр, анализ и тренер готовы.",
+    "loadedFromLibrary": "Партия загружена из библиотеки – просмотр, анализ и тренер готовы."
+  },
+  "tutor": {
+    "unknownEval": "неизвестно",
+    "title": "Тренер",
+    "modeAriaLabel": "Режим тренера",
+    "modeOffLabel": "Тихий",
+    "modeOffHint": "Только по запросу",
+    "modeMistakesLabel": "Ошибки",
+    "modeMistakesHint": "Комментирует ваши ошибки и зевки",
+    "modeChattyLabel": "Активный",
+    "modeChattyHint": "Также неточности и ошибки движка",
+    "undoMove": "↶ Отменить",
+    "undoHint": "Отменить последний ход",
+    "redoMove": "↷ Повторить",
+    "redoHint": "Восстановить отменённый ход",
+    "emptyPlaceholder": "Я подскажу при ошибках – или спросите меня напрямую, например «В чём здесь план?». Можно также кликать по линиям анализа выше.",
+    "hidePreview": "✕ Скрыть предложение",
+    "showPreview": "↗ Показать {{move}} на доске",
+    "suggestMove": "💡 Предложить ход",
+    "suggestMoveHintReady": "Запросить предложение хода с объяснением",
+    "suggestMoveHintWait": "Только когда ваш ход и анализ готов",
+    "questionPlaceholder": "Вопрос тренеру…",
+    "send": "Отправить"
+  },
+  "notation": {
+    "opening": "Дебют",
+    "middlegame": "Миттельшпиль",
+    "endgame": "Эндшпиль"
+  },
+  "report": {
+    "gameInProgress": "Партия ещё не завершена",
+    "title": "Отчёт о партии",
+    "blunderCount": "{{count}} зевков",
+    "mistakeCount": "{{count}} ошибок",
+    "inaccuracyCount": "{{count}} неточностей",
+    "bestMoveCount": "{{count}} лучших ходов",
+    "criticalMoments": "Критические моменты",
+    "noApiKey": "API-ключ не задан.",
+    "setKeyNow": "Задать его в настройках",
+    "placeholder": "Подводит итоги партии: повторяющиеся ошибки, самые критические моменты и конкретные выводы для следующей партии.",
+    "generate": "Создать отчёт",
+    "regenerate": "Создать заново"
+  },
+  "settings": {
+    "title": "Настройки движка",
+    "opponentEngine": "Движок соперника",
+    "engineKind": "Тип движка",
+    "engineKindStockfish": "Stockfish (классический, с ограничением Эло)",
+    "engineKindMaia": "Maia (lc0, игра как у человека)",
+    "engineKindCustom": "Другой UCI-движок",
+    "pathToLc0": "Путь к lc0",
+    "chooseLc0Binary": "Выбрать исполняемый файл lc0",
+    "browse": "Обзор…",
+    "strength": "Сила игры",
+    "maiaWeightsFile": "Файл весов Maia (.pb.gz)",
+    "chooseMaiaWeights": "Выбрать файл весов Maia",
+    "maiaPathPlaceholder": "/путь/к/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Выбор силы выше автоматически задаёт соответствующий путь; собственные сети (например, другие уровни силы или варианты) можно также выбрать здесь вручную – ещё больше доступно на ",
+    "maiaHintAfterLink": ". Maia ходит напрямую из сети без поиска – сила игры заложена в выбранном файле, дополнительная настройка не нужна.",
+    "pathToEngine": "Путь к движку",
+    "chooseEngine": "Выбрать движок",
+    "limitStrength": "Ограничить силу игры (UCI_Elo)",
+    "elo": "Эло",
+    "moveTimeMs": "Время на ход (мс)",
+    "openingBook": "Дебютная книга",
+    "useOpeningBookForOpponent": "Использовать для соперника (первые 10 полных ходов)",
+    "openingBookHint": "Соперник тогда случайно играет из известных дебютных линий, вместо того чтобы всегда следовать лучшему ходу движка – реалистичнее и разнообразнее. После этого управление берёт на себя движок.",
+    "clock": "Шахматные часы (контроль времени)",
+    "timeControl": "Контроль времени",
+    "baseTimeMinutes": "Базовое время (минуты)",
+    "incrementSeconds": "Добавление (секунд/ход)",
+    "clockHintUnlimited": "Свободная игра без часов – у каждой стороны неограниченное время на размышление.",
+    "clockHintTimed": "Если время у одной из сторон заканчивается, она сразу проигрывает партию по времени. Сохранение сбрасывает оба часа на выбранное здесь базовое время.",
+    "sound": "Звук",
+    "moveSoundLabel": "Звук клика при каждом ходе",
+    "analysisEngine": "Движок анализа (Stockfish)",
+    "pathToStockfish": "Путь к Stockfish",
+    "chooseStockfish": "Выбрать Stockfish",
+    "llmTutor": "LLM-тренер",
+    "provider": "Провайдер",
+    "model": "Модель",
+    "apiKey": "API-ключ",
+    "apiKeySavedKeychain": "✓ сохранён (Keychain)",
+    "apiKeyReplacePlaceholder": "Введите новый ключ, чтобы заменить его",
+    "apiKeyAvailableAt": "API-ключ можно получить на {{hint}}.",
+    "deleteStoredKey": "Удалить сохранённый ключ",
+    "cancel": "Отмена",
+    "saveAndApply": "Сохранить и применить"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Свободная игра (без контроля времени)",
+      "classical": "Классический (турнирные шахматы)",
+      "rapid": "Рапид",
+      "blitz": "Блиц",
+      "bullet": "Пуля (Bullet)"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Белые побеждают матом",
+    "checkmateBlack": "Чёрные побеждают матом",
+    "stalemate": "Ничья по пату",
+    "threefold": "Ничья по троекратному повторению позиции",
+    "insufficientMaterial": "Ничья: недостаточно материала",
+    "fiftyMoves": "Ничья: правило 50 ходов",
+    "draw": "Ничья",
+    "wins": "{{winner}} побеждают",
+    "winsByTimeForfeit": "{{winner}} побеждают по времени"
+  },
+  "pgn": {
+    "white": "Белые",
+    "black": "Чёрные",
+    "player": "Игрок",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % вероятности победы)"
+  },
+  "moveList": {
+    "title": "Партия",
+    "noMoves": "Пока нет ходов.",
+    "discardedContinuation": "Отменённое продолжение"
+  },
+  "library": {
+    "title": "Библиотека партий",
+    "loading": "Загрузка…",
+    "empty": "Пока нет сохранённых партий. Партии сохраняются автоматически по завершении.",
+    "halfMoves": "{{count}} полуходов",
+    "open": "Открыть",
+    "delete": "Удалить",
+    "resultWhiteWins": "Белые победили",
+    "resultBlackWins": "Чёрные победили",
+    "resultDraw": "Ничья",
+    "resultOpen": "Не завершена"
+  },
+  "info": {
+    "author": "Автор: Daniel Buch",
+    "licenseFreeSoftware": "Свободное программное обеспечение по лицензии",
+    "licenseSuffix": "(или более поздней) – без каких-либо гарантий.",
+    "sourceCode": "Исходный код на GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Выбрать Bluetooth-устройство",
+    "multipleFound": "Найдено несколько подходящих устройств – какое подключить?",
+    "connect": "Подключить"
+  },
+  "chessnut": {
+    "statusUnsupported": "Не поддерживается",
+    "statusDisconnected": "Отключено",
+    "statusConnecting": "Подключение…",
+    "statusConnected": "Подключено",
+    "statusError": "Ошибка",
+    "bestMoveHint": "Мигает лучшим ходом текущего анализа Stockfish на доске (поле начала/цели поочерёдно), пока ваш ход",
+    "bestMoveLabel": "Лучший ход",
+    "beepHint": "Звуковой сигнал прямо на доске при шахе, обнаруженной попытке недопустимого хода или истечении времени",
+    "beepLabel": "🔔 Звуковой сигнал",
+    "pleaseReplay": "Повторите ход: {{squares}}",
+    "disconnect": "Отключить",
+    "connect": "Подключить"
+  },
+  "analysis": {
+    "title": "Анализ Stockfish",
+    "depth": "Глубина {{depth}}",
+    "showOnBoard": "Показать на доске"
+  },
+  "legend": {
+    "move": "Ход",
+    "moveFollowUp": " (и следующие ходы бледнее)",
+    "attacks": "атакует",
+    "defends": "защищает",
+    "pins": "связывает",
+    "discovers": "вскрывает",
+    "becomesWeak": "становится слабым",
+    "check": "Шах"
+  },
+  "evalBar": {
+    "whiteWinPct": "Белые побеждают в {{pct}} %"
+  }
+}

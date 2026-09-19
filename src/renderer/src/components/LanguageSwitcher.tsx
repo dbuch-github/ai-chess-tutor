@@ -8,7 +8,17 @@ const LANGUAGES: { code: SupportedLocale; flag: string; name: string }[] = [
   { code: 'de', flag: '🇩🇪', name: 'Deutsch' },
   { code: 'fr', flag: '🇫🇷', name: 'Français' },
   { code: 'es', flag: '🇪🇸', name: 'Español' },
-  { code: 'it', flag: '🇮🇹', name: 'Italiano' }
+  { code: 'it', flag: '🇮🇹', name: 'Italiano' },
+  { code: 'pt', flag: '🇵🇹', name: 'Português' },
+  { code: 'ru', flag: '🇷🇺', name: 'Русский' },
+  { code: 'pl', flag: '🇵🇱', name: 'Polski' },
+  { code: 'tr', flag: '🇹🇷', name: 'Türkçe' },
+  { code: 'el', flag: '🇬🇷', name: 'Ελληνικά' },
+  { code: 'hr', flag: '🇭🇷', name: 'Hrvatski' },
+  { code: 'sr', flag: '🇷🇸', name: 'Srpski' },
+  { code: 'ar', flag: '🇸🇦', name: 'العربية' },
+  { code: 'hi', flag: '🇮🇳', name: 'हिन्दी' },
+  { code: 'zh', flag: '🇨🇳', name: '中文' }
 ]
 
 /** Sprachauswahl über eine Flagge (Topbar, ganz rechts) – wechselt i18next sofort und persistiert die Wahl. */

@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Λευκά",
+    "black": "Μαύρα",
+    "close": "Κλείσιμο",
+    "engine": "Μηχανή",
+    "unknownError": "Άγνωστο σφάλμα"
+  },
+  "app": {
+    "liveAnalysis": "Ζωντανή ανάλυση: {{name}}",
+    "analysisStarting": "Έναρξη ανάλυσης…",
+    "opponent": "Αντίπαλος: {{name}}",
+    "eloSuffix": " (Έλο {{elo}})",
+    "engineStarting": "Εκκίνηση μηχανής…",
+    "noEngineFound": "Δεν βρέθηκε μηχανή – ορίστε τη διαδρομή στις Ρυθμίσεις",
+    "noLc0Found": "Δεν βρέθηκε lc0 – ορίστε τη διαδρομή στις Ρυθμίσεις",
+    "noStockfishFound": "Δεν βρέθηκε Stockfish",
+    "engineError": "Σφάλμα μηχανής: {{message}}",
+    "analysisError": "Ανάλυση: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Νέα παρτίδα",
+    "playAsWhite": "Παίξτε με τα λευκά",
+    "playAsBlack": "Παίξτε με τα μαύρα",
+    "recordOtb": "Καταγραφή παρτίδας σε φυσική σκακιέρα",
+    "recordOtbHint": "Δύο άτομα στη φυσική σκακιέρα, καμία κίνηση μηχανής – η ζωντανή ανάλυση και η αναφορά λειτουργούν κανονικά",
+    "file": "Αρχείο",
+    "exportPgn": "Εξαγωγή PGN",
+    "importPgn": "Εισαγωγή PGN",
+    "library": "Βιβλιοθήκη",
+    "analysis": "Ανάλυση",
+    "report": "Αναφορά παρτίδας",
+    "reportHint": "Σύνοψη της παρτίδας με μοτίβα σφαλμάτων και σημεία εκμάθησης",
+    "settings": "Ρυθμίσεις",
+    "language": "Επιλογή γλώσσας"
+  },
+  "status": {
+    "engineThinking": "Η μηχανή σκέφτεται…",
+    "toMove": "Παίζουν τα {{color}}",
+    "toMoveYou": "Παίζουν τα {{color}} – εσείς",
+    "otbRecording": "🔴 Καταγραφή σε σκακιέρα – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Εισαγόμενη παρτίδα – μόνο προβολή",
+    "continuePlaying": "▶ Συνέχεια παιχνιδιού"
+  },
+  "opening": {
+    "detected": "Αναγνωρίστηκαν {{matched}} από {{total}} ημικινήσεις"
+  },
+  "pgnNotice": {
+    "saved": "Αποθηκεύτηκε: {{path}}",
+    "saveFailed": "Η αποθήκευση απέτυχε: {{message}}",
+    "importFailed": "Η εισαγωγή απέτυχε: {{message}}",
+    "invalidFile": "Το αρχείο δεν περιέχει έγκυρο PGN.",
+    "loadFailed": "Δεν ήταν δυνατή η φόρτωση της παρτίδας.",
+    "invalidSavedFile": "Το αποθηκευμένο αρχείο δεν περιέχει έγκυρο PGN.",
+    "imported": "Η παρτίδα εισήχθη – η προβολή, η ανάλυση και ο δάσκαλος είναι έτοιμα.",
+    "loadedFromLibrary": "Η παρτίδα φορτώθηκε από τη βιβλιοθήκη – η προβολή, η ανάλυση και ο δάσκαλος είναι έτοιμα."
+  },
+  "tutor": {
+    "unknownEval": "άγνωστη",
+    "title": "Δάσκαλος",
+    "modeAriaLabel": "Λειτουργία δασκάλου",
+    "modeOffLabel": "Σιωπηλός",
+    "modeOffHint": "Μόνο κατόπιν αιτήματος",
+    "modeMistakesLabel": "Λάθη",
+    "modeMistakesHint": "Σχολιάζει τα λάθη και τις γκάφες σας",
+    "modeChattyLabel": "Ενεργός",
+    "modeChattyHint": "Επίσης ανακρίβειες και λάθη της μηχανής",
+    "undoMove": "↶ Αναίρεση",
+    "undoHint": "Αναίρεση της τελευταίας κίνησης",
+    "redoMove": "↷ Επανάληψη",
+    "redoHint": "Επαναφορά της αναιρεμένης κίνησης",
+    "emptyPlaceholder": "Θα μιλήσω όταν κάνετε λάθη – ή ρωτήστε με απευθείας, π.χ. «Ποιο είναι το σχέδιο εδώ;». Μπορείτε επίσης να κάνετε κλικ στις γραμμές ανάλυσης παραπάνω.",
+    "hidePreview": "✕ Απόκρυψη πρότασης",
+    "showPreview": "↗ Εμφάνιση {{move}} στη σκακιέρα",
+    "suggestMove": "💡 Πρόταση κίνησης",
+    "suggestMoveHintReady": "Ζητήστε μια προτεινόμενη κίνηση με εξήγηση",
+    "suggestMoveHintWait": "Μόνο όταν είναι η σειρά σας και η ανάλυση είναι έτοιμη",
+    "questionPlaceholder": "Ερώτηση στον δάσκαλο…",
+    "send": "Αποστολή"
+  },
+  "notation": {
+    "opening": "Άνοιγμα",
+    "middlegame": "Μεσοπαίγνιο",
+    "endgame": "Τελικό παιχνίδι"
+  },
+  "report": {
+    "gameInProgress": "Η παρτίδα είναι ακόμη σε εξέλιξη",
+    "title": "Αναφορά παρτίδας",
+    "blunderCount": "{{count}} γκάφες",
+    "mistakeCount": "{{count}} λάθη",
+    "inaccuracyCount": "{{count}} ανακρίβειες",
+    "bestMoveCount": "{{count}} καλύτερες κινήσεις",
+    "criticalMoments": "Κρίσιμες στιγμές",
+    "noApiKey": "Δεν έχει οριστεί κλειδί API.",
+    "setKeyNow": "Ορίστε ένα τώρα στις Ρυθμίσεις",
+    "placeholder": "Συνοψίζει την παρτίδα: επαναλαμβανόμενα μοτίβα σφαλμάτων, οι πιο κρίσιμες στιγμές και συγκεκριμένα σημεία εκμάθησης για την επόμενη παρτίδα.",
+    "generate": "Δημιουργία αναφοράς",
+    "regenerate": "Δημιουργία ξανά"
+  },
+  "settings": {
+    "title": "Ρυθμίσεις μηχανής",
+    "opponentEngine": "Μηχανή αντιπάλου",
+    "engineKind": "Τύπος μηχανής",
+    "engineKindStockfish": "Stockfish (κλασικό, με όριο Έλο)",
+    "engineKindMaia": "Maia (lc0, ανθρώπινο παιχνίδι)",
+    "engineKindCustom": "Άλλη μηχανή UCI",
+    "pathToLc0": "Διαδρομή για το lc0",
+    "chooseLc0Binary": "Επιλογή εκτελέσιμου lc0",
+    "browse": "Περιήγηση…",
+    "strength": "Δύναμη παιχνιδιού",
+    "maiaWeightsFile": "Αρχείο βαρών Maia (.pb.gz)",
+    "chooseMaiaWeights": "Επιλογή αρχείου βαρών Maia",
+    "maiaPathPlaceholder": "/διαδρομή/προς/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Ο επιλογέας δύναμης παραπάνω ορίζει αυτόματα την αντίστοιχη διαδρομή· προσαρμοσμένα δίκτυα (π.χ. άλλες δυνάμεις ή παραλλαγές) μπορούν επίσης να επιλεγούν χειροκίνητα εδώ – περισσότερα διατίθενται στο ",
+    "maiaHintAfterLink": ". Το Maia παίζει απευθείας από το δίκτυο χωρίς αναζήτηση – η δύναμη είναι ενσωματωμένη στο επιλεγμένο αρχείο, δεν χρειάζεται περαιτέρω ρύθμιση.",
+    "pathToEngine": "Διαδρομή για τη μηχανή",
+    "chooseEngine": "Επιλογή μηχανής",
+    "limitStrength": "Περιορισμός δύναμης παιχνιδιού (UCI_Elo)",
+    "elo": "Έλο",
+    "moveTimeMs": "Χρόνος ανά κίνηση (ms)",
+    "openingBook": "Βιβλίο ανοιγμάτων",
+    "useOpeningBookForOpponent": "Χρήση για τον αντίπαλο (πρώτες 10 πλήρεις κινήσεις)",
+    "openingBookHint": "Ο αντίπαλος παίζει τότε τυχαία από γνωστές γραμμές ανοίγματος αντί να ακολουθεί πάντα την καλύτερη κίνηση της μηχανής – πιο ρεαλιστικό και ποικίλο. Μετά αναλαμβάνει η μηχανή.",
+    "clock": "Σκακιστικό ρολόι (έλεγχος χρόνου)",
+    "timeControl": "Έλεγχος χρόνου",
+    "baseTimeMinutes": "Βασικός χρόνος (λεπτά)",
+    "incrementSeconds": "Προσαύξηση (δευτερόλεπτα/κίνηση)",
+    "clockHintUnlimited": "Ελεύθερο παιχνίδι χωρίς ρολόι – κάθε πλευρά έχει απεριόριστο χρόνο σκέψης.",
+    "clockHintTimed": "Αν ο χρόνος μιας πλευράς τελειώσει, χάνει αμέσως την παρτίδα λόγω υπέρβασης χρόνου. Η αποθήκευση επαναφέρει και τα δύο ρολόγια στον βασικό χρόνο που επιλέχθηκε εδώ.",
+    "sound": "Ήχος",
+    "moveSoundLabel": "Ήχος κλικ σε κάθε κίνηση",
+    "analysisEngine": "Μηχανή ανάλυσης (Stockfish)",
+    "pathToStockfish": "Διαδρομή για το Stockfish",
+    "chooseStockfish": "Επιλογή Stockfish",
+    "llmTutor": "Δάσκαλος LLM",
+    "provider": "Πάροχος",
+    "model": "Μοντέλο",
+    "apiKey": "Κλειδί API",
+    "apiKeySavedKeychain": "✓ αποθηκεύτηκε (Keychain)",
+    "apiKeyReplacePlaceholder": "Εισαγάγετε νέο κλειδί για αντικατάσταση",
+    "apiKeyAvailableAt": "Το κλειδί API είναι διαθέσιμο στο {{hint}}.",
+    "deleteStoredKey": "Διαγραφή αποθηκευμένου κλειδιού",
+    "cancel": "Ακύρωση",
+    "saveAndApply": "Αποθήκευση & εφαρμογή"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Ελεύθερο (χωρίς έλεγχο χρόνου)",
+      "classical": "Κλασικό (τουρνουά)",
+      "rapid": "Ταχύ (Rapid)",
+      "blitz": "Μπλιτζ",
+      "bullet": "Μπουλέτ"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Τα λευκά κερδίζουν με ματ",
+    "checkmateBlack": "Τα μαύρα κερδίζουν με ματ",
+    "stalemate": "Ισοπαλία λόγω πατ",
+    "threefold": "Ισοπαλία λόγω τριπλής επανάληψης θέσης",
+    "insufficientMaterial": "Ισοπαλία: ανεπαρκές υλικό",
+    "fiftyMoves": "Ισοπαλία: κανόνας των 50 κινήσεων",
+    "draw": "Ισοπαλία",
+    "wins": "Τα {{winner}} κερδίζουν",
+    "winsByTimeForfeit": "Τα {{winner}} κερδίζουν λόγω χρόνου"
+  },
+  "pgn": {
+    "white": "Λευκά",
+    "black": "Μαύρα",
+    "player": "Παίκτης",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % πιθανότητας νίκης)"
+  },
+  "moveList": {
+    "title": "Παρτίδα",
+    "noMoves": "Δεν υπάρχουν ακόμη κινήσεις.",
+    "discardedContinuation": "Απορριφθείσα συνέχεια"
+  },
+  "library": {
+    "title": "Βιβλιοθήκη παρτίδων",
+    "loading": "Φόρτωση…",
+    "empty": "Δεν υπάρχουν ακόμη αποθηκευμένες παρτίδες. Οι παρτίδες αποθηκεύονται αυτόματα όταν τελειώνουν.",
+    "halfMoves": "{{count}} ημικινήσεις",
+    "open": "Άνοιγμα",
+    "delete": "Διαγραφή",
+    "resultWhiteWins": "Τα λευκά κερδίζουν",
+    "resultBlackWins": "Τα μαύρα κερδίζουν",
+    "resultDraw": "Ισοπαλία",
+    "resultOpen": "Σε εξέλιξη"
+  },
+  "info": {
+    "author": "Συγγραφέας: Daniel Buch",
+    "licenseFreeSoftware": "Ελεύθερο λογισμικό υπό την άδεια",
+    "licenseSuffix": "(ή μεταγενέστερη) – χωρίς καμία εγγύηση.",
+    "sourceCode": "Πηγαίος κώδικας στο GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Επιλογή συσκευής Bluetooth",
+    "multipleFound": "Βρέθηκαν πολλές αντίστοιχες συσκευές – ποια να συνδεθεί;",
+    "connect": "Σύνδεση"
+  },
+  "chessnut": {
+    "statusUnsupported": "Δεν υποστηρίζεται",
+    "statusDisconnected": "Αποσυνδεδεμένο",
+    "statusConnecting": "Σύνδεση…",
+    "statusConnected": "Συνδεδεμένο",
+    "statusError": "Σφάλμα",
+    "bestMoveHint": "Αναβοσβήνει την καλύτερη κίνηση της τρέχουσας ανάλυσης Stockfish στη σκακιέρα (εναλλάξ αρχικό/τελικό τετράγωνο) όσο είναι η σειρά σας",
+    "bestMoveLabel": "Καλύτερη κίνηση",
+    "beepHint": "Ηχητικό σήμα απευθείας στη σκακιέρα για σαχ, ανιχνευμένη μη έγκυρη προσπάθεια κίνησης ή λήξη χρόνου",
+    "beepLabel": "🔔 Ηχητικό σήμα",
+    "pleaseReplay": "Παρακαλώ επαναλάβετε: {{squares}}",
+    "disconnect": "Αποσύνδεση",
+    "connect": "Σύνδεση"
+  },
+  "analysis": {
+    "title": "Ανάλυση Stockfish",
+    "depth": "Βάθος {{depth}}",
+    "showOnBoard": "Εμφάνιση στη σκακιέρα"
+  },
+  "legend": {
+    "move": "Κίνηση",
+    "moveFollowUp": " (& επόμενες κινήσεις πιο αχνές)",
+    "attacks": "επιτίθεται",
+    "defends": "υπερασπίζεται",
+    "pins": "καρφώνει",
+    "discovers": "αποκαλύπτει",
+    "becomesWeak": "εξασθενεί",
+    "check": "Σαχ"
+  },
+  "evalBar": {
+    "whiteWinPct": "Τα λευκά κερδίζουν στο {{pct}} %"
+  }
+}

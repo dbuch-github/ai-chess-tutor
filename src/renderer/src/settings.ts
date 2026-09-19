@@ -1,6 +1,22 @@
 import type { EngineKind, LlmProviderId, SupportedLocale } from '../../shared/types'
 
-const SUPPORTED_LOCALES: SupportedLocale[] = ['en', 'de', 'fr', 'es', 'it']
+const SUPPORTED_LOCALES: SupportedLocale[] = [
+  'en',
+  'de',
+  'fr',
+  'es',
+  'it',
+  'pt',
+  'ru',
+  'ar',
+  'pl',
+  'tr',
+  'zh',
+  'hi',
+  'el',
+  'sr',
+  'hr'
+]
 
 /** Systemsprache erkennen (nur beim allerersten Start relevant, siehe loadSettings) – Fallback Englisch. */
 function detectLocale(): SupportedLocale {

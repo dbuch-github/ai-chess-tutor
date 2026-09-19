@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "白方",
+    "black": "黑方",
+    "close": "关闭",
+    "engine": "引擎",
+    "unknownError": "未知错误"
+  },
+  "app": {
+    "liveAnalysis": "实时分析：{{name}}",
+    "analysisStarting": "正在启动分析…",
+    "opponent": "对手：{{name}}",
+    "eloSuffix": "（等级分 {{elo}}）",
+    "engineStarting": "正在启动引擎…",
+    "noEngineFound": "未找到引擎 – 请在设置中指定路径",
+    "noLc0Found": "未找到 lc0 – 请在设置中指定路径",
+    "noStockfishFound": "未找到 Stockfish",
+    "engineError": "引擎错误：{{message}}",
+    "analysisError": "分析：{{message}}"
+  },
+  "topbar": {
+    "newGame": "新对局",
+    "playAsWhite": "执白",
+    "playAsBlack": "执黑",
+    "recordOtb": "记录实体棋盘对局",
+    "recordOtbHint": "两人在实体棋盘上对弈，没有引擎走子 – 实时分析和报告照常运行",
+    "file": "文件",
+    "exportPgn": "导出 PGN",
+    "importPgn": "导入 PGN",
+    "library": "对局库",
+    "analysis": "分析",
+    "report": "对局报告",
+    "reportHint": "包含错误模式和学习要点的对局总结",
+    "settings": "设置",
+    "language": "选择语言"
+  },
+  "status": {
+    "engineThinking": "引擎思考中…",
+    "toMove": "轮到{{color}}走棋",
+    "toMoveYou": "轮到{{color}}走棋 – 你的回合",
+    "otbRecording": "🔴 棋盘记录中 – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 已导入对局 – 仅供查看",
+    "continuePlaying": "▶ 继续对局"
+  },
+  "opening": {
+    "detected": "已识别 {{total}} 个半回合中的 {{matched}} 个"
+  },
+  "pgnNotice": {
+    "saved": "已保存：{{path}}",
+    "saveFailed": "保存失败：{{message}}",
+    "importFailed": "导入失败：{{message}}",
+    "invalidFile": "该文件不包含有效的 PGN。",
+    "loadFailed": "无法加载对局。",
+    "invalidSavedFile": "已保存的文件不包含有效的 PGN。",
+    "imported": "对局已导入 – 查看、分析和导师均已就绪。",
+    "loadedFromLibrary": "已从对局库加载对局 – 查看、分析和导师均已就绪。"
+  },
+  "tutor": {
+    "unknownEval": "未知",
+    "title": "导师",
+    "modeAriaLabel": "导师模式",
+    "modeOffLabel": "静默",
+    "modeOffHint": "仅在请求时",
+    "modeMistakesLabel": "错误",
+    "modeMistakesHint": "点评你的错误和重大失误",
+    "modeChattyLabel": "活跃",
+    "modeChattyHint": "同时包括不精确的走法和引擎的失误",
+    "undoMove": "↶ 悔棋",
+    "undoHint": "撤销上一步棋",
+    "redoMove": "↷ 重做",
+    "redoHint": "恢复已撤销的走法",
+    "emptyPlaceholder": "出现错误时我会提醒你——或者直接问我，例如“这里的计划是什么？”你也可以点击上方的分析线路。",
+    "hidePreview": "✕ 隐藏建议",
+    "showPreview": "↗ 在棋盘上显示 {{move}}",
+    "suggestMove": "💡 建议走法",
+    "suggestMoveHintReady": "请求带解释的走法建议",
+    "suggestMoveHintWait": "仅在轮到你走棋且分析就绪时可用",
+    "questionPlaceholder": "向导师提问…",
+    "send": "发送"
+  },
+  "notation": {
+    "opening": "开局",
+    "middlegame": "中局",
+    "endgame": "残局"
+  },
+  "report": {
+    "gameInProgress": "对局仍在进行中",
+    "title": "对局报告",
+    "blunderCount": "{{count}} 次重大失误",
+    "mistakeCount": "{{count}} 次错误",
+    "inaccuracyCount": "{{count}} 次不精确",
+    "bestMoveCount": "{{count}} 次最佳走法",
+    "criticalMoments": "关键时刻",
+    "noApiKey": "尚未设置 API 密钥。",
+    "setKeyNow": "立即在设置中设置",
+    "placeholder": "总结本局对弈：反复出现的错误模式、最关键的时刻，以及下一局可用的具体学习要点。",
+    "generate": "生成报告",
+    "regenerate": "重新生成"
+  },
+  "settings": {
+    "title": "引擎设置",
+    "opponentEngine": "对手引擎",
+    "engineKind": "引擎类型",
+    "engineKindStockfish": "Stockfish（经典版，受等级分限制）",
+    "engineKindMaia": "Maia（lc0，类人下法）",
+    "engineKindCustom": "其他 UCI 引擎",
+    "pathToLc0": "lc0 路径",
+    "chooseLc0Binary": "选择 lc0 可执行文件",
+    "browse": "浏览…",
+    "strength": "棋力",
+    "maiaWeightsFile": "Maia 权重文件 (.pb.gz)",
+    "chooseMaiaWeights": "选择 Maia 权重文件",
+    "maiaPathPlaceholder": "/路径/到/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "上方的棋力选择会自动设置相应路径；也可以在此手动选择自定义网络（例如其他棋力等级或变体）——更多网络可在此获取：",
+    "maiaHintAfterLink": "。Maia 直接根据网络走棋，不进行搜索——棋力已内置于所选文件中，无需其他配置。",
+    "pathToEngine": "引擎路径",
+    "chooseEngine": "选择引擎",
+    "limitStrength": "限制棋力 (UCI_Elo)",
+    "elo": "等级分",
+    "moveTimeMs": "每步用时 (毫秒)",
+    "openingBook": "开局库",
+    "useOpeningBookForOpponent": "用于对手（前 10 个完整回合）",
+    "openingBookHint": "此时对手会从已知的开局变例中随机选择走法，而不总是遵循引擎的最佳走法——更真实、更多样。之后由引擎接管。",
+    "clock": "棋钟（时间控制）",
+    "timeControl": "时间控制",
+    "baseTimeMinutes": "基础时间（分钟）",
+    "incrementSeconds": "每步加时（秒/步）",
+    "clockHintUnlimited": "无棋钟的自由对局——双方都有无限的思考时间。",
+    "clockHintTimed": "若一方的时间用尽，将立即因超时输掉对局。保存会将双方棋钟重置为此处选择的基础时间。",
+    "sound": "音效",
+    "moveSoundLabel": "每步走棋时的点击音",
+    "analysisEngine": "分析引擎 (Stockfish)",
+    "pathToStockfish": "Stockfish 路径",
+    "chooseStockfish": "选择 Stockfish",
+    "llmTutor": "LLM 导师",
+    "provider": "提供方",
+    "model": "模型",
+    "apiKey": "API 密钥",
+    "apiKeySavedKeychain": "✓ 已保存（钥匙串）",
+    "apiKeyReplacePlaceholder": "输入新密钥以替换",
+    "apiKeyAvailableAt": "可在 {{hint}} 获取 API 密钥。",
+    "deleteStoredKey": "删除已保存的密钥",
+    "cancel": "取消",
+    "saveAndApply": "保存并应用"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "自由（无时间控制）",
+      "classical": "经典（比赛用时）",
+      "rapid": "快棋 (Rapid)",
+      "blitz": "闪电战 (Blitz)",
+      "bullet": "超快棋 (Bullet)"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "白方将死获胜",
+    "checkmateBlack": "黑方将死获胜",
+    "stalemate": "因逼和形成和棋",
+    "threefold": "因三次重复局面形成和棋",
+    "insufficientMaterial": "和棋：子力不足",
+    "fiftyMoves": "和棋：50 回合规则",
+    "draw": "和棋",
+    "wins": "{{winner}}获胜",
+    "winsByTimeForfeit": "{{winner}}因超时获胜"
+  },
+  "pgn": {
+    "white": "白方",
+    "black": "黑方",
+    "player": "玩家",
+    "moveCommentLossPct": "{{label}}（−{{pct}}% 获胜概率）"
+  },
+  "moveList": {
+    "title": "对局",
+    "noMoves": "暂无走法。",
+    "discardedContinuation": "已放弃的后续着法"
+  },
+  "library": {
+    "title": "对局库",
+    "loading": "加载中…",
+    "empty": "尚无已保存的对局。对局结束后会自动保存。",
+    "halfMoves": "{{count}} 个半回合",
+    "open": "打开",
+    "delete": "删除",
+    "resultWhiteWins": "白方获胜",
+    "resultBlackWins": "黑方获胜",
+    "resultDraw": "和棋",
+    "resultOpen": "进行中"
+  },
+  "info": {
+    "author": "作者：Daniel Buch",
+    "licenseFreeSoftware": "基于以下许可证的自由软件：",
+    "licenseSuffix": "（或更高版本）——不提供任何担保。",
+    "sourceCode": "GitHub 上的源代码"
+  },
+  "bluetooth": {
+    "chooseDevice": "选择蓝牙设备",
+    "multipleFound": "找到多个匹配的设备 – 要连接哪一个？",
+    "connect": "连接"
+  },
+  "chessnut": {
+    "statusUnsupported": "不支持",
+    "statusDisconnected": "已断开",
+    "statusConnecting": "连接中…",
+    "statusConnected": "已连接",
+    "statusError": "错误",
+    "bestMoveHint": "只要轮到你走棋，就会在棋盘上交替闪烁显示当前 Stockfish 分析的最佳走法的起点/终点格",
+    "bestMoveLabel": "最佳走法",
+    "beepHint": "在将军、检测到无效走法尝试或超时的情况下，直接在棋盘上发出提示音",
+    "beepLabel": "🔔 提示音",
+    "pleaseReplay": "请重新走棋：{{squares}}",
+    "disconnect": "断开连接",
+    "connect": "连接"
+  },
+  "analysis": {
+    "title": "Stockfish 分析",
+    "depth": "深度 {{depth}}",
+    "showOnBoard": "在棋盘上显示"
+  },
+  "legend": {
+    "move": "走法",
+    "moveFollowUp": "（及后续着法，颜色更淡）",
+    "attacks": "攻击",
+    "defends": "保护",
+    "pins": "牵制",
+    "discovers": "闪露",
+    "becomesWeak": "变弱",
+    "check": "将军"
+  },
+  "evalBar": {
+    "whiteWinPct": "白方获胜概率 {{pct}} %"
+  }
+}

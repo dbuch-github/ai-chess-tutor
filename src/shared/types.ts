@@ -88,7 +88,22 @@ export interface ConfigureResult {
 export type LlmProviderId = 'anthropic' | 'openai' | 'google'
 
 /** UI-Sprache; steuert auch die Antwortsprache des LLM-Tutors. */
-export type SupportedLocale = 'en' | 'de' | 'fr' | 'es' | 'it'
+export type SupportedLocale =
+  | 'en'
+  | 'de'
+  | 'fr'
+  | 'es'
+  | 'it'
+  | 'pt'
+  | 'ru'
+  | 'ar'
+  | 'pl'
+  | 'tr'
+  | 'zh'
+  | 'hi'
+  | 'el'
+  | 'sr'
+  | 'hr'
 
 export interface TutorConfig {
   provider: LlmProviderId

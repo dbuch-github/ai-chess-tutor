@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Brancas",
+    "black": "Pretas",
+    "close": "Fechar",
+    "engine": "Motor",
+    "unknownError": "Erro desconhecido"
+  },
+  "app": {
+    "liveAnalysis": "Análise ao vivo: {{name}}",
+    "analysisStarting": "Iniciando análise…",
+    "opponent": "Adversário: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Iniciando motor…",
+    "noEngineFound": "Nenhum motor encontrado – defina o caminho nas Configurações",
+    "noLc0Found": "lc0 não encontrado – defina o caminho nas Configurações",
+    "noStockfishFound": "Stockfish não encontrado",
+    "engineError": "Erro do motor: {{message}}",
+    "analysisError": "Análise: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Nova partida",
+    "playAsWhite": "Jogar com as brancas",
+    "playAsBlack": "Jogar com as pretas",
+    "recordOtb": "Registrar partida sobre o tabuleiro",
+    "recordOtbHint": "Duas pessoas no tabuleiro físico, sem jogada do motor – análise ao vivo e relatório funcionam normalmente",
+    "file": "Arquivo",
+    "exportPgn": "Exportar PGN",
+    "importPgn": "Importar PGN",
+    "library": "Biblioteca",
+    "analysis": "Análise",
+    "report": "Relatório da partida",
+    "reportHint": "Resumo da partida com padrões de erro e pontos de aprendizado",
+    "settings": "Configurações",
+    "language": "Escolher idioma"
+  },
+  "status": {
+    "engineThinking": "O motor está pensando…",
+    "toMove": "Jogam as {{color}}",
+    "toMoveYou": "Jogam as {{color}} – você",
+    "otbRecording": "🔴 Gravação OTB – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Partida importada – somente visualização",
+    "continuePlaying": "▶ Continuar jogando"
+  },
+  "opening": {
+    "detected": "{{matched}} de {{total}} meios-lances reconhecidos"
+  },
+  "pgnNotice": {
+    "saved": "Salvo: {{path}}",
+    "saveFailed": "Falha ao salvar: {{message}}",
+    "importFailed": "Falha ao importar: {{message}}",
+    "invalidFile": "O arquivo não contém um PGN válido.",
+    "loadFailed": "Não foi possível carregar a partida.",
+    "invalidSavedFile": "O arquivo salvo não contém um PGN válido.",
+    "imported": "Partida importada – visualização, análise e tutor estão prontos.",
+    "loadedFromLibrary": "Partida carregada da biblioteca – visualização, análise e tutor estão prontos."
+  },
+  "tutor": {
+    "unknownEval": "desconhecida",
+    "title": "Tutor",
+    "modeAriaLabel": "Modo do tutor",
+    "modeOffLabel": "Silencioso",
+    "modeOffHint": "Somente sob pedido",
+    "modeMistakesLabel": "Erros",
+    "modeMistakesHint": "Comenta seus erros e erros graves",
+    "modeChattyLabel": "Ativo",
+    "modeChattyHint": "Também imprecisões e erros do motor",
+    "undoMove": "↶ Desfazer",
+    "undoHint": "Desfazer o último lance",
+    "redoMove": "↷ Refazer",
+    "redoHint": "Restaurar o lance desfeito",
+    "emptyPlaceholder": "Eu aviso em caso de erros – ou pergunte diretamente, por ex. “Qual é o plano aqui?” Você também pode clicar nas linhas de análise acima.",
+    "hidePreview": "✕ Ocultar sugestão",
+    "showPreview": "↗ Mostrar {{move}} no tabuleiro",
+    "suggestMove": "💡 Sugerir lance",
+    "suggestMoveHintReady": "Solicitar uma sugestão de lance com explicação",
+    "suggestMoveHintWait": "Somente quando for sua vez e a análise estiver pronta",
+    "questionPlaceholder": "Pergunta ao tutor…",
+    "send": "Enviar"
+  },
+  "notation": {
+    "opening": "Abertura",
+    "middlegame": "Meio-jogo",
+    "endgame": "Final"
+  },
+  "report": {
+    "gameInProgress": "Partida ainda em andamento",
+    "title": "Relatório da partida",
+    "blunderCount": "{{count}} erros graves",
+    "mistakeCount": "{{count}} erros",
+    "inaccuracyCount": "{{count}} imprecisões",
+    "bestMoveCount": "{{count}} melhores lances",
+    "criticalMoments": "Momentos críticos",
+    "noApiKey": "Nenhuma chave de API definida.",
+    "setKeyNow": "Defina uma agora nas Configurações",
+    "placeholder": "Resume a partida: padrões de erro recorrentes, os momentos mais críticos e pontos de aprendizado concretos para a próxima partida.",
+    "generate": "Gerar relatório",
+    "regenerate": "Gerar novamente"
+  },
+  "settings": {
+    "title": "Configurações do motor",
+    "opponentEngine": "Motor adversário",
+    "engineKind": "Tipo de motor",
+    "engineKindStockfish": "Stockfish (clássico, limitado por Elo)",
+    "engineKindMaia": "Maia (lc0, jogo humano)",
+    "engineKindCustom": "Outro motor UCI",
+    "pathToLc0": "Caminho para o lc0",
+    "chooseLc0Binary": "Escolher binário do lc0",
+    "browse": "Procurar…",
+    "strength": "Força de jogo",
+    "maiaWeightsFile": "Arquivo de pesos do Maia (.pb.gz)",
+    "chooseMaiaWeights": "Escolher arquivo de pesos do Maia",
+    "maiaPathPlaceholder": "/caminho/para/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "O seletor de força acima define automaticamente o caminho correspondente; redes personalizadas (por exemplo, outras forças ou variantes) também podem ser escolhidas manualmente aqui – mais estão disponíveis em ",
+    "maiaHintAfterLink": ". O Maia joga diretamente a partir da rede sem busca – a força está embutida no arquivo escolhido, sem necessidade de configuração adicional.",
+    "pathToEngine": "Caminho para o motor",
+    "chooseEngine": "Escolher motor",
+    "limitStrength": "Limitar força de jogo (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Tempo por lance (ms)",
+    "openingBook": "Livro de aberturas",
+    "useOpeningBookForOpponent": "Usar para o adversário (primeiros 10 lances completos)",
+    "openingBookHint": "O adversário então joga aleatoriamente a partir de linhas de abertura conhecidas, em vez de sempre seguir o melhor lance do motor – mais realista e variado. Depois disso, o motor assume.",
+    "clock": "Relógio de xadrez (controle de tempo)",
+    "timeControl": "Controle de tempo",
+    "baseTimeMinutes": "Tempo base (minutos)",
+    "incrementSeconds": "Incremento (segundos/lance)",
+    "clockHintUnlimited": "Jogo livre sem relógio – cada lado tem tempo ilimitado para pensar.",
+    "clockHintTimed": "Se o relógio de um lado chegar a zero, ele perde a partida imediatamente por tempo. Salvar reinicia os dois relógios para o tempo base escolhido aqui.",
+    "sound": "Som",
+    "moveSoundLabel": "Som de clique a cada lance",
+    "analysisEngine": "Motor de análise (Stockfish)",
+    "pathToStockfish": "Caminho para o Stockfish",
+    "chooseStockfish": "Escolher Stockfish",
+    "llmTutor": "Tutor LLM",
+    "provider": "Provedor",
+    "model": "Modelo",
+    "apiKey": "Chave de API",
+    "apiKeySavedKeychain": "✓ salva (Keychain)",
+    "apiKeyReplacePlaceholder": "Digite uma nova chave para substituí-la",
+    "apiKeyAvailableAt": "Chave de API disponível em {{hint}}.",
+    "deleteStoredKey": "Excluir chave salva",
+    "cancel": "Cancelar",
+    "saveAndApply": "Salvar e aplicar"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Livre (sem controle de tempo)",
+      "classical": "Clássico (xadrez de torneio)",
+      "rapid": "Rápido (Rapid)",
+      "blitz": "Blitz",
+      "bullet": "Bullet (Bala)"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "As brancas vencem por xeque-mate",
+    "checkmateBlack": "As pretas vencem por xeque-mate",
+    "stalemate": "Empate por afogamento",
+    "threefold": "Empate por repetição de posição",
+    "insufficientMaterial": "Empate: material insuficiente",
+    "fiftyMoves": "Empate: regra dos 50 lances",
+    "draw": "Empate",
+    "wins": "As {{winner}} vencem",
+    "winsByTimeForfeit": "As {{winner}} vencem por tempo"
+  },
+  "pgn": {
+    "white": "Brancas",
+    "black": "Pretas",
+    "player": "Jogador",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % de probabilidade de vitória)"
+  },
+  "moveList": {
+    "title": "Partida",
+    "noMoves": "Ainda sem lances.",
+    "discardedContinuation": "Continuação descartada"
+  },
+  "library": {
+    "title": "Biblioteca de partidas",
+    "loading": "Carregando…",
+    "empty": "Ainda não há partidas salvas. As partidas são salvas automaticamente quando terminam.",
+    "halfMoves": "{{count}} meios-lances",
+    "open": "Abrir",
+    "delete": "Excluir",
+    "resultWhiteWins": "As brancas vencem",
+    "resultBlackWins": "As pretas vencem",
+    "resultDraw": "Empate",
+    "resultOpen": "Em aberto"
+  },
+  "info": {
+    "author": "Autor: Daniel Buch",
+    "licenseFreeSoftware": "Software livre sob a",
+    "licenseSuffix": "(ou posterior) – sem garantia.",
+    "sourceCode": "Código-fonte no GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Escolher dispositivo Bluetooth",
+    "multipleFound": "Vários dispositivos correspondentes encontrados – qual deve ser conectado?",
+    "connect": "Conectar"
+  },
+  "chessnut": {
+    "statusUnsupported": "Não suportado",
+    "statusDisconnected": "Desconectado",
+    "statusConnecting": "Conectando…",
+    "statusConnected": "Conectado",
+    "statusError": "Erro",
+    "bestMoveHint": "Faz piscar o melhor lance da análise do Stockfish em andamento no tabuleiro (casa de origem/destino alternando) enquanto for sua vez",
+    "bestMoveLabel": "Melhor lance",
+    "beepHint": "Sinal sonoro diretamente no tabuleiro para xeque, uma tentativa de lance inválido detectada ou tempo esgotado",
+    "beepLabel": "🔔 Sinal sonoro",
+    "pleaseReplay": "Por favor, repita: {{squares}}",
+    "disconnect": "Desconectar",
+    "connect": "Conectar"
+  },
+  "analysis": {
+    "title": "Análise do Stockfish",
+    "depth": "Profundidade {{depth}}",
+    "showOnBoard": "Mostrar no tabuleiro"
+  },
+  "legend": {
+    "move": "Lance",
+    "moveFollowUp": " (& lances seguintes mais claros)",
+    "attacks": "ataca",
+    "defends": "defende",
+    "pins": "crava",
+    "discovers": "revela",
+    "becomesWeak": "fica fraco",
+    "check": "Xeque"
+  },
+  "evalBar": {
+    "whiteWinPct": "As brancas vencem {{pct}} %"
+  }
+}

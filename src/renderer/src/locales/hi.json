@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "सफ़ेद",
+    "black": "काला",
+    "close": "बंद करें",
+    "engine": "इंजन",
+    "unknownError": "अज्ञात त्रुटि"
+  },
+  "app": {
+    "liveAnalysis": "लाइव विश्लेषण: {{name}}",
+    "analysisStarting": "विश्लेषण शुरू हो रहा है…",
+    "opponent": "प्रतिद्वंद्वी: {{name}}",
+    "eloSuffix": " (एलो {{elo}})",
+    "engineStarting": "इंजन शुरू हो रहा है…",
+    "noEngineFound": "कोई इंजन नहीं मिला – सेटिंग्स में पथ सेट करें",
+    "noLc0Found": "lc0 नहीं मिला – सेटिंग्स में पथ सेट करें",
+    "noStockfishFound": "Stockfish नहीं मिला",
+    "engineError": "इंजन त्रुटि: {{message}}",
+    "analysisError": "विश्लेषण: {{message}}"
+  },
+  "topbar": {
+    "newGame": "नया खेल",
+    "playAsWhite": "सफ़ेद से खेलें",
+    "playAsBlack": "काले से खेलें",
+    "recordOtb": "वास्तविक बोर्ड पर खेल रिकॉर्ड करें",
+    "recordOtbHint": "भौतिक बोर्ड पर दो लोग, कोई इंजन चाल नहीं – लाइव विश्लेषण और रिपोर्ट हमेशा की तरह काम करते हैं",
+    "file": "फ़ाइल",
+    "exportPgn": "PGN निर्यात करें",
+    "importPgn": "PGN आयात करें",
+    "library": "लाइब्रेरी",
+    "analysis": "विश्लेषण",
+    "report": "खेल रिपोर्ट",
+    "reportHint": "गलती के पैटर्न और सीखने के बिंदुओं के साथ खेल का सारांश",
+    "settings": "सेटिंग्स",
+    "language": "भाषा चुनें"
+  },
+  "status": {
+    "engineThinking": "इंजन सोच रहा है…",
+    "toMove": "{{color}} की बारी",
+    "toMoveYou": "{{color}} की बारी – आपकी बारी",
+    "otbRecording": "🔴 बोर्ड रिकॉर्डिंग – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 आयातित खेल – केवल देखने के लिए",
+    "continuePlaying": "▶ खेलना जारी रखें"
+  },
+  "opening": {
+    "detected": "{{total}} में से {{matched}} अर्ध-चालें पहचानी गईं"
+  },
+  "pgnNotice": {
+    "saved": "सहेजा गया: {{path}}",
+    "saveFailed": "सहेजना विफल रहा: {{message}}",
+    "importFailed": "आयात विफल रहा: {{message}}",
+    "invalidFile": "फ़ाइल में मान्य PGN नहीं है।",
+    "loadFailed": "खेल लोड नहीं किया जा सका।",
+    "invalidSavedFile": "सहेजी गई फ़ाइल में मान्य PGN नहीं है।",
+    "imported": "खेल आयात किया गया – दृश्य, विश्लेषण और शिक्षक तैयार हैं।",
+    "loadedFromLibrary": "लाइब्रेरी से खेल लोड किया गया – दृश्य, विश्लेषण और शिक्षक तैयार हैं।"
+  },
+  "tutor": {
+    "unknownEval": "अज्ञात",
+    "title": "शिक्षक",
+    "modeAriaLabel": "शिक्षक मोड",
+    "modeOffLabel": "शांत",
+    "modeOffHint": "केवल पूछने पर",
+    "modeMistakesLabel": "गलतियाँ",
+    "modeMistakesHint": "आपकी गलतियों और बड़ी चूकों पर टिप्पणी करता है",
+    "modeChattyLabel": "सक्रिय",
+    "modeChattyHint": "साथ ही अशुद्धियाँ और इंजन की चूकें भी",
+    "undoMove": "↶ पूर्ववत करें",
+    "undoHint": "अंतिम चाल पूर्ववत करें",
+    "redoMove": "↷ फिर से करें",
+    "redoHint": "पूर्ववत की गई चाल बहाल करें",
+    "emptyPlaceholder": "मैं गलतियों पर बोलूँगा – या सीधे मुझसे पूछें, जैसे “यहाँ योजना क्या है?” आप ऊपर दी गई विश्लेषण पंक्तियों पर भी क्लिक कर सकते हैं।",
+    "hidePreview": "✕ सुझाव छिपाएँ",
+    "showPreview": "↗ बोर्ड पर {{move}} दिखाएँ",
+    "suggestMove": "💡 चाल सुझाएँ",
+    "suggestMoveHintReady": "स्पष्टीकरण के साथ चाल का सुझाव माँगें",
+    "suggestMoveHintWait": "केवल तब जब आपकी बारी हो और विश्लेषण तैयार हो",
+    "questionPlaceholder": "शिक्षक से प्रश्न…",
+    "send": "भेजें"
+  },
+  "notation": {
+    "opening": "ओपनिंग",
+    "middlegame": "मध्य खेल",
+    "endgame": "अंत खेल"
+  },
+  "report": {
+    "gameInProgress": "खेल अभी भी जारी है",
+    "title": "खेल रिपोर्ट",
+    "blunderCount": "{{count}} बड़ी चूकें",
+    "mistakeCount": "{{count}} गलतियाँ",
+    "inaccuracyCount": "{{count}} अशुद्धियाँ",
+    "bestMoveCount": "{{count}} सर्वश्रेष्ठ चालें",
+    "criticalMoments": "महत्वपूर्ण क्षण",
+    "noApiKey": "कोई API कुंजी सेट नहीं है।",
+    "setKeyNow": "अभी सेटिंग्स में सेट करें",
+    "placeholder": "खेल का सारांश देता है: दोहराए जाने वाले गलती पैटर्न, सबसे महत्वपूर्ण क्षण, और अगले खेल के लिए ठोस सीखने के बिंदु।",
+    "generate": "रिपोर्ट बनाएँ",
+    "regenerate": "फिर से बनाएँ"
+  },
+  "settings": {
+    "title": "इंजन सेटिंग्स",
+    "opponentEngine": "प्रतिद्वंद्वी इंजन",
+    "engineKind": "इंजन प्रकार",
+    "engineKindStockfish": "Stockfish (क्लासिक, एलो-सीमित)",
+    "engineKindMaia": "Maia (lc0, मानव जैसा खेल)",
+    "engineKindCustom": "अन्य UCI इंजन",
+    "pathToLc0": "lc0 का पथ",
+    "chooseLc0Binary": "lc0 बाइनरी चुनें",
+    "browse": "ब्राउज़ करें…",
+    "strength": "खेल शक्ति",
+    "maiaWeightsFile": "Maia वेट फ़ाइल (.pb.gz)",
+    "chooseMaiaWeights": "Maia वेट फ़ाइल चुनें",
+    "maiaPathPlaceholder": "/पथ/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "ऊपर दिया गया शक्ति चयनकर्ता स्वचालित रूप से संबंधित पथ सेट करता है; कस्टम नेटवर्क (जैसे अन्य शक्तियाँ या वेरिएंट) यहाँ मैन्युअल रूप से भी चुने जा सकते हैं – और अधिक यहाँ उपलब्ध हैं: ",
+    "maiaHintAfterLink": "। Maia बिना खोज के सीधे नेटवर्क से चाल चलता है – शक्ति चुनी गई फ़ाइल में निहित है, आगे किसी कॉन्फ़िगरेशन की आवश्यकता नहीं है।",
+    "pathToEngine": "इंजन का पथ",
+    "chooseEngine": "इंजन चुनें",
+    "limitStrength": "खेल शक्ति सीमित करें (UCI_Elo)",
+    "elo": "एलो",
+    "moveTimeMs": "प्रति चाल समय (ms)",
+    "openingBook": "ओपनिंग बुक",
+    "useOpeningBookForOpponent": "प्रतिद्वंद्वी के लिए उपयोग करें (पहली 10 पूर्ण चालें)",
+    "openingBookHint": "प्रतिद्वंद्वी तब हमेशा इंजन की सर्वश्रेष्ठ चाल का पालन करने के बजाय ज्ञात ओपनिंग लाइनों से यादृच्छिक रूप से खेलता है – अधिक यथार्थवादी और विविध। उसके बाद इंजन संभाल लेता है।",
+    "clock": "शतरंज घड़ी (समय नियंत्रण)",
+    "timeControl": "समय नियंत्रण",
+    "baseTimeMinutes": "मूल समय (मिनट)",
+    "incrementSeconds": "वृद्धि (सेकंड/चाल)",
+    "clockHintUnlimited": "बिना घड़ी के मुक्त खेल – प्रत्येक पक्ष के पास सोचने के लिए असीमित समय है।",
+    "clockHintTimed": "यदि किसी पक्ष का समय समाप्त हो जाता है, तो वह तुरंत समय समाप्ति से खेल हार जाता है। सहेजने पर दोनों घड़ियाँ यहाँ चुने गए मूल समय पर रीसेट हो जाती हैं।",
+    "sound": "ध्वनि",
+    "moveSoundLabel": "हर चाल पर क्लिक ध्वनि",
+    "analysisEngine": "विश्लेषण इंजन (Stockfish)",
+    "pathToStockfish": "Stockfish का पथ",
+    "chooseStockfish": "Stockfish चुनें",
+    "llmTutor": "LLM शिक्षक",
+    "provider": "प्रदाता",
+    "model": "मॉडल",
+    "apiKey": "API कुंजी",
+    "apiKeySavedKeychain": "✓ सहेजी गई (Keychain)",
+    "apiKeyReplacePlaceholder": "बदलने के लिए नई कुंजी दर्ज करें",
+    "apiKeyAvailableAt": "API कुंजी {{hint}} पर उपलब्ध है।",
+    "deleteStoredKey": "सहेजी गई कुंजी हटाएँ",
+    "cancel": "रद्द करें",
+    "saveAndApply": "सहेजें और लागू करें"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "मुक्त (कोई समय नियंत्रण नहीं)",
+      "classical": "क्लासिकल (टूर्नामेंट शतरंज)",
+      "rapid": "रैपिड",
+      "blitz": "ब्लिट्ज़",
+      "bullet": "बुलेट"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "सफ़ेद शह और मात से जीता",
+    "checkmateBlack": "काला शह और मात से जीता",
+    "stalemate": "गतिरोध (स्टेलमेट) से ड्रॉ",
+    "threefold": "स्थिति की तिगुनी पुनरावृत्ति से ड्रॉ",
+    "insufficientMaterial": "ड्रॉ: अपर्याप्त मोहरे",
+    "fiftyMoves": "ड्रॉ: 50-चाल नियम",
+    "draw": "ड्रॉ",
+    "wins": "{{winner}} जीता",
+    "winsByTimeForfeit": "{{winner}} समय समाप्ति से जीता"
+  },
+  "pgn": {
+    "white": "सफ़ेद",
+    "black": "काला",
+    "player": "खिलाड़ी",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % जीत की संभावना)"
+  },
+  "moveList": {
+    "title": "खेल",
+    "noMoves": "अभी तक कोई चाल नहीं।",
+    "discardedContinuation": "छोड़ी गई निरंतरता"
+  },
+  "library": {
+    "title": "खेल लाइब्रेरी",
+    "loading": "लोड हो रहा है…",
+    "empty": "अभी तक कोई सहेजा गया खेल नहीं है। खेल समाप्त होते ही स्वचालित रूप से सहेजे जाते हैं।",
+    "halfMoves": "{{count}} अर्ध-चालें",
+    "open": "खोलें",
+    "delete": "हटाएँ",
+    "resultWhiteWins": "सफ़ेद जीता",
+    "resultBlackWins": "काला जीता",
+    "resultDraw": "ड्रॉ",
+    "resultOpen": "जारी"
+  },
+  "info": {
+    "author": "लेखक: Daniel Buch",
+    "licenseFreeSoftware": "इस लाइसेंस के तहत मुक्त सॉफ़्टवेयर",
+    "licenseSuffix": "(या बाद का संस्करण) – बिना किसी वारंटी के।",
+    "sourceCode": "GitHub पर स्रोत कोड"
+  },
+  "bluetooth": {
+    "chooseDevice": "ब्लूटूथ डिवाइस चुनें",
+    "multipleFound": "कई मेल खाते डिवाइस मिले – किसे कनेक्ट किया जाए?",
+    "connect": "कनेक्ट करें"
+  },
+  "chessnut": {
+    "statusUnsupported": "समर्थित नहीं",
+    "statusDisconnected": "डिस्कनेक्ट",
+    "statusConnecting": "कनेक्ट हो रहा है…",
+    "statusConnected": "कनेक्टेड",
+    "statusError": "त्रुटि",
+    "bestMoveHint": "जब तक आपकी बारी है, बोर्ड पर चल रहे Stockfish विश्लेषण की सर्वश्रेष्ठ चाल को झपकाता है (शुरुआती/लक्ष्य वर्ग बारी-बारी से)",
+    "bestMoveLabel": "सर्वश्रेष्ठ चाल",
+    "beepHint": "शह, पहचानी गई अमान्य चाल के प्रयास, या समय समाप्ति पर सीधे बोर्ड पर संकेत ध्वनि",
+    "beepLabel": "🔔 संकेत ध्वनि",
+    "pleaseReplay": "कृपया फिर से चलें: {{squares}}",
+    "disconnect": "डिस्कनेक्ट करें",
+    "connect": "कनेक्ट करें"
+  },
+  "analysis": {
+    "title": "Stockfish विश्लेषण",
+    "depth": "गहराई {{depth}}",
+    "showOnBoard": "बोर्ड पर दिखाएँ"
+  },
+  "legend": {
+    "move": "चाल",
+    "moveFollowUp": " (और आगे की चालें हल्की)",
+    "attacks": "हमला करता है",
+    "defends": "बचाव करता है",
+    "pins": "पिन करता है",
+    "discovers": "उजागर करता है",
+    "becomesWeak": "कमज़ोर हो जाता है",
+    "check": "शह"
+  },
+  "evalBar": {
+    "whiteWinPct": "सफ़ेद के जीतने की संभावना {{pct}} %"
+  }
+}
