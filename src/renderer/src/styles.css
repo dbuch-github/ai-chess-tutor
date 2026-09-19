@@ -949,6 +949,29 @@ body {
   margin-left: 2px;
 }
 
+/* Zug mit Tutor-Anmerkung – gepunktete Unterstreichung, Volltext im Tooltip (title) */
+.move.has-comment {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+/* Zurückgenommene, dann anders fortgesetzte Zugfolge – als Nebenvariante unter der Hauptzeile */
+.move-variation {
+  background: transparent;
+  padding-top: 0;
+  padding-bottom: 4px;
+}
+
+.move-variation .variation-text {
+  grid-column: 2 / span 2;
+  color: var(--ink-soft);
+  font-size: 0.88em;
+  font-style: italic;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
 /* Feste Spaltenbreite für das Leitsymbol – so beginnt die eigentliche
    Notation (Zielfeld) bei jedem Zug an derselben Stelle, ob mit oder ohne
    Figur davor. */
@@ -1107,6 +1130,63 @@ piece.figurine.black {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 18px;
+}
+
+/* ---- Info-Dialog ---- */
+.info-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: min(540px, 92vw);
+  padding: 42px 36px 30px;
+}
+
+.info-icon {
+  width: 144px;
+  height: 144px;
+  border-radius: 33px;
+  margin-bottom: 21px;
+}
+
+.info-dialog h2 {
+  margin: 0 0 9px;
+  font-size: 2.1rem;
+}
+
+.info-author {
+  margin: 0 0 6px;
+  color: var(--ink-soft);
+  font-size: 1.35rem;
+}
+
+.info-license {
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.info-license a {
+  color: var(--accent);
+}
+
+.btn-coffee {
+  background: #ffdd00;
+  color: #1a1a1a;
+  border: none;
+  font-weight: 600;
+  padding: 15px 27px;
+  font-size: 1.35rem;
+}
+
+.btn-coffee:hover {
+  background: #ffe642;
+}
+
+.info-dialog .dialog-actions {
+  width: 100%;
+  justify-content: center;
 }
 
 /* ---- Partie-Report ---- */

@@ -19,6 +19,10 @@ export interface MoveRecord {
   lossPct?: number
   /** Vom Tutor generierter Erklärtext zu diesem Zug (falls automatisch kommentiert) – für den PGN-Export. */
   comment?: string
+  /** Zuvor gespielte, dann per Zugrücknahme verworfene Fortsetzung ab genau dieser Stellung –
+   *  wird beim erneuten Ziehen mit einem abweichenden Zug hier als Nebenvariante abgelegt,
+   *  damit sie in der Zugliste und im PGN-Export (als Klammer-Variante) erhalten bleibt. */
+  variation?: MoveRecord[]
 }
 
 export interface GameApi {
@@ -93,6 +97,13 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
   const [moves, setMoves] = useState<MoveRecord[]>([])
   // Zurückgenommene Zugpaare, jüngste Rücknahme zuletzt – Grundlage für "Vor"
   const [future, setFuture] = useState<MoveRecord[][]>([])
+  // Spiegelt `future` synchron – erlaubt applyMove, die verworfene Fortsetzung
+  // ohne veraltete Closures als Nebenvariante an den neuen Zug zu hängen
+  const futureRef = useRef<MoveRecord[][]>([])
+  const setFutureAnd = useCallback((next: MoveRecord[][]) => {
+    futureRef.current = next
+    setFuture(next)
+  }, [])
   // Spiegelt `moves` synchron; erlaubt undo, die zuletzt gespielten Einträge
   // ohne veraltete Closures exakt herauszuschneiden
   const movesRef = useRef<MoveRecord[]>([])
@@ -133,26 +144,37 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       const fenBefore = chess.fen()
       try {
         const move = chess.move({ from, to, promotion: promotion ?? 'q' })
+        const uci = move.from + move.to + (move.promotion ?? '')
+        // Zuvor zurückgenommene Züge (jüngste Rücknahme zuerst) in Spielreihenfolge
+        // zusammensetzen – die verworfene Fortsetzung ab genau dieser Stellung.
+        const discardedFuture = futureRef.current.length
+          ? futureRef.current.slice().reverse().flat()
+          : []
+        // Derselbe Zug wie zuvor: kein wirklicher Variantenwechsel, einfach fortsetzen.
+        const variation =
+          discardedFuture.length && discardedFuture[0].uci !== uci ? discardedFuture : undefined
         setMovesAnd([
           ...movesRef.current,
           {
             san: move.san,
-            uci: move.from + move.to + (move.promotion ?? ''),
+            uci,
             color: move.color,
             fenBefore,
             fenAfter: chess.fen(),
-            captured: move.captured as CapturablePiece | undefined
+            captured: move.captured as CapturablePiece | undefined,
+            ...(variation ? { variation } : {})
           }
         ])
         // Ein echter neuer Zug macht eine zuvor zurückgenommene Zukunft ungültig
-        setFuture([])
+        // (als Nebenvariante wurde sie oben bereits am neuen Zug festgehalten).
+        setFutureAnd([])
         syncFromChess(move)
         return true
       } catch {
         return false
       }
     },
-    [setMovesAnd, syncFromChess]
+    [setMovesAnd, setFutureAnd, syncFromChess]
   )
 
   const requestEngineMove = useCallback(async () => {
@@ -263,7 +285,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setInitialComment(undefined)
       evalByFenRef.current.clear()
       setMovesAnd([])
-      setFuture([])
+      setFutureAnd([])
       setLastMove(null)
       setThinking(false)
       setEngineError(null)
@@ -274,7 +296,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setTwoPlayerMode(false)
       syncFromChess()
     },
-    [setMovesAnd, syncFromChess]
+    [setMovesAnd, setFutureAnd, syncFromChess]
   )
 
   /**
@@ -291,7 +313,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     setInitialComment(undefined)
     evalByFenRef.current.clear()
     setMovesAnd([])
-    setFuture([])
+    setFutureAnd([])
     setLastMove(null)
     setThinking(false)
     setEngineError(null)
@@ -303,7 +325,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     setReviewMode(false)
     setTwoPlayerMode(true)
     syncFromChess()
-  }, [setMovesAnd, syncFromChess])
+  }, [setMovesAnd, setFutureAnd, syncFromChess])
 
   const importGame = useCallback(
     (pgn: string): boolean => {
@@ -322,7 +344,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setInitialComment(imported.initialComment)
       evalByFenRef.current.clear()
       setMovesAnd(imported.moves)
-      setFuture([])
+      setFutureAnd([])
       setThinking(false)
       setEngineError(null)
       setSnapshot(null)
@@ -337,7 +359,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       setResult(imported.outcome)
       return true
     },
-    [setMovesAnd, syncFromChess, setResult]
+    [setMovesAnd, setFutureAnd, syncFromChess, setResult]
   )
 
   const continuePlaying = useCallback(() => {
@@ -399,12 +421,12 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     const cut = chess.history().length
     const batch = movesRef.current.slice(cut)
     setMovesAnd(movesRef.current.slice(0, cut))
-    setFuture((stack) => [...stack, batch])
+    setFutureAnd([...futureRef.current, batch])
     setThinking(false)
     setEngineError(null)
     const tail = chess.history({ verbose: true }).at(-1)
     syncFromChess(tail ? { from: tail.from, to: tail.to } : null)
-  }, [playerColor, setMovesAnd, syncFromChess])
+  }, [playerColor, setMovesAnd, setFutureAnd, syncFromChess])
 
   const redoMove = useCallback(() => {
     if (future.length === 0) return
@@ -422,12 +444,12 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
       }
     }
     setMovesAnd([...movesRef.current, ...batch])
-    setFuture((stack) => stack.slice(0, -1))
+    setFutureAnd(futureRef.current.slice(0, -1))
     setThinking(false)
     setEngineError(null)
     const tail = chess.history({ verbose: true }).at(-1)
     syncFromChess(tail ? { from: tail.from, to: tail.to } : null)
-  }, [future, setMovesAnd, syncFromChess])
+  }, [future, setMovesAnd, setFutureAnd, syncFromChess])
 
   return {
     fen,

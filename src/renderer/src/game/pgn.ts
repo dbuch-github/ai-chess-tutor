@@ -44,10 +44,45 @@ function moveComment(move: MoveRecord): string | undefined {
   return parts.length ? parts.join(' — ') : undefined
 }
 
+/** Entfernt geschweifte Klammern aus Kommentartext – die begrenzen PGN-Kommentare selbst. */
+function sanitizeComment(text: string): string {
+  return text.replace(/[{}]/g, '')
+}
+
+/**
+ * Baut den PGN-Zugtext (mit Zugnummern, Tutor-Kommentaren und Nebenvarianten
+ * in Klammern) rekursiv – so bleibt auch eine zurückgenommene, dann anders
+ * fortgesetzte Zugfolge als Variante erhalten statt beim nächsten echten Zug
+ * verloren zu gehen.
+ */
+function renderMoveText(moves: MoveRecord[]): string {
+  const tokens: string[] = []
+  let needsMoveNumber = true // nach Kommentar/Variante muss die Zugnummer wiederholt werden
+  for (const move of moves) {
+    const moveNo = Number(move.fenBefore.split(' ')[5])
+    if (move.color === 'w') {
+      tokens.push(`${moveNo}.`)
+    } else if (needsMoveNumber) {
+      tokens.push(`${moveNo}...`)
+    }
+    tokens.push(move.san)
+    needsMoveNumber = false
+    const comment = moveComment(move)
+    if (comment) {
+      tokens.push(`{${sanitizeComment(comment)}}`)
+      needsMoveNumber = true
+    }
+    if (move.variation?.length) {
+      tokens.push(`(${renderMoveText(move.variation)})`)
+      needsMoveNumber = true
+    }
+  }
+  return tokens.join(' ')
+}
+
 /** Baut eine vollständige PGN-Zeichenkette samt Standard-Kopfzeilen aus den gespielten Zügen. */
 export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
   const chess = new Chess(meta.initialFen ?? moves[0]?.fenBefore)
-  if (meta.initialComment) chess.setComment(meta.initialComment)
   chess.setHeader('Event', 'AI Chess Tutor Partie')
   chess.setHeader('Site', 'AI Chess Tutor')
   chess.setHeader('Date', formatPgnDate(meta.startedAt))
@@ -55,21 +90,32 @@ export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
   chess.setHeader('White', meta.twoPlayerMode ? 'Weiß' : meta.playerColor === 'w' ? 'Spieler' : meta.opponentName)
   chess.setHeader('Black', meta.twoPlayerMode ? 'Schwarz' : meta.playerColor === 'b' ? 'Spieler' : meta.opponentName)
 
+  // Nur zum Ermitteln von Kopfzeilen (u. a. SetUp/FEN bei abweichender Startstellung)
+  // und Endstellung/Ergebnis über die Hauptvariante – Kommentare und Nebenvarianten
+  // baut renderMoveText() unten selbst, weil chess.js keine Varianten schreiben kann.
   for (const move of moves) {
     chess.move({ from: move.uci.slice(0, 2), to: move.uci.slice(2, 4), promotion: move.uci.slice(4) || undefined })
-    // setComment() hängt am fen() NACH diesem Zug – passt exakt zur PGN-Konvention,
-    // dass ein Kommentar dem vorangehenden Zug folgt. Einschränkung: Bei einer
-    // Stellungswiederholung (dieselbe FEN zweimal in der Partie) überschreibt der
-    // spätere Kommentar den früheren – in der Praxis vernachlässigbar, weil
-    // Kommentare ohnehin nur zu wenigen Zügen anfallen.
-    const comment = moveComment(move)
-    if (comment) chess.setComment(comment)
   }
 
   const outcome = boardOutcome(chess) ?? meta.outcome
   chess.setHeader('Result', outcome?.result ?? '*')
   if (outcome?.termination) chess.setHeader('Termination', outcome.termination)
-  return chess.pgn()
+
+  // chess.js trennt Kopfzeilen und Zugtext nur mit einer Leerzeile, wenn tatsächlich
+  // Züge vorhanden sind – bei einer leeren Partie hängt das Ergebnis sonst direkt an
+  // der letzten Kopfzeile. Robuster: nur die "[...]"-Zeilen vom Anfang übernehmen.
+  const headerText = chess
+    .pgn()
+    .split('\n')
+    .filter((line) => line.startsWith('['))
+    .join('\n')
+  const bodyParts: string[] = []
+  if (meta.initialComment) bodyParts.push(`{${sanitizeComment(meta.initialComment)}}`)
+  const movetext = renderMoveText(moves)
+  if (movetext) bodyParts.push(movetext)
+  bodyParts.push(chess.header().Result ?? '*')
+
+  return `${headerText}\n\n${bodyParts.join(' ')}\n`
 }
 
 /** Ein passender Dateiname für den Speichern-Dialog, z. B. "2026-09-12-ai-chess-tutor.pgn". */

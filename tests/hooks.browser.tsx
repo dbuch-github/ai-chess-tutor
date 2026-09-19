@@ -107,5 +107,28 @@ export async function runHookTests() {
     await ui.close()
     passed.push('Game hook and auto-save preserve custom FEN, comments and flag-fall outcome')
   }
+  {
+    mockApi()
+    let game!: GameApi
+    const ui = await mount(() => { game = useGame(true, false); return null })
+    await act(async () => game.startTwoPlayerGame())
+    await act(async () => game.makeUserMove('e2', 'e4'))
+    await act(async () => game.makeUserMove('e7', 'e5'))
+    await act(async () => game.makeUserMove('g1', 'f3'))
+    assert(game.moves.map(m => m.san).join(' ') === 'e4 e5 Nf3', 'mainline before undo')
+    await act(async () => game.undoMove())
+    assert(game.moves.map(m => m.san).join(' ') === 'e4 e5', 'undo removes the last move')
+    await act(async () => game.makeUserMove('f1', 'c4'))
+    assert(game.moves.length === 3 && game.moves[2].san === 'Bc4', 'a different move replaces the undone one')
+    assert(
+      game.moves[2].variation?.map(m => m.san).join(' ') === 'Nf3',
+      'the discarded continuation is kept as a variation on the new move'
+    )
+    await act(async () => game.undoMove())
+    await act(async () => game.makeUserMove('f1', 'c4'))
+    assert(!game.moves[2].variation, 'replaying the exact same move must not attach a variation')
+    await ui.close()
+    passed.push('Undo followed by a different move records the discarded continuation as a variation')
+  }
   return passed
 }

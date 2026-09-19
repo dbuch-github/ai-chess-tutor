@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { execFile } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -59,6 +59,14 @@ function createWindow(): void {
     mainWindow = null
   })
 
+  // Links mit target="_blank" (z. B. im Info-Dialog oder in den Einstellungen) im
+  // System-Browser öffnen statt in einem neuen Electron-Fenster – ohne diesen Handler
+  // verwirft Electron solche Klicks standardmäßig kommentarlos.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('https://') || url.startsWith('http://')) void shell.openExternal(url)
+    return { action: 'deny' }
+  })
+
   mainWindow.webContents.on('select-bluetooth-device', (event, deviceList, callback) => {
     event.preventDefault()
     if (deviceList.length === 1) {
@@ -110,6 +118,11 @@ function detectEnginePath(binaryName: string): Promise<string | null> {
       resolve(err ? null : stdout.trim() || null)
     })
   })
+}
+
+/** Öffnet einen http(s)-Link im System-Browser – nie im Electron-Fenster selbst. */
+function openExternalLink(url: string): void {
+  if (url.startsWith('https://') || url.startsWith('http://')) void shell.openExternal(url)
 }
 
 async function selectFile(title: string, defaultPath?: string): Promise<string | null> {
@@ -172,6 +185,7 @@ app.whenReady().then(() => {
   ipcMain.handle('engine:defaultPath', (_e, binaryName?: string) => detectEnginePath(binaryName || 'stockfish'))
   ipcMain.handle('dialog:selectFile', (_e, title: string, defaultPath?: string) => selectFile(title, defaultPath))
   ipcMain.handle('engine:defaultMaiaWeightsPath', (_e, level?: number) => defaultMaiaWeightsPath(level))
+  ipcMain.on('shell:openExternal', (_e, url: string) => openExternalLink(url))
   ipcMain.handle('pgn:export', (_e, pgn: string, suggestedName: string) => exportPgn(pgn, suggestedName))
   ipcMain.handle('pgn:import', () => importPgn())
   ipcMain.handle('library:save', (_e, pgn: string) => librarySave(pgn))

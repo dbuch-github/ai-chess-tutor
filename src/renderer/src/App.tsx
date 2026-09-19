@@ -5,6 +5,7 @@ import { EvalBar } from './components/EvalBar'
 import { AnalysisPanel } from './components/AnalysisPanel'
 import { MoveList } from './components/MoveList'
 import { SettingsDialog } from './components/SettingsDialog'
+import { InfoDialog } from './components/InfoDialog'
 import { TopbarDropdown } from './components/TopbarDropdown'
 import { BoardIcon, BooksIcon, CameraIcon, ChartIcon, ExportIcon, FolderIcon, GearIcon, ImportIcon, KingIcon, ReportIcon } from './components/icons'
 import { CapturedRow, PIECE_VALUES } from './components/CapturedRow'
@@ -42,6 +43,7 @@ export function App(): React.JSX.Element {
   const [settings, setSettings] = useState<AppSettings>(loadSettings)
   const [opponentStatus, setOpponentStatus] = useState<EngineStatus>({ ready: false })
   const [analysisStatus, setAnalysisStatus] = useState<EngineStatus>({ ready: false })
+  const [showInfo, setShowInfo] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [showLibrary, setShowLibrary] = useState(false)
@@ -356,21 +358,6 @@ export function App(): React.JSX.Element {
               </span>
             </button>
           </TopbarDropdown>
-          <button
-            className={`btn ${settings.showAnalysis ? 'pressed' : ''}`}
-            onClick={toggleAnalysis}
-            aria-pressed={settings.showAnalysis}
-          >
-            <ChartIcon /> Analyse
-          </button>
-          <button
-            className="btn"
-            onClick={() => setShowReport(true)}
-            disabled={game.moves.length < 2}
-            title="Zusammenfassung der Partie mit Fehlermustern und Lernpunkten"
-          >
-            <ReportIcon /> Partie-Report
-          </button>
           <TopbarDropdown
             label={
               <>
@@ -401,6 +388,21 @@ export function App(): React.JSX.Element {
               </span>
             </button>
           </TopbarDropdown>
+          <button
+            className={`btn ${settings.showAnalysis ? 'pressed' : ''}`}
+            onClick={toggleAnalysis}
+            aria-pressed={settings.showAnalysis}
+          >
+            <ChartIcon /> Analyse
+          </button>
+          <button
+            className="btn"
+            onClick={() => setShowReport(true)}
+            disabled={game.moves.length < 2}
+            title="Zusammenfassung der Partie mit Fehlermustern und Lernpunkten"
+          >
+            <ReportIcon /> Partie-Report
+          </button>
           <button className="btn btn-settings" onClick={() => setShowSettings(true)} aria-label="Einstellungen">
             <GearIcon />
           </button>
@@ -519,6 +521,8 @@ export function App(): React.JSX.Element {
           <MoveList moves={game.moves} />
         </aside>
       </main>
+
+      {showInfo && <InfoDialog onClose={() => setShowInfo(false)} />}
 
       {showSettings && (
         <SettingsDialog

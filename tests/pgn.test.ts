@@ -45,3 +45,12 @@ test('checkmate takes precedence over a simultaneous clock result', () => {
   assert.equal(parsePgn(pgn).outcome?.result, '0-1')
   assert.equal(parsePgn(pgn).outcome?.termination, undefined)
 })
+
+test('a discarded continuation on a move is written as a bracketed variation, mainline unaffected on reload', () => {
+  const discarded = parsePgn('1. e4 e5 2. Nf3 Nc6 *').moves.slice(2)
+  const main = parsePgn('1. e4 e5 2. Bc4 Bc5 *').moves
+  main[2] = { ...main[2], variation: discarded }
+  const pgn = buildPgn(main, meta)
+  assert.match(pgn, /2\. Bc4 \(2\. Nf3 Nc6\) 2\.\.\. Bc5/)
+  assert.equal(historySan(parsePgn(pgn).moves), '1. e4 e5 2. Bc4 Bc5')
+})

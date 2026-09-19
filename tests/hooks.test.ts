@@ -25,6 +25,6 @@ test('React hook regressions in a real browser', { timeout: 30_000 }, async t =>
     const passed = await page.evaluate(() => (window as any).HookTests.runHookTests())
     passed.forEach((name: string) => t.diagnostic(name))
     assert.deepEqual(errors, [])
-    assert.equal(passed.length, 3)
+    assert.equal(passed.length, 4)
   } finally { await browser.close() }
 })

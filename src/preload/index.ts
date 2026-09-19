@@ -17,6 +17,8 @@ import type {
 } from '../shared/types'
 
 const api = {
+  /** Öffnet einen http(s)-Link im System-Browser (z. B. Info-Dialog, Einstellungen). */
+  openExternal: (url: string): void => ipcRenderer.send('shell:openExternal', url),
   getDefaultEnginePath: (binaryName?: string): Promise<string | null> =>
     ipcRenderer.invoke('engine:defaultPath', binaryName),
   selectFile: (title: string, defaultPath?: string): Promise<string | null> =>
