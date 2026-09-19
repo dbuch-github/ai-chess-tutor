@@ -4,7 +4,8 @@
   "description": "LLM chess tutor with Chessnut Air support, UCI engines and live Stockfish analysis",
   "type": "module",
   "main": "out/main/index.js",
-  "author": "dbuch",
+  "author": "Daniel Buch",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "scripts": {
     "dev": "electron-vite dev",

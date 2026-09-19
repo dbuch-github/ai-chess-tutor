@@ -305,3 +305,33 @@ Hinweise:
 - Umwandlung ist aktuell immer Dame (Promotion-Dialog steht noch aus).
 - Die Durchsuchen-Dialoge für lc0-Binary und Maia-Gewichtsdatei öffnen sich standardmäßig im
   zuletzt gewählten bzw. erkannten Ordner, statt immer im Home-Verzeichnis zu starten.
+
+## Lizenz
+
+AI Chess Tutor ist freie Software unter der **GNU General Public License v3.0 (oder später)**
+– Copyright © 2026 Daniel Buch. Der vollständige Lizenztext liegt in [LICENSE](./LICENSE);
+kurz gefasst: Du darfst die App frei nutzen, weitergeben und verändern, jede Weitergabe
+(auch von Forks/abgeleiteten Werken) muss aber wieder unter der GPL-3.0 samt Quellcode
+erfolgen. Die App selbst weist im Info-Overlay beim Start ebenfalls auf die Lizenz hin.
+
+### Drittanbieter-Lizenzen
+
+| Komponente | Lizenz | Einbindung |
+| --- | --- | --- |
+| [Stockfish](https://github.com/official-stockfish/Stockfish) | GPL-3.0 | gebündeltes Binary (eigener Prozess, UCI) |
+| [lc0](https://github.com/LeelaChessZero/lc0) | GPL-3.0 | gebündeltes Binary (eigener Prozess, UCI) |
+| [Maia-Gewichte](https://github.com/CSSLab/maia-chess) | GPL-3.0 | gebündelte Netz-Dateien (für lc0) |
+| [chessground](https://github.com/lichess-org/chessground) | GPL-3.0-or-later | npm-Abhängigkeit, ins Bundle kompiliert |
+| [chess.js](https://github.com/jhlywa/chess.js) | BSD-2-Clause | npm-Abhängigkeit |
+| React / React DOM | MIT | npm-Abhängigkeit |
+| Electron | MIT | Laufzeitumgebung |
+| @anthropic-ai/sdk | MIT | npm-Abhängigkeit |
+| openai | Apache-2.0 | npm-Abhängigkeit |
+| @google/genai | Apache-2.0 | npm-Abhängigkeit |
+
+Stockfish und lc0 bringen beim Herunterladen (`npm run fetch-engines`) ihre jeweilige
+`COPYING`/`LICENSE`-Datei nach `resources/engines/mac-arm64/` mit (nicht eingecheckt, siehe
+`.gitignore`) und werden im Installer als eigenständige Binaries mitgeliefert, nicht in den
+App-Code eingebunden. chessground ist selbst GPL-3.0-or-later und wird direkt ins JS-Bundle
+kompiliert – schon dadurch ist GPL-3.0 für das Gesamtwerk die passende (und nötige) Wahl,
+nicht nur eine Präferenz.
