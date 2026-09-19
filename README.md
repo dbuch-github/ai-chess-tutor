@@ -1,26 +1,29 @@
 # AI Chess Tutor
 
-Desktop-App (Electron + TypeScript + React), die Chessnut-Air-Brett, UCI-Engines als Gegner,
-Live-Stockfish-Analyse und einen LLM-Schachtutor verbindet.
+[![License: GPL-3.0](https://img.shields.io/github/license/dbuch-github/ai-chess-tutor)](LICENSE)
 
-Konzept: <https://claude.ai/code/artifact/23e3435a-beed-47d3-97e9-984325955f0f>
+Desktop-App (Electron + TypeScript + React), die ein Chessnut-Air-Brett, UCI-Engines als
+Gegner, Live-Stockfish-Analyse und einen LLM-Schachtutor miteinander verbindet.
 
-## Status
+## Features
 
-- [x] **Phase 1 – MVP:** Digitales Brett (chessground), Spiel gegen konfigurierbare UCI-Engine,
-      Live-Analyse (Stockfish, MultiPV 3) mit Eval-Bar und Zugklassifikation
-- [x] **Phase 2:** Chessnut-Air-Anbindung per Web Bluetooth – Live-Zugerkennung,
-      LED-Feedback für Gegnerzüge, Korrekturhinweise. Ungetestet mit echter Hardware
-      bis zur Rückmeldung des Nutzers (siehe Abschnitt „Chessnut Air" unten)
-- [x] **Phase 3:** LLM-Tutor (Claude), Prompt-Builder, Trigger-Modi, gestreamter Tutor-Chat,
-      Undo/Redo, Figurinen-Notation, Board-Preview (Angriffe/Deckungen/Fesselungen/aufgedeckte
-      Angriffe/schwache Felder, klickbare Analyse-Linien) – deutlich über den ursprünglichen
-      Zuschnitt hinausgewachsen
-- [x] **Phase 4:** Partie-Report · Engine-Auswahl (Maia) + Eröffnungsbuch/-erkennung ·
-      Multi-Provider-Tutor (Anthropic/OpenAI/Google) · PGN-Export/-Import · lokale
-      Partie-Bibliothek (Auto-Speichern) – siehe Konzeptdokument für Details. Phase 4 komplett.
-- [x] **Nach Phase 4:** Schachuhr mit Turnier-Voreinstellungen, Zug-Sound, Default-Pfad im
-      Maia-Dateidialog
+- **LLM-Schachtutor** (Anthropic/OpenAI/Google, frei wählbar): erklärt Züge, beantwortet
+  Rückfragen im gestreamten Chat, schlägt Züge vor und schreibt am Partieende einen Report
+  mit wiederkehrenden Fehlermustern und Lernpunkten.
+- **Live-Analyse:** Stockfish im Hintergrund (MultiPV 3) mit Eval-Bar und automatischer
+  Zugklassifikation (Blunder/Fehler/Ungenauigkeit/Bester Zug).
+- **Gegner-Engines:** klassisches Stockfish mit Elo-Begrenzung oder Maia (lc0) für
+  menschenähnliches Spiel, dazu ein gewichtetes Eröffnungsbuch und Live-Eröffnungserkennung.
+- **Chessnut Air per Web Bluetooth:** physisches Brett als führende Eingabe, LED-Feedback
+  nach jedem Zug, Korrekturhinweise bei Abweichungen, blinkende Zugvorschläge.
+- **PGN-Export/-Import:** inklusive Tutor-Kommentaren je Zug und – falls ein Zug
+  zurückgenommen und anders fortgesetzt wurde – der verworfenen Fortsetzung als Nebenvariante.
+- **Lokale Partie-Bibliothek:** jede beendete Partie wird automatisch als PGN gespeichert,
+  ohne manuellen Schritt.
+- **Schachuhr** mit Turnier-Voreinstellungen (Klassisch/Rapid/Blitz/Bullet) oder frei ohne
+  Zeitkontrolle.
+- Figurinen-Notation, Board-Preview (Angriffe/Deckungen/Fesselungen/schwache Felder) und
+  ein synthetisierter Zug-Sound runden die Bedienung ab.
 
 ## Voraussetzungen
 
@@ -245,7 +248,9 @@ gestreamte Zusammenfassung: wiederkehrende Fehlermuster, die kritischsten Moment
 
 - **„PGN exportieren“** (Kopfleiste → „Datei", ab 1 Zug aktiv): schreibt die aktuelle Partie
   inkl. Kopfzeilen (Datum, Spieler/Engine-Name, Ergebnis inklusive Zeitüberschreitung) über
-  einen nativen Speichern-Dialog auf die Platte.
+  einen nativen Speichern-Dialog auf die Platte. Zugkommentare des Tutors landen als
+  PGN-Kommentar am jeweiligen Zug; wurde ein Zug zurückgenommen und später anders
+  fortgesetzt, bleibt die verworfene Fortsetzung als Klammer-Variante erhalten.
 - **„PGN importieren“** (Kopfleiste → „Datei"): erhält auch FEN-Startstellungen, Zugkommentare und gespeicherte
   Ergebnisse. Lädt eine beliebige PGN-Datei (eigene Exporte oder von anderswo,
   z. B. Lichess/Chess.com) und zeigt sie im **Review-Modus**: Brett, Zugliste, Stockfish-Analyse,
@@ -265,8 +270,7 @@ gestreamte Zusammenfassung: wiederkehrende Fehlermuster, die kritischsten Moment
   (neueste zuerst) mit Datum, Spielern, Ergebnis und Halbzug-Anzahl.
 - **„Öffnen“** lädt die Partie in den Review-Modus (wie ein PGN-Import); **„Löschen“**
   entfernt die Datei dauerhaft von der Platte.
-- Bewusst kein vollständiges Datenbank-Feature (keine Suche/Filter/Tags) – siehe
-  Konzeptdokument, Abschnitt „Phase 4c“.
+- Bewusst kein vollständiges Datenbank-Feature (keine Suche/Filter/Tags).
 
 ## Schachuhr
 
