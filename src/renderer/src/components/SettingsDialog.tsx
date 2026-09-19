@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { EngineKind, LlmProviderId, TutorStatus } from '../../../shared/types'
 import { CLOCK_PRESETS, DEFAULT_SETTINGS, TUTOR_MODEL_KEY, type AppSettings, type ClockMode } from '../settings'
 
@@ -9,28 +10,15 @@ interface SettingsDialogProps {
   onClose: () => void
 }
 
-const ENGINE_KINDS: { value: EngineKind; label: string }[] = [
-  { value: 'stockfish', label: 'Stockfish (klassisch, Elo-begrenzt)' },
-  { value: 'maia', label: 'Maia (lc0, menschliches Spiel)' },
-  { value: 'custom', label: 'Andere UCI-Engine' }
-]
-
 /** Bei CSSLab/maia-chess offiziell verfügbare Netz-Stärken (siehe scripts/fetch-engines.mjs). */
 const MAIA_LEVELS = [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
 
-const CLOCK_MODES: { value: ClockMode; label: string }[] = [
-  { value: 'unlimited', label: 'Frei (keine Zeitkontrolle)' },
-  { value: 'classical', label: CLOCK_PRESETS.classical.label },
-  { value: 'rapid', label: CLOCK_PRESETS.rapid.label },
-  { value: 'blitz', label: CLOCK_PRESETS.blitz.label },
-  { value: 'bullet', label: CLOCK_PRESETS.bullet.label }
-]
-
-const TUTOR_PROVIDERS: { value: LlmProviderId; label: string; keyPlaceholder: string; keyHint: string }[] = [
-  { value: 'anthropic', label: 'Anthropic (Claude)', keyPlaceholder: 'sk-ant-…', keyHint: 'console.anthropic.com' },
-  { value: 'openai', label: 'OpenAI (ChatGPT)', keyPlaceholder: 'sk-…', keyHint: 'platform.openai.com' },
-  { value: 'google', label: 'Google (Gemini)', keyPlaceholder: 'AIza…', keyHint: 'aistudio.google.com' }
-]
+const TUTOR_KEY_HINTS: Record<LlmProviderId, { label: string; keyPlaceholder: string; keyHint: string }> = {
+  anthropic: { label: 'Anthropic (Claude)', keyPlaceholder: 'sk-ant-…', keyHint: 'console.anthropic.com' },
+  openai: { label: 'OpenAI (ChatGPT)', keyPlaceholder: 'sk-…', keyHint: 'platform.openai.com' },
+  google: { label: 'Google (Gemini)', keyPlaceholder: 'AIza…', keyHint: 'aistudio.google.com' }
+}
+const TUTOR_PROVIDER_IDS: LlmProviderId[] = ['anthropic', 'openai', 'google']
 
 /** Verzeichnis eines Pfads, oder undefined bei einem bereits reinen Ordner-/Leerstring. */
 function dirnameOf(path: string): string | undefined {
@@ -50,6 +38,7 @@ export function SettingsDialog({
   onSave,
   onClose
 }: SettingsDialogProps): React.JSX.Element {
+  const { t } = useTranslation()
   const [draft, setDraft] = useState<AppSettings>({ ...settings })
   const [apiKeyInput, setApiKeyInput] = useState('')
   const [deleteKey, setDeleteKey] = useState(false)
@@ -60,6 +49,20 @@ export function SettingsDialog({
     window.api.getDefaultMaiaWeightsPath().then(setDefaultWeightsPath)
     window.api.getDefaultEnginePath('lc0').then((p) => setDefaultLc0Path(p ?? ''))
   }, [])
+
+  const ENGINE_KINDS: { value: EngineKind; label: string }[] = [
+    { value: 'stockfish', label: t('settings.engineKindStockfish') },
+    { value: 'maia', label: t('settings.engineKindMaia') },
+    { value: 'custom', label: t('settings.engineKindCustom') }
+  ]
+
+  const CLOCK_MODES: { value: ClockMode; label: string }[] = [
+    { value: 'unlimited', label: t('clock.presets.unlimited') },
+    { value: 'classical', label: t('clock.presets.classical') },
+    { value: 'rapid', label: t('clock.presets.rapid') },
+    { value: 'blitz', label: t('clock.presets.blitz') },
+    { value: 'bullet', label: t('clock.presets.bullet') }
+  ]
 
   const update = <K extends keyof AppSettings>(key: K, value: AppSettings[K]): void =>
     setDraft((d) => ({ ...d, [key]: value }))
@@ -85,7 +88,7 @@ export function SettingsDialog({
   }
 
   const apiKeyChange = deleteKey ? '' : apiKeyInput.trim() ? apiKeyInput.trim() : undefined
-  const activeTutorProvider = TUTOR_PROVIDERS.find((p) => p.value === draft.tutorProvider)!
+  const activeTutorProvider = TUTOR_KEY_HINTS[draft.tutorProvider]
   const tutorModelKey = TUTOR_MODEL_KEY[draft.tutorProvider]
   const tutorHasKey = tutorStatus?.hasApiKeyByProvider[draft.tutorProvider] ?? false
 
@@ -99,11 +102,11 @@ export function SettingsDialog({
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div className="dialog settings-dialog" onClick={(e) => e.stopPropagation()}>
-        <h2>Engine-Einstellungen</h2>
+        <h2>{t('settings.title')}</h2>
 
-        <h3>Gegner-Engine</h3>
+        <h3>{t('settings.opponentEngine')}</h3>
         <label>
-          Engine-Art
+          {t('settings.engineKind')}
           <select
             id="engine-kind"
             value={draft.engineKind}
@@ -120,7 +123,7 @@ export function SettingsDialog({
         {draft.engineKind === 'maia' ? (
           <>
             <label>
-              Pfad zu lc0
+              {t('settings.pathToLc0')}
               <div className="path-row">
                 <input
                   id="opponent-path"
@@ -135,18 +138,18 @@ export function SettingsDialog({
                   className="btn"
                   onClick={() =>
                     browse(
-                      'lc0-Binary wählen',
+                      t('settings.chooseLc0Binary'),
                       'opponentPath',
                       dirnameOf(draft.opponentPath) ?? dirnameOf(defaultLc0Path)
                     )
                   }
                 >
-                  Durchsuchen…
+                  {t('settings.browse')}
                 </button>
               </div>
             </label>
             <label>
-              Spielstärke
+              {t('settings.strength')}
               <select
                 id="maia-level"
                 value={levelFromWeightsPath(draft.weightsPath) ?? levelFromWeightsPath(defaultWeightsPath) ?? 1200}
@@ -163,14 +166,14 @@ export function SettingsDialog({
               </select>
             </label>
             <label>
-              Maia-Gewichtsdatei (.pb.gz)
+              {t('settings.maiaWeightsFile')}
               <div className="path-row">
                 <input
                   id="weights-path"
                   type="text"
                   value={draft.weightsPath}
                   onChange={(e) => update('weightsPath', e.target.value)}
-                  placeholder={defaultWeightsPath || '/pfad/zu/maia-1200.pb.gz'}
+                  placeholder={defaultWeightsPath || t('settings.maiaPathPlaceholder')}
                   spellCheck={false}
                 />
                 <button
@@ -178,31 +181,28 @@ export function SettingsDialog({
                   className="btn"
                   onClick={() =>
                     browse(
-                      'Maia-Gewichtsdatei wählen',
+                      t('settings.chooseMaiaWeights'),
                       'weightsPath',
                       dirnameOf(draft.weightsPath) ?? dirnameOf(defaultWeightsPath)
                     )
                   }
                 >
-                  Durchsuchen…
+                  {t('settings.browse')}
                 </button>
               </div>
             </label>
             <p className="field-hint">
-              Die Stärkeauswahl oben setzt automatisch den passenden Pfad; eigene Netze (z. B.
-              andere Stärken oder Varianten) lassen sich hier auch manuell wählen – weitere gibt es
-              unter{' '}
+              {t('settings.maiaHintBeforeLink')}
               <a href="https://github.com/CSSLab/maia-chess/releases" target="_blank" rel="noreferrer">
                 github.com/CSSLab/maia-chess
               </a>
-              . Maia zieht ohne Suche direkt aus dem Netz – die Spielstärke steckt in der gewählten
-              Datei, keine weitere Konfiguration nötig.
+              {t('settings.maiaHintAfterLink')}
             </p>
           </>
         ) : (
           <>
             <label>
-              Pfad zur Engine
+              {t('settings.pathToEngine')}
               <div className="path-row">
                 <input
                   id="opponent-path"
@@ -212,8 +212,12 @@ export function SettingsDialog({
                   placeholder="/opt/homebrew/bin/stockfish"
                   spellCheck={false}
                 />
-                <button type="button" className="btn" onClick={() => browse('Engine wählen', 'opponentPath')}>
-                  Durchsuchen…
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => browse(t('settings.chooseEngine'), 'opponentPath')}
+                >
+                  {t('settings.browse')}
                 </button>
               </div>
             </label>
@@ -224,11 +228,11 @@ export function SettingsDialog({
                 checked={draft.limitStrength}
                 onChange={(e) => update('limitStrength', e.target.checked)}
               />
-              Spielstärke begrenzen (UCI_Elo)
+              {t('settings.limitStrength')}
             </label>
             <div className="field-row">
               <label>
-                Elo
+                {t('settings.elo')}
                 <input
                   id="elo"
                   type="number"
@@ -241,7 +245,7 @@ export function SettingsDialog({
                 />
               </label>
               <label>
-                Bedenkzeit pro Zug (ms)
+                {t('settings.moveTimeMs')}
                 <input
                   id="movetime"
                   type="number"
@@ -256,7 +260,7 @@ export function SettingsDialog({
           </>
         )}
 
-        <h3>Eröffnungsbuch</h3>
+        <h3>{t('settings.openingBook')}</h3>
         <label className="row">
           <input
             id="use-opening-book"
@@ -264,16 +268,13 @@ export function SettingsDialog({
             checked={draft.useOpeningBook}
             onChange={(e) => update('useOpeningBook', e.target.checked)}
           />
-          Für den Gegner nutzen (erste 10 Vollzüge)
+          {t('settings.useOpeningBookForOpponent')}
         </label>
-        <p className="field-hint">
-          Der Gegner zieht dabei zufällig aus bekannten Eröffnungslinien statt immer nach dem
-          Engine-Bestzug – realistischer und abwechslungsreicher. Danach übernimmt die Engine.
-        </p>
+        <p className="field-hint">{t('settings.openingBookHint')}</p>
 
-        <h3>Bedenkzeit (Schachuhr)</h3>
+        <h3>{t('settings.clock')}</h3>
         <label>
-          Zeitkontrolle
+          {t('settings.timeControl')}
           <select
             id="clock-mode"
             value={draft.clockMode}
@@ -289,7 +290,7 @@ export function SettingsDialog({
         {draft.clockMode !== 'unlimited' && (
           <div className="field-row">
             <label>
-              Grundzeit (Minuten)
+              {t('settings.baseTimeMinutes')}
               <input
                 id="clock-minutes"
                 type="number"
@@ -301,7 +302,7 @@ export function SettingsDialog({
               />
             </label>
             <label>
-              Inkrement (Sekunden/Zug)
+              {t('settings.incrementSeconds')}
               <input
                 id="clock-increment"
                 type="number"
@@ -315,12 +316,10 @@ export function SettingsDialog({
           </div>
         )}
         <p className="field-hint">
-          {draft.clockMode === 'unlimited'
-            ? 'Freies Spiel ohne Uhr – jede Seite hat beliebig viel Bedenkzeit.'
-            : 'Läuft die Uhr einer Seite ab, verliert sie die Partie sofort durch Zeitüberschreitung. Speichern setzt beide Uhren auf die hier gewählte Grundzeit zurück.'}
+          {draft.clockMode === 'unlimited' ? t('settings.clockHintUnlimited') : t('settings.clockHintTimed')}
         </p>
 
-        <h3>Sound</h3>
+        <h3>{t('settings.sound')}</h3>
         <label className="row">
           <input
             id="move-sound"
@@ -328,12 +327,12 @@ export function SettingsDialog({
             checked={draft.moveSoundEnabled}
             onChange={(e) => update('moveSoundEnabled', e.target.checked)}
           />
-          Klick-Geräusch bei jedem Zug
+          {t('settings.moveSoundLabel')}
         </label>
 
-        <h3>Analyse-Engine (Stockfish)</h3>
+        <h3>{t('settings.analysisEngine')}</h3>
         <label>
-          Pfad zu Stockfish
+          {t('settings.pathToStockfish')}
           <div className="path-row">
             <input
               id="analysis-path"
@@ -343,29 +342,29 @@ export function SettingsDialog({
               placeholder="/opt/homebrew/bin/stockfish"
               spellCheck={false}
             />
-            <button type="button" className="btn" onClick={() => browse('Stockfish wählen', 'analysisPath')}>
-              Durchsuchen…
+            <button type="button" className="btn" onClick={() => browse(t('settings.chooseStockfish'), 'analysisPath')}>
+              {t('settings.browse')}
             </button>
           </div>
         </label>
 
-        <h3>LLM-Tutor</h3>
+        <h3>{t('settings.llmTutor')}</h3>
         <label>
-          Anbieter
+          {t('settings.provider')}
           <select
             id="tutor-provider"
             value={draft.tutorProvider}
             onChange={(e) => selectTutorProvider(e.target.value as LlmProviderId)}
           >
-            {TUTOR_PROVIDERS.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
+            {TUTOR_PROVIDER_IDS.map((id) => (
+              <option key={id} value={id}>
+                {TUTOR_KEY_HINTS[id].label}
               </option>
             ))}
           </select>
         </label>
         <label>
-          Modell
+          {t('settings.model')}
           <input
             id="tutor-model"
             type="text"
@@ -376,7 +375,8 @@ export function SettingsDialog({
           />
         </label>
         <label>
-          API-Key {tutorHasKey && !deleteKey && <span className="key-state">✓ gespeichert (Keychain)</span>}
+          {t('settings.apiKey')}{' '}
+          {tutorHasKey && !deleteKey && <span className="key-state">{t('settings.apiKeySavedKeychain')}</span>}
           <input
             id="tutor-api-key"
             type="password"
@@ -385,11 +385,11 @@ export function SettingsDialog({
               setApiKeyInput(e.target.value)
               setDeleteKey(false)
             }}
-            placeholder={tutorHasKey ? 'Neuen Key eingeben, um zu ersetzen' : activeTutorProvider.keyPlaceholder}
+            placeholder={tutorHasKey ? t('settings.apiKeyReplacePlaceholder') : activeTutorProvider.keyPlaceholder}
             spellCheck={false}
           />
         </label>
-        <p className="field-hint">API-Key erhältlich unter {activeTutorProvider.keyHint}.</p>
+        <p className="field-hint">{t('settings.apiKeyAvailableAt', { hint: activeTutorProvider.keyHint })}</p>
         {tutorHasKey && (
           <label className="row">
             <input
@@ -398,16 +398,16 @@ export function SettingsDialog({
               checked={deleteKey}
               onChange={(e) => setDeleteKey(e.target.checked)}
             />
-            Gespeicherten Key löschen
+            {t('settings.deleteStoredKey')}
           </label>
         )}
 
         <div className="dialog-actions">
           <button className="btn" onClick={onClose}>
-            Abbrechen
+            {t('settings.cancel')}
           </button>
           <button className="btn primary" onClick={() => onSave(draft, apiKeyChange)}>
-            Speichern &amp; anwenden
+            {t('settings.saveAndApply')}
           </button>
         </div>
       </div>

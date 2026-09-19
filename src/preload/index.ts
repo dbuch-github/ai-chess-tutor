@@ -25,9 +25,9 @@ const api = {
     ipcRenderer.invoke('dialog:selectFile', title, defaultPath),
   getDefaultMaiaWeightsPath: (level?: number): Promise<string> =>
     ipcRenderer.invoke('engine:defaultMaiaWeightsPath', level),
-  exportPgn: (pgn: string, suggestedName: string): Promise<PgnExportResult> =>
-    ipcRenderer.invoke('pgn:export', pgn, suggestedName),
-  importPgn: (): Promise<PgnImportResult> => ipcRenderer.invoke('pgn:import'),
+  exportPgn: (pgn: string, suggestedName: string, dialogTitle: string): Promise<PgnExportResult> =>
+    ipcRenderer.invoke('pgn:export', pgn, suggestedName, dialogTitle),
+  importPgn: (dialogTitle: string): Promise<PgnImportResult> => ipcRenderer.invoke('pgn:import', dialogTitle),
   librarySave: (pgn: string): Promise<LibrarySaveResult> => ipcRenderer.invoke('library:save', pgn),
   libraryList: (): Promise<LibraryGameSummary[]> => ipcRenderer.invoke('library:list'),
   libraryLoad: (filePath: string): Promise<LibraryLoadResult> => ipcRenderer.invoke('library:load', filePath),

@@ -1,23 +1,33 @@
 import { Fragment, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { MoveRecord } from '../game/useGame'
 import type { Classification } from '../game/classify'
+import { CLASSIFY_LABELS, type LabeledClassification } from '../../../shared/classifyLabels'
+import type { SupportedLocale } from '../../../shared/types'
 import { historySan } from '../game/notation'
 import { figurineSan } from './Figurine'
 
-const BADGES: Record<Classification, { symbol: string; label: string } | null> = {
-  best: { symbol: '★', label: 'Bester Zug' },
+const BADGE_SYMBOLS: Record<Classification, string | null> = {
+  best: '★',
   good: null,
-  inaccuracy: { symbol: '?!', label: 'Ungenauigkeit' },
-  mistake: { symbol: '?', label: 'Fehler' },
-  blunder: { symbol: '??', label: 'Blunder' }
+  inaccuracy: '?!',
+  mistake: '?',
+  blunder: '??'
 }
 
-function MoveCell({ record }: { record: MoveRecord }): React.JSX.Element {
-  const badge = record.classification ? BADGES[record.classification] : null
+function MoveCell({ record, locale }: { record: MoveRecord; locale: SupportedLocale }): React.JSX.Element {
+  const { t } = useTranslation()
+  const symbol = record.classification ? BADGE_SYMBOLS[record.classification] : null
+  const label =
+    record.classification && record.classification !== 'good'
+      ? CLASSIFY_LABELS[locale][record.classification as LabeledClassification]
+      : undefined
   const titleParts: string[] = []
-  if (badge) {
+  if (label) {
     titleParts.push(
-      record.lossPct !== undefined ? `${badge.label} (−${record.lossPct.toFixed(0)} % Gewinnchance)` : badge.label
+      record.lossPct !== undefined
+        ? t('pgn.moveCommentLossPct', { label, pct: record.lossPct.toFixed(0) })
+        : label
     )
   }
   // Tutor-Anmerkung mit in die Zugnotation aufnehmen (nicht nur im Chat-Verlauf sichtbar)
@@ -28,15 +38,16 @@ function MoveCell({ record }: { record: MoveRecord }): React.JSX.Element {
     <span className={`move ${record.classification ?? ''} ${record.comment ? 'has-comment' : ''}`} title={title}>
       <span className="figurine-slot">{leadIcon}</span>
       {text}
-      {badge && <sup className="move-badge">{badge.symbol}</sup>}
+      {symbol && <sup className="move-badge">{symbol}</sup>}
     </span>
   )
 }
 
 /** Zurückgenommene, dann anders fortgesetzte Zugfolge – als Nebenvariante unter der Hauptzeile. */
 function VariationRow({ variation }: { variation: MoveRecord[] }): React.JSX.Element {
+  const { t } = useTranslation()
   return (
-    <div className="move-row move-variation" title="Zurückgenommene Fortsetzung">
+    <div className="move-row move-variation" title={t('moveList.discardedContinuation')}>
       <span className="move-no" />
       <span className="variation-text">({historySan(variation)})</span>
     </div>
@@ -44,6 +55,8 @@ function VariationRow({ variation }: { variation: MoveRecord[] }): React.JSX.Ele
 }
 
 export function MoveList({ moves }: { moves: MoveRecord[] }): React.JSX.Element {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language as SupportedLocale
   const endRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'nearest' })
@@ -59,18 +72,18 @@ export function MoveList({ moves }: { moves: MoveRecord[] }): React.JSX.Element 
   return (
     <section className="panel move-list">
       <header className="panel-header">
-        <h2>Partie</h2>
+        <h2>{t('moveList.title')}</h2>
       </header>
       {rows.length === 0 ? (
-        <p className="panel-empty">Noch keine Züge.</p>
+        <p className="panel-empty">{t('moveList.noMoves')}</p>
       ) : (
         <div className="move-rows cg-wrap">
           {rows.map((row) => (
             <Fragment key={row.no}>
               <div className="move-row">
                 <span className="move-no">{row.no}.</span>
-                {row.white ? <MoveCell record={row.white} /> : <span />}
-                {row.black ? <MoveCell record={row.black} /> : <span />}
+                {row.white ? <MoveCell record={row.white} locale={locale} /> : <span />}
+                {row.black ? <MoveCell record={row.black} locale={locale} /> : <span />}
               </div>
               {row.white?.variation && <VariationRow variation={row.white.variation} />}
               {row.black?.variation && <VariationRow variation={row.black.variation} />}

@@ -87,6 +87,9 @@ export interface ConfigureResult {
 
 export type LlmProviderId = 'anthropic' | 'openai' | 'google'
 
+/** UI-Sprache; steuert auch die Antwortsprache des LLM-Tutors. */
+export type SupportedLocale = 'en' | 'de' | 'fr' | 'es' | 'it'
+
 export interface TutorConfig {
   provider: LlmProviderId
   model: string
@@ -106,6 +109,8 @@ export interface TutorStatus {
 
 export interface TutorMoveRequest {
   kind: 'move'
+  /** Sprache, in der der Tutor antworten soll (aktuelle UI-Sprache). */
+  locale: SupportedLocale
   moveNumber: number
   san: string
   color: 'w' | 'b'
@@ -127,6 +132,7 @@ export interface TutorMoveRequest {
 
 export interface TutorQuestionRequest {
   kind: 'question'
+  locale: SupportedLocale
   question: string
   fen: string
   turn: 'w' | 'b'
@@ -138,6 +144,7 @@ export interface TutorQuestionRequest {
 
 export interface TutorSuggestRequest {
   kind: 'suggest'
+  locale: SupportedLocale
   fen: string
   turn: 'w' | 'b'
   playerColor: 'w' | 'b'
@@ -176,6 +183,7 @@ export interface TutorReportStats {
 
 export interface TutorReportRequest {
   kind: 'report'
+  locale: SupportedLocale
   playerColor: 'w' | 'b'
   /** Zwei-Spieler-Modus (OTB): Report bezieht sich auf beide Seiten statt nur auf "den Schüler". */
   twoPlayerMode?: boolean

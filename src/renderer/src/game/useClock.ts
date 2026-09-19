@@ -87,7 +87,8 @@ export function useChessClock(game: GameApi, config: ClockConfig): ClockApi {
         window.clearInterval(id)
         game.forceResult({
           result: running === 'w' ? '0-1' : '1-0',
-          description: running === 'w' ? 'Schwarz gewinnt durch Zeitüberschreitung' : 'Weiß gewinnt durch Zeitüberschreitung',
+          reason: 'time-forfeit',
+          winner: running === 'w' ? 'b' : 'w',
           termination: 'time forfeit'
         })
       }

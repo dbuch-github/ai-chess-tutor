@@ -26,7 +26,7 @@ export function useChessnutSignals(
   const connected = chessnut.status === 'connected'
   const prevCheckRef = useRef(false)
   const prevInvalidRef = useRef(sync.invalidAttempt)
-  const prevResultRef = useRef(game.result)
+  const prevWasTimeForfeitRef = useRef(false)
 
   // Schach: nur beim Übergang "nicht im Schach" -> "im Schach" piepen, nicht bei
   // jedem Render, solange der Schach weiterhin besteht.
@@ -51,14 +51,14 @@ export function useChessnutSignals(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sync.invalidAttempt, connected, enabled])
 
-  // Zeitüberschreitung: game.result trägt in diesem Fall den deutschen Text aus
-  // useClock (".. gewinnt durch Zeitüberschreitung") – daran erkannt, statt an
-  // einem eigenen Ergebnis-Typ, um useClock/useGame nicht koppeln zu müssen.
+  // Zeitüberschreitung: am strukturellen outcome.reason erkannt (sprachunabhängig),
+  // nicht am angezeigten Ergebnistext – der ist je nach UI-Sprache unterschiedlich.
   useEffect(() => {
-    const prevResult = prevResultRef.current
-    prevResultRef.current = game.result
+    const wasTimeForfeit = prevWasTimeForfeitRef.current
+    const isTimeForfeit = game.outcome?.reason === 'time-forfeit'
+    prevWasTimeForfeitRef.current = isTimeForfeit
     if (!connected || !enabled) return
-    if (game.result && game.result !== prevResult && game.result.includes('Zeitüberschreitung')) {
+    if (isTimeForfeit && !wasTimeForfeit) {
       chessnut.beep(FLAG_BEEP.frequencyHz, FLAG_BEEP.durationMs)
       const id = window.setTimeout(
         () => chessnut.beep(FLAG_BEEP.frequencyHz, FLAG_BEEP.durationMs),
@@ -67,5 +67,5 @@ export function useChessnutSignals(
       return () => window.clearTimeout(id)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game.result, connected, enabled])
+  }, [game.outcome, connected, enabled])
 }

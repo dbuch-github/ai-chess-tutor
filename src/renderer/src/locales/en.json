@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "White",
+    "black": "Black",
+    "close": "Close",
+    "engine": "Engine",
+    "unknownError": "Unknown error"
+  },
+  "app": {
+    "liveAnalysis": "Live analysis: {{name}}",
+    "analysisStarting": "Analysis starting …",
+    "opponent": "Opponent: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Engine starting …",
+    "noEngineFound": "No engine found – set the path in Settings",
+    "noLc0Found": "No lc0 found – set the path in Settings",
+    "noStockfishFound": "No Stockfish found",
+    "engineError": "Engine error: {{message}}",
+    "analysisError": "Analysis: {{message}}"
+  },
+  "topbar": {
+    "newGame": "New game",
+    "playAsWhite": "Play as White",
+    "playAsBlack": "Play as Black",
+    "recordOtb": "Record OTB game",
+    "recordOtbHint": "Two people at the physical board, no engine move – live analysis and report work as usual",
+    "file": "File",
+    "exportPgn": "Export PGN",
+    "importPgn": "Import PGN",
+    "library": "Library",
+    "analysis": "Analysis",
+    "report": "Game report",
+    "reportHint": "Summary of the game with error patterns and learning points",
+    "settings": "Settings",
+    "language": "Choose language"
+  },
+  "status": {
+    "engineThinking": "Engine thinking …",
+    "toMove": "{{color}} to move",
+    "toMoveYou": "{{color}} to move – you",
+    "otbRecording": "🔴 OTB recording – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Imported game – view only",
+    "continuePlaying": "▶ Continue playing"
+  },
+  "opening": {
+    "detected": "{{matched}} of {{total}} half-moves recognized"
+  },
+  "pgnNotice": {
+    "saved": "Saved: {{path}}",
+    "saveFailed": "Save failed: {{message}}",
+    "importFailed": "Import failed: {{message}}",
+    "invalidFile": "The file doesn't contain valid PGN.",
+    "loadFailed": "Could not load the game.",
+    "invalidSavedFile": "The saved file doesn't contain valid PGN.",
+    "imported": "Game imported – view, analysis and tutor are ready.",
+    "loadedFromLibrary": "Game loaded from the library – view, analysis and tutor are ready."
+  },
+  "tutor": {
+    "unknownEval": "unknown",
+    "title": "Tutor",
+    "modeAriaLabel": "Tutor mode",
+    "modeOffLabel": "Silent",
+    "modeOffHint": "Only on request",
+    "modeMistakesLabel": "Mistakes",
+    "modeMistakesHint": "Comments on your mistakes and blunders",
+    "modeChattyLabel": "Active",
+    "modeChattyHint": "Also inaccuracies and engine blunders",
+    "undoMove": "↶ Undo",
+    "undoHint": "Undo the last move",
+    "redoMove": "↷ Redo",
+    "redoHint": "Restore the undone move",
+    "emptyPlaceholder": "I'll speak up on mistakes – or ask me directly, e.g. “What's the plan here?” You can also click the analysis lines above.",
+    "hidePreview": "✕ Hide suggestion",
+    "showPreview": "↗ Show {{move}} on the board",
+    "suggestMove": "💡 Suggest move",
+    "suggestMoveHintReady": "Request a move suggestion with explanation",
+    "suggestMoveHintWait": "Only once it's your turn and the analysis is ready",
+    "questionPlaceholder": "Ask the tutor …",
+    "send": "Send"
+  },
+  "notation": {
+    "opening": "Opening",
+    "middlegame": "Middlegame",
+    "endgame": "Endgame"
+  },
+  "report": {
+    "gameInProgress": "Game still in progress",
+    "title": "Game report",
+    "blunderCount": "{{count}} blunders",
+    "mistakeCount": "{{count}} mistakes",
+    "inaccuracyCount": "{{count}} inaccuracies",
+    "bestMoveCount": "{{count}} best moves",
+    "criticalMoments": "Critical moments",
+    "noApiKey": "No API key set.",
+    "setKeyNow": "Set one now in Settings",
+    "placeholder": "Summarizes the game: recurring error patterns, the most critical moments, and concrete learning points for your next game.",
+    "generate": "Generate report",
+    "regenerate": "Regenerate"
+  },
+  "settings": {
+    "title": "Engine settings",
+    "opponentEngine": "Opponent engine",
+    "engineKind": "Engine type",
+    "engineKindStockfish": "Stockfish (classic, Elo-limited)",
+    "engineKindMaia": "Maia (lc0, human-like play)",
+    "engineKindCustom": "Other UCI engine",
+    "pathToLc0": "Path to lc0",
+    "chooseLc0Binary": "Choose lc0 binary",
+    "browse": "Browse…",
+    "strength": "Playing strength",
+    "maiaWeightsFile": "Maia weights file (.pb.gz)",
+    "chooseMaiaWeights": "Choose Maia weights file",
+    "maiaPathPlaceholder": "/path/to/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "The strength picker above sets the matching path automatically; custom networks (e.g. other strengths or variants) can also be chosen manually here – more are available at ",
+    "maiaHintAfterLink": ". Maia moves straight from the network without search – the strength is baked into the chosen file, no further configuration needed.",
+    "pathToEngine": "Path to engine",
+    "chooseEngine": "Choose engine",
+    "limitStrength": "Limit playing strength (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Time per move (ms)",
+    "openingBook": "Opening book",
+    "useOpeningBookForOpponent": "Use for opponent (first 10 full moves)",
+    "openingBookHint": "The opponent then plays randomly from known opening lines instead of always following the engine's best move – more realistic and varied. After that, the engine takes over.",
+    "clock": "Chess clock (time control)",
+    "timeControl": "Time control",
+    "baseTimeMinutes": "Base time (minutes)",
+    "incrementSeconds": "Increment (seconds/move)",
+    "clockHintUnlimited": "Free play without a clock – either side has unlimited time to think.",
+    "clockHintTimed": "If a side's clock runs out, they immediately lose the game by time forfeit. Saving resets both clocks to the base time chosen here.",
+    "sound": "Sound",
+    "moveSoundLabel": "Click sound on every move",
+    "analysisEngine": "Analysis engine (Stockfish)",
+    "pathToStockfish": "Path to Stockfish",
+    "chooseStockfish": "Choose Stockfish",
+    "llmTutor": "LLM tutor",
+    "provider": "Provider",
+    "model": "Model",
+    "apiKey": "API key",
+    "apiKeySavedKeychain": "✓ saved (Keychain)",
+    "apiKeyReplacePlaceholder": "Enter a new key to replace it",
+    "apiKeyAvailableAt": "API key available at {{hint}}.",
+    "deleteStoredKey": "Delete stored key",
+    "cancel": "Cancel",
+    "saveAndApply": "Save & apply"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Free (no time control)",
+      "classical": "Classical (tournament chess)",
+      "rapid": "Rapid",
+      "blitz": "Blitz",
+      "bullet": "Bullet"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "White wins by checkmate",
+    "checkmateBlack": "Black wins by checkmate",
+    "stalemate": "Draw by stalemate",
+    "threefold": "Draw by threefold repetition",
+    "insufficientMaterial": "Draw: insufficient material",
+    "fiftyMoves": "Draw: 50-move rule",
+    "draw": "Draw",
+    "wins": "{{winner}} wins",
+    "winsByTimeForfeit": "{{winner}} wins by time forfeit"
+  },
+  "pgn": {
+    "white": "White",
+    "black": "Black",
+    "player": "Player",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % win probability)"
+  },
+  "moveList": {
+    "title": "Game",
+    "noMoves": "No moves yet.",
+    "discardedContinuation": "Discarded continuation"
+  },
+  "library": {
+    "title": "Game library",
+    "loading": "Loading …",
+    "empty": "No saved games yet. Games are saved automatically once they end.",
+    "halfMoves": "{{count}} half-moves",
+    "open": "Open",
+    "delete": "Delete",
+    "resultWhiteWins": "White wins",
+    "resultBlackWins": "Black wins",
+    "resultDraw": "Draw",
+    "resultOpen": "Open"
+  },
+  "info": {
+    "author": "Author: Daniel Buch",
+    "licenseFreeSoftware": "Free software under the",
+    "licenseSuffix": "(or later) – without warranty.",
+    "sourceCode": "Source code on GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Choose Bluetooth device",
+    "multipleFound": "Several matching devices found – which one should be connected?",
+    "connect": "Connect"
+  },
+  "chessnut": {
+    "statusUnsupported": "Not supported",
+    "statusDisconnected": "Disconnected",
+    "statusConnecting": "Connecting …",
+    "statusConnected": "Connected",
+    "statusError": "Error",
+    "bestMoveHint": "Blink the best move of the running Stockfish analysis on the board (from/target square alternating) while it's your turn",
+    "bestMoveLabel": "Best move",
+    "beepHint": "Signal tone directly on the board for check, a detected invalid move attempt, or time forfeit",
+    "beepLabel": "🔔 Signal tone",
+    "pleaseReplay": "Please replay: {{squares}}",
+    "disconnect": "Disconnect",
+    "connect": "Connect"
+  },
+  "analysis": {
+    "title": "Stockfish analysis",
+    "depth": "Depth {{depth}}",
+    "showOnBoard": "Show on the board"
+  },
+  "legend": {
+    "move": "Move",
+    "moveFollowUp": " (& follow-ups paler)",
+    "attacks": "attacks",
+    "defends": "defends",
+    "pins": "pins",
+    "discovers": "reveals",
+    "becomesWeak": "becomes weak",
+    "check": "Check"
+  },
+  "evalBar": {
+    "whiteWinPct": "White wins {{pct}} %"
+  }
+}

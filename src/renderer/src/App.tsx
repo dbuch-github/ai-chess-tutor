@@ -1,5 +1,6 @@
 import { Chess } from 'chess.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Board } from './components/Board'
 import { EvalBar } from './components/EvalBar'
 import { AnalysisPanel } from './components/AnalysisPanel'
@@ -7,6 +8,7 @@ import { MoveList } from './components/MoveList'
 import { SettingsDialog } from './components/SettingsDialog'
 import { InfoDialog } from './components/InfoDialog'
 import { TopbarDropdown } from './components/TopbarDropdown'
+import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { BoardIcon, BooksIcon, CameraIcon, ChartIcon, ExportIcon, FolderIcon, GearIcon, ImportIcon, KingIcon, ReportIcon } from './components/icons'
 import { CapturedRow, PIECE_VALUES } from './components/CapturedRow'
 import { TutorPanel } from './components/TutorPanel'
@@ -40,6 +42,7 @@ const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1']
 type EngineStatus = { ready: boolean; name?: string; error?: string }
 
 export function App(): React.JSX.Element {
+  const { t } = useTranslation()
   const [settings, setSettings] = useState<AppSettings>(loadSettings)
   const [opponentStatus, setOpponentStatus] = useState<EngineStatus>({ ready: false })
   const [analysisStatus, setAnalysisStatus] = useState<EngineStatus>({ ready: false })
@@ -57,7 +60,7 @@ export function App(): React.JSX.Element {
   const boardPreview = useBoardPreview(game.fen)
   const tutor = useTutor(game, settings.tutorMode, boardPreview)
   const gameReport = useGameReport(game, tutor.status?.hasApiKey ?? false)
-  const library = useGameLibrary(game, opponentStatus.name ?? 'Engine')
+  const library = useGameLibrary(game, opponentStatus.name ?? t('common.engine'))
   const clock = useChessClock(game, {
     mode: settings.clockMode,
     baseMinutes: settings.clockBaseMinutes,
@@ -96,14 +99,11 @@ export function App(): React.JSX.Element {
     if (!opponentPath) {
       setOpponentStatus({
         ready: false,
-        error:
-          s.engineKind === 'maia'
-            ? 'Kein lc0 gefunden – Pfad in den Einstellungen setzen'
-            : 'Keine Engine gefunden – Pfad in den Einstellungen setzen'
+        error: s.engineKind === 'maia' ? t('app.noLc0Found') : t('app.noEngineFound')
       })
     }
     if (!analysisPath) {
-      setAnalysisStatus({ ready: false, error: 'Kein Stockfish gefunden' })
+      setAnalysisStatus({ ready: false, error: t('app.noStockfishFound') })
     }
     if (!opponentPath || !analysisPath) return
 
@@ -126,7 +126,7 @@ export function App(): React.JSX.Element {
     if (configureSeq.current !== seq) return
     setOpponentStatus(opp.ok ? { ready: true, name: opp.engineName } : { ready: false, error: opp.error })
     setAnalysisStatus(ana.ok ? { ready: true, name: ana.engineName } : { ready: false, error: ana.error })
-  }, [])
+  }, [t])
 
   useEffect(() => {
     applyEngineSettings(settings)
@@ -195,36 +195,36 @@ export function App(): React.JSX.Element {
       initialComment: game.initialComment,
       outcome: game.outcome,
       playerColor: game.playerColor,
-      opponentName: opponentStatus.name ?? 'Engine',
+      opponentName: opponentStatus.name ?? t('common.engine'),
       startedAt: game.startedAt,
       twoPlayerMode: game.twoPlayerMode
     })
-    const result = await window.api.exportPgn(pgn, suggestedPgnFilename(game.startedAt))
-    if (result.ok && result.path) showPgnNotice(true, `Gespeichert: ${result.path}`)
-    else if (result.error) showPgnNotice(false, `Speichern fehlgeschlagen: ${result.error}`)
+    const result = await window.api.exportPgn(pgn, suggestedPgnFilename(game.startedAt), t('topbar.exportPgn'))
+    if (result.ok && result.path) showPgnNotice(true, t('pgnNotice.saved', { path: result.path }))
+    else if (result.error) showPgnNotice(false, t('pgnNotice.saveFailed', { message: result.error }))
     // Abbruch durch den Nutzer im Dialog: kein Hinweis nötig
   }
 
   const handleImportPgn = async (): Promise<void> => {
-    const result = await window.api.importPgn()
+    const result = await window.api.importPgn(t('topbar.importPgn'))
     if (!result.ok) {
-      if (result.error) showPgnNotice(false, `Import fehlgeschlagen: ${result.error}`)
+      if (result.error) showPgnNotice(false, t('pgnNotice.importFailed', { message: result.error }))
       return
     }
     const success = game.importGame(result.pgn ?? '')
     if (success) {
       tutor.clear()
       gameReport.clear()
-      showPgnNotice(true, 'Partie importiert – Ansicht, Analyse und Tutor stehen bereit.')
+      showPgnNotice(true, t('pgnNotice.imported'))
     } else {
-      showPgnNotice(false, 'Die Datei enthält kein gültiges PGN.')
+      showPgnNotice(false, t('pgnNotice.invalidFile'))
     }
   }
 
   const handleOpenLibraryGame = async (path: string): Promise<void> => {
     const pgn = await library.load(path)
     if (!pgn) {
-      showPgnNotice(false, 'Partie konnte nicht geladen werden.')
+      showPgnNotice(false, t('pgnNotice.loadFailed'))
       return
     }
     const success = game.importGame(pgn)
@@ -232,9 +232,9 @@ export function App(): React.JSX.Element {
       tutor.clear()
       gameReport.clear()
       setShowLibrary(false)
-      showPgnNotice(true, 'Partie aus der Bibliothek geladen – Ansicht, Analyse und Tutor stehen bereit.')
+      showPgnNotice(true, t('pgnNotice.loadedFromLibrary'))
     } else {
-      showPgnNotice(false, 'Die gespeicherte Datei enthält kein gültiges PGN.')
+      showPgnNotice(false, t('pgnNotice.invalidSavedFile'))
     }
   }
 
@@ -292,12 +292,14 @@ export function App(): React.JSX.Element {
     !!currentLine &&
     currentLine.depth >= MIN_CLASSIFY_DEPTH
 
-  const colorNames = { w: 'Weiß', b: 'Schwarz' } as const
+  const colorNames = { w: t('common.white'), b: t('common.black') }
   const statusText = game.result
     ? game.result
     : game.thinking
-      ? 'Engine denkt …'
-      : `${colorNames[game.turn]} am Zug${!game.twoPlayerMode && game.turn === game.playerColor ? ' – du' : ''}`
+      ? t('status.engineThinking')
+      : t(!game.twoPlayerMode && game.turn === game.playerColor ? 'status.toMoveYou' : 'status.toMove', {
+          color: colorNames[game.turn]
+        })
 
   return (
     <div className="app">
@@ -309,8 +311,8 @@ export function App(): React.JSX.Element {
               <span className={`engine-dot ${analysisStatus.ready ? 'ok' : 'err'}`} />
               <span className="engine-name">
                 {analysisStatus.ready
-                  ? `Live-Analyse: ${analysisStatus.name}`
-                  : (analysisStatus.error ?? 'Analyse startet …')}
+                  ? t('app.liveAnalysis', { name: analysisStatus.name })
+                  : (analysisStatus.error ?? t('app.analysisStarting'))}
               </span>
             </>
           ) : (
@@ -318,14 +320,14 @@ export function App(): React.JSX.Element {
               <span className={`engine-dot ${opponentStatus.ready ? 'ok' : 'err'}`} />
               <span className="engine-name">
                 {opponentStatus.ready
-                  ? `Gegner: ${opponentStatus.name}${
+                  ? `${t('app.opponent', { name: opponentStatus.name })}${
                       settings.engineKind === 'maia'
                         ? ' (Maia)'
                         : settings.limitStrength
-                          ? ` (Elo ${settings.elo})`
+                          ? t('app.eloSuffix', { elo: settings.elo })
                           : ''
                     }`
-                  : (opponentStatus.error ?? 'Engine startet …')}
+                  : (opponentStatus.error ?? t('app.engineStarting'))}
               </span>
             </>
           )}
@@ -334,45 +336,43 @@ export function App(): React.JSX.Element {
           <TopbarDropdown
             label={
               <>
-                <BoardIcon /> Neue Partie
+                <BoardIcon /> {t('topbar.newGame')}
               </>
             }
           >
             <button className="menu-item" onClick={() => startNewGame('w')}>
               <span className="menu-item-label">
-                <KingIcon color="w" /> Als Weiß spielen
+                <KingIcon color="w" /> {t('topbar.playAsWhite')}
               </span>
             </button>
             <button className="menu-item" onClick={() => startNewGame('b')}>
               <span className="menu-item-label">
-                <KingIcon color="b" /> Als Schwarz spielen
+                <KingIcon color="b" /> {t('topbar.playAsBlack')}
               </span>
             </button>
             <div className="menu-sep" />
             <button className="menu-item" onClick={startOtbGame}>
               <span className="menu-item-label">
-                <CameraIcon /> OTB-Partie aufzeichnen
+                <CameraIcon /> {t('topbar.recordOtb')}
               </span>
-              <span className="menu-item-cap">
-                Zwei Personen am physischen Brett, kein Engine-Zug – Live-Analyse und Report laufen wie gewohnt
-              </span>
+              <span className="menu-item-cap">{t('topbar.recordOtbHint')}</span>
             </button>
           </TopbarDropdown>
           <TopbarDropdown
             label={
               <>
-                <FolderIcon /> Datei
+                <FolderIcon /> {t('topbar.file')}
               </>
             }
           >
             <button className="menu-item" onClick={handleExportPgn} disabled={game.moves.length === 0}>
               <span className="menu-item-label">
-                <ExportIcon /> PGN exportieren
+                <ExportIcon /> {t('topbar.exportPgn')}
               </span>
             </button>
             <button className="menu-item" onClick={handleImportPgn}>
               <span className="menu-item-label">
-                <ImportIcon /> PGN importieren
+                <ImportIcon /> {t('topbar.importPgn')}
               </span>
             </button>
             <div className="menu-sep" />
@@ -384,7 +384,7 @@ export function App(): React.JSX.Element {
               }}
             >
               <span className="menu-item-label">
-                <BooksIcon /> Bibliothek
+                <BooksIcon /> {t('topbar.library')}
               </span>
             </button>
           </TopbarDropdown>
@@ -393,19 +393,20 @@ export function App(): React.JSX.Element {
             onClick={toggleAnalysis}
             aria-pressed={settings.showAnalysis}
           >
-            <ChartIcon /> Analyse
+            <ChartIcon /> {t('topbar.analysis')}
           </button>
           <button
             className="btn"
             onClick={() => setShowReport(true)}
             disabled={game.moves.length < 2}
-            title="Zusammenfassung der Partie mit Fehlermustern und Lernpunkten"
+            title={t('topbar.reportHint')}
           >
-            <ReportIcon /> Partie-Report
+            <ReportIcon /> {t('topbar.report')}
           </button>
-          <button className="btn btn-settings" onClick={() => setShowSettings(true)} aria-label="Einstellungen">
+          <button className="btn btn-settings" onClick={() => setShowSettings(true)} aria-label={t('topbar.settings')}>
             <GearIcon />
           </button>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -482,27 +483,30 @@ export function App(): React.JSX.Element {
           {pgnNotice && <div className={`pgn-notice ${pgnNotice.ok ? 'ok' : 'error'}`}>{pgnNotice.text}</div>}
           {game.reviewMode ? (
             <div className="status-line review">
-              <span>📂 Importierte Partie – Ansicht</span>
+              <span>{t('review.importedGame')}</span>
               <button className="btn" onClick={game.continuePlaying}>
-                ▶ Weiterspielen
+                {t('review.continuePlaying')}
               </button>
             </div>
           ) : game.twoPlayerMode && !game.result ? (
-            <div className="status-line otb">🔴 OTB-Aufzeichnung – {statusText}</div>
+            <div className="status-line otb">{t('status.otbRecording', { status: statusText })}</div>
           ) : (
             <div className={`status-line ${game.result ? 'finished' : ''}`}>{statusText}</div>
           )}
           {opening && (
-            <div className="opening-line" title={`${opening.matchedPlies} von ${game.moves.length} Halbzügen erkannt`}>
+            <div
+              className="opening-line"
+              title={t('opening.detected', { matched: opening.matchedPlies, total: game.moves.length })}
+            >
               📖 {opening.name} <span className="opening-eco">({opening.eco})</span>
             </div>
           )}
-          {game.engineError && <div className="error-line">Engine-Fehler: {game.engineError}</div>}
+          {game.engineError && <div className="error-line">{t('app.engineError', { message: game.engineError })}</div>}
           {settings.showAnalysis && (
             <>
               <AnalysisPanel snapshot={game.snapshot} currentFen={game.fen} boardPreview={boardPreview} />
               {!analysisStatus.ready && analysisStatus.error && (
-                <div className="error-line">Analyse: {analysisStatus.error}</div>
+                <div className="error-line">{t('app.analysisError', { message: analysisStatus.error })}</div>
               )}
             </>
           )}

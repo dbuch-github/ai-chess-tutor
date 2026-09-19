@@ -1,7 +1,9 @@
 import { Chess } from 'chess.js'
-import type { Classification } from './classify'
+import { CLASSIFY_LABELS, type LabeledClassification } from '../../../shared/classifyLabels'
+import type { SupportedLocale } from '../../../shared/types'
 import type { CapturablePiece, MoveRecord } from './useGame'
 import { boardOutcome, importedOutcome, type GameOutcome } from './result'
+import i18n from '../i18n'
 
 export interface PgnMeta {
   initialFen?: string
@@ -22,11 +24,7 @@ function formatPgnDate(d: Date): string {
   return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`
 }
 
-const CLASS_LABELS: Partial<Record<Classification, string>> = {
-  inaccuracy: 'Ungenauigkeit',
-  mistake: 'Fehler',
-  blunder: 'Blunder'
-}
+const LOSS_LABELED: LabeledClassification[] = ['inaccuracy', 'mistake', 'blunder']
 
 /**
  * Baut den PGN-Kommentar zu einem Zug: Klassifikation + Gewinnchancen-Verlust
@@ -34,11 +32,11 @@ const CLASS_LABELS: Partial<Record<Classification, string>> = {
  * falls vorhanden – der vom Tutor generierte Erklärtext. So bleibt die Partie
  * auch in Lichess-Studies, ChessBase & Co. mit den Erklärungen lesbar.
  */
-function moveComment(move: MoveRecord): string | undefined {
+function moveComment(move: MoveRecord, locale: SupportedLocale): string | undefined {
   const parts: string[] = []
-  const label = move.classification ? CLASS_LABELS[move.classification] : undefined
-  if (label && move.lossPct !== undefined) {
-    parts.push(`${label} (−${move.lossPct.toFixed(0)} % Gewinnchance)`)
+  if (move.lossPct !== undefined && move.classification && (LOSS_LABELED as string[]).includes(move.classification)) {
+    const label = CLASSIFY_LABELS[locale][move.classification as LabeledClassification]
+    parts.push(i18n.t('pgn.moveCommentLossPct', { lng: locale, label, pct: move.lossPct.toFixed(0) }))
   }
   if (move.comment) parts.push(move.comment)
   return parts.length ? parts.join(' — ') : undefined
@@ -55,7 +53,7 @@ function sanitizeComment(text: string): string {
  * fortgesetzte Zugfolge als Variante erhalten statt beim nächsten echten Zug
  * verloren zu gehen.
  */
-function renderMoveText(moves: MoveRecord[]): string {
+function renderMoveText(moves: MoveRecord[], locale: SupportedLocale): string {
   const tokens: string[] = []
   let needsMoveNumber = true // nach Kommentar/Variante muss die Zugnummer wiederholt werden
   for (const move of moves) {
@@ -67,13 +65,13 @@ function renderMoveText(moves: MoveRecord[]): string {
     }
     tokens.push(move.san)
     needsMoveNumber = false
-    const comment = moveComment(move)
+    const comment = moveComment(move, locale)
     if (comment) {
       tokens.push(`{${sanitizeComment(comment)}}`)
       needsMoveNumber = true
     }
     if (move.variation?.length) {
-      tokens.push(`(${renderMoveText(move.variation)})`)
+      tokens.push(`(${renderMoveText(move.variation, locale)})`)
       needsMoveNumber = true
     }
   }
@@ -82,13 +80,20 @@ function renderMoveText(moves: MoveRecord[]): string {
 
 /** Baut eine vollständige PGN-Zeichenkette samt Standard-Kopfzeilen aus den gespielten Zügen. */
 export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
+  const locale = i18n.language as SupportedLocale
   const chess = new Chess(meta.initialFen ?? moves[0]?.fenBefore)
   chess.setHeader('Event', 'AI Chess Tutor Partie')
   chess.setHeader('Site', 'AI Chess Tutor')
   chess.setHeader('Date', formatPgnDate(meta.startedAt))
   chess.setHeader('Round', '-')
-  chess.setHeader('White', meta.twoPlayerMode ? 'Weiß' : meta.playerColor === 'w' ? 'Spieler' : meta.opponentName)
-  chess.setHeader('Black', meta.twoPlayerMode ? 'Schwarz' : meta.playerColor === 'b' ? 'Spieler' : meta.opponentName)
+  chess.setHeader(
+    'White',
+    meta.twoPlayerMode ? i18n.t('pgn.white', { lng: locale }) : meta.playerColor === 'w' ? i18n.t('pgn.player', { lng: locale }) : meta.opponentName
+  )
+  chess.setHeader(
+    'Black',
+    meta.twoPlayerMode ? i18n.t('pgn.black', { lng: locale }) : meta.playerColor === 'b' ? i18n.t('pgn.player', { lng: locale }) : meta.opponentName
+  )
 
   // Nur zum Ermitteln von Kopfzeilen (u. a. SetUp/FEN bei abweichender Startstellung)
   // und Endstellung/Ergebnis über die Hauptvariante – Kommentare und Nebenvarianten
@@ -111,7 +116,7 @@ export function buildPgn(moves: MoveRecord[], meta: PgnMeta): string {
     .join('\n')
   const bodyParts: string[] = []
   if (meta.initialComment) bodyParts.push(`{${sanitizeComment(meta.initialComment)}}`)
-  const movetext = renderMoveText(moves)
+  const movetext = renderMoveText(moves, locale)
   if (movetext) bodyParts.push(movetext)
   bodyParts.push(chess.header().Result ?? '*')
 

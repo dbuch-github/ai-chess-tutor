@@ -150,10 +150,10 @@ function defaultMaiaWeightsPath(level = 1200): string {
   return join(app.getPath('userData'), 'maia', `maia-${level}.pb.gz`)
 }
 
-async function exportPgn(pgn: string, suggestedName: string): Promise<PgnExportResult> {
+async function exportPgn(pgn: string, suggestedName: string, dialogTitle: string): Promise<PgnExportResult> {
   if (!mainWindow) return { ok: false, error: 'Kein Fenster verfügbar' }
   const result = await dialog.showSaveDialog(mainWindow, {
-    title: 'Partie als PGN speichern',
+    title: dialogTitle,
     defaultPath: suggestedName,
     filters: [{ name: 'PGN', extensions: ['pgn'] }]
   })
@@ -166,10 +166,10 @@ async function exportPgn(pgn: string, suggestedName: string): Promise<PgnExportR
   }
 }
 
-async function importPgn(): Promise<PgnImportResult> {
+async function importPgn(dialogTitle: string): Promise<PgnImportResult> {
   if (!mainWindow) return { ok: false, error: 'Kein Fenster verfügbar' }
   const result = await dialog.showOpenDialog(mainWindow, {
-    title: 'PGN-Datei importieren',
+    title: dialogTitle,
     properties: ['openFile'],
     filters: [{ name: 'PGN', extensions: ['pgn'] }]
   })
@@ -186,8 +186,10 @@ app.whenReady().then(() => {
   ipcMain.handle('dialog:selectFile', (_e, title: string, defaultPath?: string) => selectFile(title, defaultPath))
   ipcMain.handle('engine:defaultMaiaWeightsPath', (_e, level?: number) => defaultMaiaWeightsPath(level))
   ipcMain.on('shell:openExternal', (_e, url: string) => openExternalLink(url))
-  ipcMain.handle('pgn:export', (_e, pgn: string, suggestedName: string) => exportPgn(pgn, suggestedName))
-  ipcMain.handle('pgn:import', () => importPgn())
+  ipcMain.handle('pgn:export', (_e, pgn: string, suggestedName: string, dialogTitle: string) =>
+    exportPgn(pgn, suggestedName, dialogTitle)
+  )
+  ipcMain.handle('pgn:import', (_e, dialogTitle: string) => importPgn(dialogTitle))
   ipcMain.handle('library:save', (_e, pgn: string) => librarySave(pgn))
   ipcMain.handle('library:list', () => libraryList())
   ipcMain.handle('library:load', (_e, filePath: string) => libraryLoad(filePath))

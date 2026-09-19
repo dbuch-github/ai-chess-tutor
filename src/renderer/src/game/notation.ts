@@ -1,5 +1,6 @@
 import { Chess } from 'chess.js'
 import type { MoveRecord } from './useGame'
+import i18n from '../i18n'
 
 export const MAX_PV_PLIES = 10
 
@@ -36,9 +37,9 @@ export function historySan(moves: MoveRecord[]): string {
   return parts.join(' ')
 }
 
-/** Grobe Spielphase aus Zugzahl und verbliebenem Material. */
+/** Grobe Spielphase aus Zugzahl und verbliebenem Material – für den Tutor-Prompt, nicht in der UI angezeigt. */
 export function gamePhase(fen: string, moveCount: number): string {
-  if (moveCount < 20) return 'Eröffnung'
+  if (moveCount < 20) return i18n.t('notation.opening')
   const pieces = fen.split(' ')[0].replace(/[^nbrqNBRQ]/g, '').length
-  return pieces <= 6 ? 'Endspiel' : 'Mittelspiel'
+  return pieces <= 6 ? i18n.t('notation.endgame') : i18n.t('notation.middlegame')
 }

@@ -5,8 +5,10 @@ import { AnthropicProvider } from './providers/AnthropicProvider'
 import { OpenAIProvider } from './providers/OpenAIProvider'
 import { GoogleProvider } from './providers/GoogleProvider'
 import type { ChatTurn, LlmProvider } from './providers/types'
+import { CLASSIFY_LABELS } from '../../shared/classifyLabels'
 import type {
   LlmProviderId,
+  SupportedLocale,
   TutorMoveRequest,
   TutorQuestionRequest,
   TutorReportRequest,
@@ -16,16 +18,48 @@ import type {
   TutorSuggestRequest
 } from '../../shared/types'
 
-const SYSTEM_PROMPT = `Du bist ein erfahrener, freundlicher Schachtrainer. Du begleitest eine laufende Schachpartie – meist einen Schüler gegen eine Engine, manchmal auch eine über das Brett gespielte Partie zwischen zwei Personen. Die jeweilige Anfrage sagt dir, welcher Fall gerade vorliegt.
+/** Name der Zielsprache für den letzten Satz des System-Prompts (siehe buildSystemPrompt). */
+const LANGUAGE_NAMES: Record<SupportedLocale, string> = {
+  en: 'Englisch',
+  de: 'Deutsch',
+  fr: 'Französisch',
+  es: 'Spanisch',
+  it: 'Italienisch'
+}
+
+/** Kurze Statusmeldungen, die direkt im Tutor-Chat landen (siehe send() unten). */
+const NO_API_KEY_MESSAGE: Record<SupportedLocale, string> = {
+  en: 'No API key set – please add one in Settings (⚙︎).',
+  de: 'Kein API-Key hinterlegt – bitte in den Einstellungen (⚙︎) setzen.',
+  fr: "Aucune clé API définie – merci d'en ajouter une dans les paramètres (⚙︎).",
+  es: 'No hay una clave de API configurada – añade una en Ajustes (⚙︎).',
+  it: 'Nessuna chiave API impostata – aggiungine una nelle Impostazioni (⚙︎).'
+}
+const TUTOR_BUSY_MESSAGE: Record<SupportedLocale, string> = {
+  en: 'The tutor is already answering – please wait a moment.',
+  de: 'Der Tutor antwortet gerade – bitte kurz warten.',
+  fr: "Le tuteur est en train de répondre – merci de patienter un instant.",
+  es: 'El tutor ya está respondiendo – espera un momento.',
+  it: 'Il tutor sta già rispondendo – attendi un momento.'
+}
+
+/**
+ * Das Prompt-Gerüst bleibt bewusst auf Deutsch – ein LLM befolgt eine auf Deutsch formulierte
+ * Anweisung "Antworte auf Englisch" problemlos, ein Neuschreiben des kompletten Prompt-Baus in
+ * 5 Sprachen wäre unnötiges Risiko für keinen Mehrwert. Nur der Satz zur Antwortsprache ist dynamisch.
+ */
+function buildSystemPrompt(locale: SupportedLocale): string {
+  return `Du bist ein erfahrener, freundlicher Schachtrainer. Du begleitest eine laufende Schachpartie – meist einen Schüler gegen eine Engine, manchmal auch eine über das Brett gespielte Partie zwischen zwei Personen. Die jeweilige Anfrage sagt dir, welcher Fall gerade vorliegt.
 
 Regeln für deine Antworten:
 - Du bekommst zu jeder Anfrage die Fakten vorgerechnet: Stellung (FEN), Partieverlauf, Stockfish-Bewertungen und die besten Engine-Varianten. Stütze dich ausschließlich darauf.
 - Erfinde niemals eigene Varianten oder Zugfolgen, die nicht in den gelieferten Engine-Daten stehen. Wenn du einen konkreten Zug nennst, muss er aus den gelieferten Daten stammen.
 - Erkläre didaktisch: Welches Motiv oder welcher Plan wurde übersehen? Was ist die Idee hinter dem besseren Zug? Nutze schachliche Konzepte (Entwicklung, Zentrum, Königssicherheit, schwache Felder, Aktivität).
-- Sprich den Schüler mit "du" an. Antworte auf Deutsch.
+- Sprich den Schüler mit "du" an (bzw. dem jeweiligen Äquivalent in der Zielsprache). Antworte auf ${LANGUAGE_NAMES[locale]}.
 - Halte Zugkommentare kurz: 2 bis 4 Sätze, kein Vorgeplänkel, keine Überschriften.
 - Bei Rückfragen darfst du etwas ausführlicher werden, bleibe aber unter 150 Wörtern.
 - Die Notation in den Daten ist SAN mit englischen Figurenbuchstaben (N=Springer, B=Läufer, R=Turm, Q=Dame, K=König). Verwende in deiner Antwort dieselbe Notation.`
+}
 
 const DEFAULT_MODELS: Record<LlmProviderId, string> = {
   anthropic: 'claude-opus-5',
@@ -102,10 +136,10 @@ export class TutorService {
   async send(request: TutorRequest, onDelta: (text: string) => void): Promise<TutorResult> {
     const provider = this.providers[this.activeProvider]
     if (!provider.isConfigured()) {
-      return { ok: false, error: 'Kein API-Key hinterlegt – bitte in den Einstellungen (⚙︎) setzen.' }
+      return { ok: false, error: NO_API_KEY_MESSAGE[request.locale] }
     }
     if (this.busy) {
-      return { ok: false, error: 'Der Tutor antwortet gerade – bitte kurz warten.' }
+      return { ok: false, error: TUTOR_BUSY_MESSAGE[request.locale] }
     }
     this.busy = true
     try {
@@ -120,7 +154,7 @@ export class TutorService {
       const effort = request.kind === 'report' ? 'high' : 'low'
       const text = await provider.send({
         model: this.models[this.activeProvider],
-        systemPrompt: SYSTEM_PROMPT,
+        systemPrompt: buildSystemPrompt(request.locale),
         history: this.history,
         maxTokens: effort === 'high' ? 4000 : 2000,
         effort,
@@ -231,7 +265,7 @@ function formatMovePrompt(r: TutorMoveRequest): string {
     ? `Spielphase: ${r.phase}. Dies ist eine über das Brett gespielte Partie zwischen zwei Personen (kein Engine-Gegner).`
     : `Spielphase: ${r.phase}. Der Schüler spielt ${r.playerColor === 'w' ? 'Weiß' : 'Schwarz'}.`
   return [
-    `${who} hat gerade ${moveLabel} gespielt – laut Stockfish ${CLASS_LABELS[r.classification] ?? r.classification} (−${r.lossPct.toFixed(0)} % Gewinnchance, Bewertung aus Weiß-Sicht vorher ${r.evalBefore}, nachher ${r.evalAfter}).`,
+    `${who} hat gerade ${moveLabel} gespielt – laut Stockfish ${classifyLabel(r.classification, r.locale)} (−${r.lossPct.toFixed(0)} % Gewinnchance, Bewertung aus Weiß-Sicht vorher ${r.evalBefore}, nachher ${r.evalAfter}).`,
     ``,
     context,
     `Partie bisher: ${r.historySan}`,
@@ -259,10 +293,10 @@ function formatSuggestPrompt(r: TutorSuggestRequest): string {
   ].join('\n')
 }
 
-const CLASS_LABELS: Record<string, string> = {
-  blunder: 'Blunder',
-  mistake: 'Fehler',
-  inaccuracy: 'Ungenauigkeit'
+/** Klassifikations-Label in der Zielsprache – Fallback auf den rohen Schlüssel für 'good' (kein Label vorgesehen). */
+function classifyLabel(classification: string, locale: SupportedLocale): string {
+  const labels: Record<string, string> = CLASSIFY_LABELS[locale]
+  return labels[classification] ?? classification
 }
 
 function formatReportPrompt(r: TutorReportRequest): string {
@@ -271,7 +305,7 @@ function formatReportPrompt(r: TutorReportRequest): string {
         .map((m) => {
           const who = r.twoPlayerMode ? `${m.color === 'w' ? 'Weiß' : 'Schwarz'}: ` : ''
           const moveLabel = `${m.moveNumber}${m.color === 'w' ? '.' : '…'} ${m.san}`
-          return `${who}${moveLabel} (${CLASS_LABELS[m.classification] ?? m.classification}, −${m.lossPct.toFixed(0)} %)`
+          return `${who}${moveLabel} (${classifyLabel(m.classification, r.locale)}, −${m.lossPct.toFixed(0)} %)`
         })
         .join('; ')
     : '(keine groben Fehler erkannt)'

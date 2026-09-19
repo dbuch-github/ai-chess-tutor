@@ -1,8 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
-import type { TutorReportRequest } from '../../../shared/types'
+import { useTranslation } from 'react-i18next'
+import type { SupportedLocale, TutorReportRequest } from '../../../shared/types'
 import { computeCriticalMoments, computeReportStats } from './gameReport'
 import { historySan } from './notation'
 import type { GameApi } from './useGame'
+import i18n from '../i18n'
 
 export interface GameReportMessage {
   text: string
@@ -22,6 +24,7 @@ export interface GameReportApi {
 let nextReportId = -1
 
 export function useGameReport(game: GameApi, hasApiKey: boolean): GameReportApi {
+  const { t } = useTranslation()
   const [report, setReport] = useState<GameReportMessage | null>(null)
   const [busy, setBusy] = useState(false)
   const busyRef = useRef(false)
@@ -35,9 +38,10 @@ export function useGameReport(game: GameApi, hasApiKey: boolean): GameReportApi 
 
     const req: TutorReportRequest = {
       kind: 'report',
+      locale: i18n.language as SupportedLocale,
       playerColor: game.playerColor,
       twoPlayerMode: game.twoPlayerMode,
-      result: game.result ?? 'Partie läuft noch',
+      result: game.result ?? t('report.gameInProgress'),
       historySan: historySan(game.moves),
       mistakes: computeCriticalMoments(game.moves, game.playerColor, game.twoPlayerMode),
       stats: computeReportStats(game.moves, game.playerColor, game.twoPlayerMode)
@@ -54,7 +58,7 @@ export function useGameReport(game: GameApi, hasApiKey: boolean): GameReportApi 
         setReport((prev) => {
           if (!prev) return prev
           if (result.ok) return { text: result.text ?? prev.text, streaming: false }
-          return { text: prev.text, streaming: false, error: result.error ?? 'Unbekannter Fehler' }
+          return { text: prev.text, streaming: false, error: result.error ?? t('common.unknownError') }
         })
       })
       .finally(() => {
@@ -62,7 +66,7 @@ export function useGameReport(game: GameApi, hasApiKey: boolean): GameReportApi 
         busyRef.current = false
         setBusy(false)
       })
-  }, [game, hasApiKey])
+  }, [game, hasApiKey, t])
 
   const clear = useCallback(() => setReport(null), [])
 

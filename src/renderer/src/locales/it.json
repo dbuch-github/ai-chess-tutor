@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Bianco",
+    "black": "Nero",
+    "close": "Chiudi",
+    "engine": "Motore",
+    "unknownError": "Errore sconosciuto"
+  },
+  "app": {
+    "liveAnalysis": "Analisi dal vivo: {{name}}",
+    "analysisStarting": "Avvio analisi…",
+    "opponent": "Avversario: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Avvio motore…",
+    "noEngineFound": "Nessun motore trovato – imposta il percorso nelle Impostazioni",
+    "noLc0Found": "Nessun lc0 trovato – imposta il percorso nelle Impostazioni",
+    "noStockfishFound": "Nessuno Stockfish trovato",
+    "engineError": "Errore del motore: {{message}}",
+    "analysisError": "Analisi: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Nuova partita",
+    "playAsWhite": "Gioca con il Bianco",
+    "playAsBlack": "Gioca con il Nero",
+    "recordOtb": "Registra partita su scacchiera fisica",
+    "recordOtbHint": "Due persone alla scacchiera fisica, nessuna mossa del motore – analisi dal vivo e report funzionano come sempre",
+    "file": "File",
+    "exportPgn": "Esporta PGN",
+    "importPgn": "Importa PGN",
+    "library": "Libreria",
+    "analysis": "Analisi",
+    "report": "Report della partita",
+    "reportHint": "Riepilogo della partita con errori ricorrenti e punti di apprendimento",
+    "settings": "Impostazioni",
+    "language": "Scegli lingua"
+  },
+  "status": {
+    "engineThinking": "Il motore sta pensando…",
+    "toMove": "Muove il {{color}}",
+    "toMoveYou": "Muove il {{color}} – tu",
+    "otbRecording": "🔴 Registrazione su scacchiera – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Partita importata – sola visualizzazione",
+    "continuePlaying": "▶ Continua a giocare"
+  },
+  "opening": {
+    "detected": "{{matched}} semimosse riconosciute su {{total}}"
+  },
+  "pgnNotice": {
+    "saved": "Salvato: {{path}}",
+    "saveFailed": "Salvataggio non riuscito: {{message}}",
+    "importFailed": "Importazione non riuscita: {{message}}",
+    "invalidFile": "Il file non contiene un PGN valido.",
+    "loadFailed": "Impossibile caricare la partita.",
+    "invalidSavedFile": "Il file salvato non contiene un PGN valido.",
+    "imported": "Partita importata – visualizzazione, analisi e tutor sono pronti.",
+    "loadedFromLibrary": "Partita caricata dalla libreria – visualizzazione, analisi e tutor sono pronti."
+  },
+  "tutor": {
+    "unknownEval": "sconosciuta",
+    "title": "Tutor",
+    "modeAriaLabel": "Modalità tutor",
+    "modeOffLabel": "Silenzioso",
+    "modeOffHint": "Solo su richiesta",
+    "modeMistakesLabel": "Errori",
+    "modeMistakesHint": "Commenta i tuoi errori ed errori gravi",
+    "modeChattyLabel": "Attivo",
+    "modeChattyHint": "Anche imprecisioni ed errori del motore",
+    "undoMove": "↶ Annulla",
+    "undoHint": "Annulla l'ultima mossa",
+    "redoMove": "↷ Ripristina",
+    "redoHint": "Ripristina la mossa annullata",
+    "emptyPlaceholder": "Intervengo in caso di errori – oppure chiedimi direttamente, ad es. «Qual è il piano qui?» Puoi anche cliccare sulle linee di analisi qui sopra.",
+    "hidePreview": "✕ Nascondi suggerimento",
+    "showPreview": "↗ Mostra {{move}} sulla scacchiera",
+    "suggestMove": "💡 Suggerisci mossa",
+    "suggestMoveHintReady": "Richiedi un suggerimento di mossa con spiegazione",
+    "suggestMoveHintWait": "Solo quando tocca a te e l'analisi è pronta",
+    "questionPlaceholder": "Domanda al tutor…",
+    "send": "Invia"
+  },
+  "notation": {
+    "opening": "Apertura",
+    "middlegame": "Mediogioco",
+    "endgame": "Finale"
+  },
+  "report": {
+    "gameInProgress": "La partita è ancora in corso",
+    "title": "Report della partita",
+    "blunderCount": "{{count}} errori gravi",
+    "mistakeCount": "{{count}} errori",
+    "inaccuracyCount": "{{count}} imprecisioni",
+    "bestMoveCount": "{{count}} mosse migliori",
+    "criticalMoments": "Momenti critici",
+    "noApiKey": "Nessuna chiave API impostata.",
+    "setKeyNow": "Impostala ora nelle Impostazioni",
+    "placeholder": "Riepiloga la partita: errori ricorrenti, i momenti più critici e punti di apprendimento concreti per la prossima partita.",
+    "generate": "Genera report",
+    "regenerate": "Rigenera"
+  },
+  "settings": {
+    "title": "Impostazioni motore",
+    "opponentEngine": "Motore avversario",
+    "engineKind": "Tipo di motore",
+    "engineKindStockfish": "Stockfish (classico, limitato per Elo)",
+    "engineKindMaia": "Maia (lc0, gioco umano)",
+    "engineKindCustom": "Altro motore UCI",
+    "pathToLc0": "Percorso di lc0",
+    "chooseLc0Binary": "Scegli il binario lc0",
+    "browse": "Sfoglia…",
+    "strength": "Forza di gioco",
+    "maiaWeightsFile": "File dei pesi Maia (.pb.gz)",
+    "chooseMaiaWeights": "Scegli il file dei pesi Maia",
+    "maiaPathPlaceholder": "/percorso/di/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Il selettore di forza sopra imposta automaticamente il percorso corrispondente; qui è possibile scegliere manualmente anche reti personalizzate (ad es. altre forze o varianti) – altre sono disponibili su ",
+    "maiaHintAfterLink": ". Maia gioca direttamente dalla rete senza ricerca – la forza è integrata nel file scelto, non serve ulteriore configurazione.",
+    "pathToEngine": "Percorso del motore",
+    "chooseEngine": "Scegli motore",
+    "limitStrength": "Limita la forza di gioco (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Tempo per mossa (ms)",
+    "openingBook": "Libro delle aperture",
+    "useOpeningBookForOpponent": "Usa per l'avversario (prime 10 mosse complete)",
+    "openingBookHint": "L'avversario gioca quindi in modo casuale linee di apertura note invece di seguire sempre la mossa migliore del motore – più realistico e vario. Dopo, subentra il motore.",
+    "clock": "Orologio scacchistico (controllo del tempo)",
+    "timeControl": "Controllo del tempo",
+    "baseTimeMinutes": "Tempo base (minuti)",
+    "incrementSeconds": "Incremento (secondi/mossa)",
+    "clockHintUnlimited": "Partita libera senza orologio – ogni lato ha tempo illimitato per pensare.",
+    "clockHintTimed": "Se l'orologio di un lato si esaurisce, perde immediatamente la partita per tempo scaduto. Il salvataggio azzera entrambi gli orologi al tempo base scelto qui.",
+    "sound": "Suono",
+    "moveSoundLabel": "Suono di clic a ogni mossa",
+    "analysisEngine": "Motore di analisi (Stockfish)",
+    "pathToStockfish": "Percorso di Stockfish",
+    "chooseStockfish": "Scegli Stockfish",
+    "llmTutor": "Tutor LLM",
+    "provider": "Provider",
+    "model": "Modello",
+    "apiKey": "Chiave API",
+    "apiKeySavedKeychain": "✓ salvata (Portachiavi)",
+    "apiKeyReplacePlaceholder": "Inserisci una nuova chiave per sostituirla",
+    "apiKeyAvailableAt": "Chiave API disponibile su {{hint}}.",
+    "deleteStoredKey": "Elimina la chiave salvata",
+    "cancel": "Annulla",
+    "saveAndApply": "Salva e applica"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Libero (senza controllo del tempo)",
+      "classical": "Classico (scacchi da torneo)",
+      "rapid": "Rapid",
+      "blitz": "Lampo (Blitz)",
+      "bullet": "Bullet"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Il Bianco vince per scacco matto",
+    "checkmateBlack": "Il Nero vince per scacco matto",
+    "stalemate": "Patta per stallo",
+    "threefold": "Patta per ripetizione di posizione",
+    "insufficientMaterial": "Patta: materiale insufficiente",
+    "fiftyMoves": "Patta: regola delle 50 mosse",
+    "draw": "Patta",
+    "wins": "Vince il {{winner}}",
+    "winsByTimeForfeit": "Vince il {{winner}} per tempo scaduto"
+  },
+  "pgn": {
+    "white": "Bianco",
+    "black": "Nero",
+    "player": "Giocatore",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % di probabilità di vittoria)"
+  },
+  "moveList": {
+    "title": "Partita",
+    "noMoves": "Ancora nessuna mossa.",
+    "discardedContinuation": "Continuazione scartata"
+  },
+  "library": {
+    "title": "Libreria delle partite",
+    "loading": "Caricamento…",
+    "empty": "Ancora nessuna partita salvata. Le partite vengono salvate automaticamente alla fine.",
+    "halfMoves": "{{count}} semimosse",
+    "open": "Apri",
+    "delete": "Elimina",
+    "resultWhiteWins": "Vince il Bianco",
+    "resultBlackWins": "Vince il Nero",
+    "resultDraw": "Patta",
+    "resultOpen": "Aperta"
+  },
+  "info": {
+    "author": "Autore: Daniel Buch",
+    "licenseFreeSoftware": "Software libero sotto la",
+    "licenseSuffix": "(o successiva) – senza garanzia.",
+    "sourceCode": "Codice sorgente su GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Scegli dispositivo Bluetooth",
+    "multipleFound": "Trovati più dispositivi corrispondenti – quale collegare?",
+    "connect": "Connetti"
+  },
+  "chessnut": {
+    "statusUnsupported": "Non supportato",
+    "statusDisconnected": "Disconnesso",
+    "statusConnecting": "Connessione…",
+    "statusConnected": "Connesso",
+    "statusError": "Errore",
+    "bestMoveHint": "Fa lampeggiare la mossa migliore dell'analisi Stockfish in corso sulla scacchiera (casella di partenza/arrivo alternate) finché tocca a te",
+    "bestMoveLabel": "Mossa migliore",
+    "beepHint": "Segnale acustico direttamente sulla scacchiera per scacco, un tentativo di mossa non valida rilevato o tempo scaduto",
+    "beepLabel": "🔔 Segnale acustico",
+    "pleaseReplay": "Ripeti la mossa: {{squares}}",
+    "disconnect": "Disconnetti",
+    "connect": "Connetti"
+  },
+  "analysis": {
+    "title": "Analisi Stockfish",
+    "depth": "Profondità {{depth}}",
+    "showOnBoard": "Mostra sulla scacchiera"
+  },
+  "legend": {
+    "move": "Mossa",
+    "moveFollowUp": " (& mosse successive più sbiadite)",
+    "attacks": "attacca",
+    "defends": "difende",
+    "pins": "inchioda",
+    "discovers": "scopre",
+    "becomesWeak": "diventa debole",
+    "check": "Scacco"
+  },
+  "evalBar": {
+    "whiteWinPct": "Il Bianco vince al {{pct}} %"
+  }
+}

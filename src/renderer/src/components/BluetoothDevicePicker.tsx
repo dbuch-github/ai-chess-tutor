@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { BluetoothDeviceInfo } from '../../../shared/types'
 
 interface BluetoothDevicePickerProps {
@@ -13,11 +14,12 @@ interface BluetoothDevicePickerProps {
  * Geräten zum Einsatz.
  */
 export function BluetoothDevicePicker({ devices, onSelect, onCancel }: BluetoothDevicePickerProps): React.JSX.Element {
+  const { t } = useTranslation()
   return (
     <div className="dialog-backdrop" onClick={onCancel}>
       <div className="dialog" onClick={(e) => e.stopPropagation()}>
-        <h2>Bluetooth-Gerät wählen</h2>
-        <p className="field-hint">Mehrere passende Geräte gefunden – welches soll verbunden werden?</p>
+        <h2>{t('bluetooth.chooseDevice')}</h2>
+        <p className="field-hint">{t('bluetooth.multipleFound')}</p>
         <ul className="library-list">
           {devices.map((d) => (
             <li key={d.id} className="library-row">
@@ -26,7 +28,7 @@ export function BluetoothDevicePicker({ devices, onSelect, onCancel }: Bluetooth
               </div>
               <div className="library-actions">
                 <button className="btn primary" onClick={() => onSelect(d.id)}>
-                  Verbinden
+                  {t('bluetooth.connect')}
                 </button>
               </div>
             </li>
@@ -34,7 +36,7 @@ export function BluetoothDevicePicker({ devices, onSelect, onCancel }: Bluetooth
         </ul>
         <div className="dialog-actions">
           <button className="btn" onClick={onCancel}>
-            Abbrechen
+            {t('settings.cancel')}
           </button>
         </div>
       </div>

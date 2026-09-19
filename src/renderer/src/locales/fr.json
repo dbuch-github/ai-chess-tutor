@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Blancs",
+    "black": "Noirs",
+    "close": "Fermer",
+    "engine": "Moteur",
+    "unknownError": "Erreur inconnue"
+  },
+  "app": {
+    "liveAnalysis": "Analyse en direct : {{name}}",
+    "analysisStarting": "Démarrage de l'analyse…",
+    "opponent": "Adversaire : {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Démarrage du moteur…",
+    "noEngineFound": "Aucun moteur trouvé – définissez le chemin dans les paramètres",
+    "noLc0Found": "Aucun lc0 trouvé – définissez le chemin dans les paramètres",
+    "noStockfishFound": "Aucun Stockfish trouvé",
+    "engineError": "Erreur du moteur : {{message}}",
+    "analysisError": "Analyse : {{message}}"
+  },
+  "topbar": {
+    "newGame": "Nouvelle partie",
+    "playAsWhite": "Jouer les Blancs",
+    "playAsBlack": "Jouer les Noirs",
+    "recordOtb": "Enregistrer une partie sur échiquier",
+    "recordOtbHint": "Deux personnes devant l'échiquier physique, aucun coup du moteur – l'analyse en direct et le rapport fonctionnent normalement",
+    "file": "Fichier",
+    "exportPgn": "Exporter le PGN",
+    "importPgn": "Importer le PGN",
+    "library": "Bibliothèque",
+    "analysis": "Analyse",
+    "report": "Rapport de partie",
+    "reportHint": "Résumé de la partie avec les erreurs récurrentes et les points à retenir",
+    "settings": "Paramètres",
+    "language": "Choisir la langue"
+  },
+  "status": {
+    "engineThinking": "Le moteur réfléchit…",
+    "toMove": "{{color}} au trait",
+    "toMoveYou": "{{color}} au trait – toi",
+    "otbRecording": "🔴 Enregistrement sur échiquier – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Partie importée – consultation",
+    "continuePlaying": "▶ Continuer la partie"
+  },
+  "opening": {
+    "detected": "{{matched}} demi-coups reconnus sur {{total}}"
+  },
+  "pgnNotice": {
+    "saved": "Enregistré : {{path}}",
+    "saveFailed": "Échec de l'enregistrement : {{message}}",
+    "importFailed": "Échec de l'importation : {{message}}",
+    "invalidFile": "Le fichier ne contient pas de PGN valide.",
+    "loadFailed": "Impossible de charger la partie.",
+    "invalidSavedFile": "Le fichier enregistré ne contient pas de PGN valide.",
+    "imported": "Partie importée – consultation, analyse et tuteur sont prêts.",
+    "loadedFromLibrary": "Partie chargée depuis la bibliothèque – consultation, analyse et tuteur sont prêts."
+  },
+  "tutor": {
+    "unknownEval": "inconnue",
+    "title": "Tuteur",
+    "modeAriaLabel": "Mode du tuteur",
+    "modeOffLabel": "Silencieux",
+    "modeOffHint": "Seulement sur demande",
+    "modeMistakesLabel": "Erreurs",
+    "modeMistakesHint": "Commente vos erreurs et gaffes",
+    "modeChattyLabel": "Actif",
+    "modeChattyHint": "Aussi les imprécisions et les gaffes du moteur",
+    "undoMove": "↶ Annuler",
+    "undoHint": "Annuler le dernier coup",
+    "redoMove": "↷ Rétablir",
+    "redoHint": "Rétablir le coup annulé",
+    "emptyPlaceholder": "Je réagis en cas d'erreur – ou demande-moi directement, p. ex. « Quel est le plan ici ? » Tu peux aussi cliquer sur les lignes d'analyse ci-dessus.",
+    "hidePreview": "✕ Masquer la suggestion",
+    "showPreview": "↗ Afficher {{move}} sur l'échiquier",
+    "suggestMove": "💡 Suggestion de coup",
+    "suggestMoveHintReady": "Demander une suggestion de coup avec explication",
+    "suggestMoveHintWait": "Seulement quand c'est ton tour et que l'analyse est prête",
+    "questionPlaceholder": "Question au tuteur…",
+    "send": "Envoyer"
+  },
+  "notation": {
+    "opening": "Ouverture",
+    "middlegame": "Milieu de partie",
+    "endgame": "Finale"
+  },
+  "report": {
+    "gameInProgress": "La partie est encore en cours",
+    "title": "Rapport de partie",
+    "blunderCount": "{{count}} gaffes",
+    "mistakeCount": "{{count}} erreurs",
+    "inaccuracyCount": "{{count}} imprécisions",
+    "bestMoveCount": "{{count}} meilleurs coups",
+    "criticalMoments": "Moments critiques",
+    "noApiKey": "Aucune clé API définie.",
+    "setKeyNow": "Définir une clé maintenant dans les paramètres",
+    "placeholder": "Résume la partie : erreurs récurrentes, moments les plus critiques et points concrets à retenir pour la prochaine partie.",
+    "generate": "Générer le rapport",
+    "regenerate": "Régénérer"
+  },
+  "settings": {
+    "title": "Paramètres du moteur",
+    "opponentEngine": "Moteur adverse",
+    "engineKind": "Type de moteur",
+    "engineKindStockfish": "Stockfish (classique, limité en Elo)",
+    "engineKindMaia": "Maia (lc0, jeu humain)",
+    "engineKindCustom": "Autre moteur UCI",
+    "pathToLc0": "Chemin vers lc0",
+    "chooseLc0Binary": "Choisir le binaire lc0",
+    "browse": "Parcourir…",
+    "strength": "Force de jeu",
+    "maiaWeightsFile": "Fichier de poids Maia (.pb.gz)",
+    "chooseMaiaWeights": "Choisir le fichier de poids Maia",
+    "maiaPathPlaceholder": "/chemin/vers/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Le sélecteur de force ci-dessus définit automatiquement le chemin correspondant ; des réseaux personnalisés (autres forces ou variantes) peuvent aussi être choisis manuellement ici – d'autres sont disponibles sur ",
+    "maiaHintAfterLink": ". Maia joue directement à partir du réseau sans recherche – la force est intégrée au fichier choisi, aucune configuration supplémentaire n'est nécessaire.",
+    "pathToEngine": "Chemin vers le moteur",
+    "chooseEngine": "Choisir le moteur",
+    "limitStrength": "Limiter la force de jeu (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Temps de réflexion par coup (ms)",
+    "openingBook": "Livre d'ouvertures",
+    "useOpeningBookForOpponent": "Utiliser pour l'adversaire (10 premiers coups complets)",
+    "openingBookHint": "L'adversaire joue alors aléatoirement des lignes d'ouverture connues au lieu de toujours suivre le meilleur coup du moteur – plus réaliste et varié. Le moteur prend ensuite le relais.",
+    "clock": "Pendule (cadence)",
+    "timeControl": "Cadence",
+    "baseTimeMinutes": "Temps de base (minutes)",
+    "incrementSeconds": "Incrément (secondes/coup)",
+    "clockHintUnlimited": "Partie libre sans pendule – chaque camp dispose d'un temps de réflexion illimité.",
+    "clockHintTimed": "Si la pendule d'un camp arrive à zéro, il perd immédiatement la partie au temps. Enregistrer réinitialise les deux pendules au temps de base choisi ici.",
+    "sound": "Son",
+    "moveSoundLabel": "Son de clic à chaque coup",
+    "analysisEngine": "Moteur d'analyse (Stockfish)",
+    "pathToStockfish": "Chemin vers Stockfish",
+    "chooseStockfish": "Choisir Stockfish",
+    "llmTutor": "Tuteur LLM",
+    "provider": "Fournisseur",
+    "model": "Modèle",
+    "apiKey": "Clé API",
+    "apiKeySavedKeychain": "✓ enregistrée (trousseau)",
+    "apiKeyReplacePlaceholder": "Saisissez une nouvelle clé pour la remplacer",
+    "apiKeyAvailableAt": "Clé API disponible sur {{hint}}.",
+    "deleteStoredKey": "Supprimer la clé enregistrée",
+    "cancel": "Annuler",
+    "saveAndApply": "Enregistrer et appliquer"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Libre (sans cadence)",
+      "classical": "Classique (échecs de tournoi)",
+      "rapid": "Rapide",
+      "blitz": "Blitz",
+      "bullet": "Bullet"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Les Blancs gagnent par échec et mat",
+    "checkmateBlack": "Les Noirs gagnent par échec et mat",
+    "stalemate": "Nulle par pat",
+    "threefold": "Nulle par répétition de position",
+    "insufficientMaterial": "Nulle : matériel insuffisant",
+    "fiftyMoves": "Nulle : règle des 50 coups",
+    "draw": "Nulle",
+    "wins": "{{winner}} gagnent",
+    "winsByTimeForfeit": "{{winner}} gagnent au temps"
+  },
+  "pgn": {
+    "white": "Blancs",
+    "black": "Noirs",
+    "player": "Joueur",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % de probabilité de gain)"
+  },
+  "moveList": {
+    "title": "Partie",
+    "noMoves": "Pas encore de coups.",
+    "discardedContinuation": "Suite annulée"
+  },
+  "library": {
+    "title": "Bibliothèque de parties",
+    "loading": "Chargement…",
+    "empty": "Pas encore de parties enregistrées. Les parties sont enregistrées automatiquement à leur fin.",
+    "halfMoves": "{{count}} demi-coups",
+    "open": "Ouvrir",
+    "delete": "Supprimer",
+    "resultWhiteWins": "Les Blancs gagnent",
+    "resultBlackWins": "Les Noirs gagnent",
+    "resultDraw": "Nulle",
+    "resultOpen": "En cours"
+  },
+  "info": {
+    "author": "Auteur : Daniel Buch",
+    "licenseFreeSoftware": "Logiciel libre sous",
+    "licenseSuffix": "(ou ultérieure) – sans garantie.",
+    "sourceCode": "Code source sur GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Choisir l'appareil Bluetooth",
+    "multipleFound": "Plusieurs appareils correspondants trouvés – lequel connecter ?",
+    "connect": "Connecter"
+  },
+  "chessnut": {
+    "statusUnsupported": "Non pris en charge",
+    "statusDisconnected": "Déconnecté",
+    "statusConnecting": "Connexion…",
+    "statusConnected": "Connecté",
+    "statusError": "Erreur",
+    "bestMoveHint": "Fait clignoter le meilleur coup de l'analyse Stockfish en cours sur l'échiquier (case de départ/d'arrivée en alternance) tant que c'est ton tour",
+    "bestMoveLabel": "Meilleur coup",
+    "beepHint": "Signal sonore directement sur l'échiquier en cas d'échec, de coup invalide détecté ou de défaite au temps",
+    "beepLabel": "🔔 Signal sonore",
+    "pleaseReplay": "Merci de rejouer : {{squares}}",
+    "disconnect": "Déconnecter",
+    "connect": "Connecter"
+  },
+  "analysis": {
+    "title": "Analyse Stockfish",
+    "depth": "Profondeur {{depth}}",
+    "showOnBoard": "Afficher sur l'échiquier"
+  },
+  "legend": {
+    "move": "Coup",
+    "moveFollowUp": " (& coups suivants plus pâles)",
+    "attacks": "attaque",
+    "defends": "défend",
+    "pins": "cloue",
+    "discovers": "découvre",
+    "becomesWeak": "devient faible",
+    "check": "Échec"
+  },
+  "evalBar": {
+    "whiteWinPct": "Les Blancs gagnent à {{pct}} %"
+  }
+}

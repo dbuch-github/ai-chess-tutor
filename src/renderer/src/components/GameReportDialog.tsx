@@ -1,6 +1,8 @@
-import type { TutorReportMistake, TutorReportStats } from '../../../shared/types'
+import { useTranslation } from 'react-i18next'
+import type { SupportedLocale, TutorReportMistake, TutorReportStats } from '../../../shared/types'
 import type { GameReportApi } from '../game/useGameReport'
 import { computeMoveImpact } from '../game/boardVisuals'
+import { CLASSIFY_LABELS, type LabeledClassification } from '../../../shared/classifyLabels'
 import { figurineSan, figurineText } from './Figurine'
 import { PositionThumbnail } from './PositionThumbnail'
 import { VisualLegend } from './VisualLegend'
@@ -18,12 +20,6 @@ interface GameReportDialogProps {
   onClose: () => void
 }
 
-const CLASS_LABELS: Record<string, string> = {
-  blunder: 'Blunder',
-  mistake: 'Fehler',
-  inaccuracy: 'Ungenauigkeit'
-}
-
 export function GameReportDialog({
   stats,
   criticalMoments,
@@ -34,21 +30,23 @@ export function GameReportDialog({
   onOpenSettings,
   onClose
 }: GameReportDialogProps): React.JSX.Element {
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language as SupportedLocale
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div className="dialog report-dialog" onClick={(e) => e.stopPropagation()}>
-        <h2>Partie-Report</h2>
+        <h2>{t('report.title')}</h2>
 
         <div className="report-stats">
-          <span className="stat-chip bad">{stats.blunders} Blunder</span>
-          <span className="stat-chip warn">{stats.mistakes} Fehler</span>
-          <span className="stat-chip warn-soft">{stats.inaccuracies} Ungenauigkeiten</span>
-          <span className="stat-chip good">{stats.bestMoves} beste Züge</span>
+          <span className="stat-chip bad">{t('report.blunderCount', { count: stats.blunders })}</span>
+          <span className="stat-chip warn">{t('report.mistakeCount', { count: stats.mistakes })}</span>
+          <span className="stat-chip warn-soft">{t('report.inaccuracyCount', { count: stats.inaccuracies })}</span>
+          <span className="stat-chip good">{t('report.bestMoveCount', { count: stats.bestMoves })}</span>
         </div>
 
         {criticalMoments.length > 0 && (
           <div className="report-moments cg-wrap">
-            <h3>Kritische Momente</h3>
+            <h3>{t('report.criticalMoments')}</h3>
             <VisualLegend showFollowUp={false} />
             <ul>
               {criticalMoments.map((m) => {
@@ -79,10 +77,10 @@ export function GameReportDialog({
                       <span className="figurine-slot">{leadIcon}</span>
                       {text}
                       {twoPlayerMode && (
-                        <span className="stat-chip inline">{m.color === 'w' ? 'Weiß' : 'Schwarz'}</span>
+                        <span className="stat-chip inline">{t(m.color === 'w' ? 'common.white' : 'common.black')}</span>
                       )}
                       <span className={`stat-chip inline ${m.classification === 'blunder' ? 'bad' : 'warn'}`}>
-                        {CLASS_LABELS[m.classification] ?? m.classification}
+                        {CLASSIFY_LABELS[locale][m.classification as LabeledClassification] ?? m.classification}
                       </span>
                       <span className="loss">−{m.lossPct.toFixed(0)} %</span>
                     </span>
@@ -95,9 +93,9 @@ export function GameReportDialog({
 
         {!hasApiKey ? (
           <p className="panel-empty">
-            Kein API-Key hinterlegt.{' '}
+            {t('report.noApiKey')}{' '}
             <button className="link-btn" onClick={onOpenSettings}>
-              Jetzt in den Einstellungen setzen
+              {t('report.setKeyNow')}
             </button>
           </p>
         ) : report.report ? (
@@ -107,19 +105,16 @@ export function GameReportDialog({
             {report.report.error && <div className="error-line">{report.report.error}</div>}
           </div>
         ) : (
-          <p className="panel-empty">
-            Fasst die Partie zusammen: wiederkehrende Fehlermuster, die kritischsten Momente und
-            konkrete Lernpunkte für die nächste Partie.
-          </p>
+          <p className="panel-empty">{t('report.placeholder')}</p>
         )}
 
         <div className="dialog-actions">
           <button className="btn" onClick={onClose}>
-            Schließen
+            {t('common.close')}
           </button>
           {hasApiKey && (
             <button className="btn primary" onClick={report.request} disabled={report.busy}>
-              {report.report ? 'Neu erstellen' : 'Report erstellen'}
+              {report.report ? t('report.regenerate') : t('report.generate')}
             </button>
           )}
         </div>

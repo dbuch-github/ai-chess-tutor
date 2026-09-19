@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { TutorRequest, TutorStatus } from '../../../shared/types'
+import { useTranslation } from 'react-i18next'
+import type { SupportedLocale, TutorRequest, TutorStatus } from '../../../shared/types'
 import { formatScore } from './classify'
 import { buildLinePreview, type MovePreview } from './boardVisuals'
 import type { BoardPreviewApi } from './useBoardPreview'
 import { gamePhase, historySan, pvToSan } from './notation'
 import type { GameApi, MoveRecord } from './useGame'
 import type { TutorMode } from '../settings'
+import i18n from '../i18n'
 
 export interface TutorMessage {
   id: number
@@ -37,6 +39,7 @@ function messageKey(id: number): string {
 }
 
 export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPreviewApi): TutorApi {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState<TutorMessage[]>([])
   const [busy, setBusy] = useState(false)
   const [status, setStatus] = useState<TutorStatus | null>(null)
@@ -83,7 +86,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
               .map((m) => {
                 if (m.id !== id) return m
                 if (result.ok) return { ...m, text: result.text ?? m.text, streaming: false }
-                return { ...m, role: 'error' as const, text: result.error ?? 'Unbekannter Fehler', streaming: false }
+                return { ...m, role: 'error' as const, text: result.error ?? t('common.unknownError'), streaming: false }
               })
               .filter((m) => m.text !== '')
           )
@@ -95,7 +98,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
         })
       return true
     },
-    [boardPreview]
+    [boardPreview, t]
   )
 
   // Auto-Kommentare: neu klassifizierte Züge je nach Modus kommentieren
@@ -132,11 +135,12 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
       setMessages((prev) => [...prev, { id: nextId++, role: 'user', text: question }])
       runRequest({
         kind: 'question',
+        locale: i18n.language as SupportedLocale,
         question,
         fen: g.fen,
         turn: stm,
         playerColor: g.playerColor,
-        evalNow: line ? formatScore(line, stm) : 'unbekannt',
+        evalNow: line ? formatScore(line, stm) : t('tutor.unknownEval'),
         linesSan:
           g.snapshot?.fen === g.fen
             ? g.snapshot.lines.map((l) => `${formatScore(l, stm)}: ${pvToSan(g.fen, l.pvUci)}`)
@@ -144,7 +148,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
         historySan: historySan(g.moves)
       })
     },
-    [runRequest]
+    [runRequest, t]
   )
 
   const suggestMove = useCallback(() => {
@@ -157,6 +161,7 @@ export function useTutor(game: GameApi, mode: TutorMode, boardPreview: BoardPrev
     runRequest(
       {
         kind: 'suggest',
+        locale: i18n.language as SupportedLocale,
         fen: g.fen,
         turn: stm,
         playerColor: g.playerColor,
@@ -219,6 +224,7 @@ function buildMoveRequest(
   return {
     request: {
       kind: 'move',
+      locale: i18n.language as SupportedLocale,
       moveNumber: Number(move.fenBefore.split(' ')[5]),
       san: move.san,
       color: move.color,

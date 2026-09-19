@@ -31,7 +31,7 @@ test('an empty setup PGN retains its position on export', () => {
 
 test('flag fall is exported and reimported as a completed game', () => {
   const game = parsePgn('1. e4 e5 *')
-  const outcome = { result: '1-0' as const, description: 'Weiß gewinnt durch Zeitüberschreitung', termination: 'time forfeit' }
+  const outcome = { result: '1-0' as const, winner: 'w' as const, reason: 'time-forfeit' as const, termination: 'time forfeit' }
   const pgn = buildPgn(game.moves, { ...meta, outcome })
   const loaded = parsePgn(pgn)
   assert.deepEqual(loaded.outcome, outcome)
@@ -41,7 +41,7 @@ test('flag fall is exported and reimported as a completed game', () => {
 
 test('checkmate takes precedence over a simultaneous clock result', () => {
   const game = parsePgn('1. f3 e5 2. g4 Qh4# 0-1')
-  const pgn = buildPgn(game.moves, { ...meta, outcome: { result: '1-0', description: 'flag', termination: 'time forfeit' } })
+  const pgn = buildPgn(game.moves, { ...meta, outcome: { result: '1-0', winner: 'w', reason: 'time-forfeit', termination: 'time forfeit' } })
   assert.equal(parsePgn(pgn).outcome?.result, '0-1')
   assert.equal(parsePgn(pgn).outcome?.termination, undefined)
 })

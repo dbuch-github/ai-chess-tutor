@@ -1,0 +1,234 @@
+{
+  "common": {
+    "white": "Weiß",
+    "black": "Schwarz",
+    "close": "Schließen",
+    "engine": "Engine",
+    "unknownError": "Unbekannter Fehler"
+  },
+  "app": {
+    "liveAnalysis": "Live-Analyse: {{name}}",
+    "analysisStarting": "Analyse startet …",
+    "opponent": "Gegner: {{name}}",
+    "eloSuffix": " (Elo {{elo}})",
+    "engineStarting": "Engine startet …",
+    "noEngineFound": "Keine Engine gefunden – Pfad in den Einstellungen setzen",
+    "noLc0Found": "Kein lc0 gefunden – Pfad in den Einstellungen setzen",
+    "noStockfishFound": "Kein Stockfish gefunden",
+    "engineError": "Engine-Fehler: {{message}}",
+    "analysisError": "Analyse: {{message}}"
+  },
+  "topbar": {
+    "newGame": "Neue Partie",
+    "playAsWhite": "Als Weiß spielen",
+    "playAsBlack": "Als Schwarz spielen",
+    "recordOtb": "OTB-Partie aufzeichnen",
+    "recordOtbHint": "Zwei Personen am physischen Brett, kein Engine-Zug – Live-Analyse und Report laufen wie gewohnt",
+    "file": "Datei",
+    "exportPgn": "PGN exportieren",
+    "importPgn": "PGN importieren",
+    "library": "Bibliothek",
+    "analysis": "Analyse",
+    "report": "Partie-Report",
+    "reportHint": "Zusammenfassung der Partie mit Fehlermustern und Lernpunkten",
+    "settings": "Einstellungen",
+    "language": "Sprache wählen"
+  },
+  "status": {
+    "engineThinking": "Engine denkt …",
+    "toMove": "{{color}} am Zug",
+    "toMoveYou": "{{color}} am Zug – du",
+    "otbRecording": "🔴 OTB-Aufzeichnung – {{status}}"
+  },
+  "review": {
+    "importedGame": "📂 Importierte Partie – Ansicht",
+    "continuePlaying": "▶ Weiterspielen"
+  },
+  "opening": {
+    "detected": "{{matched}} von {{total}} Halbzügen erkannt"
+  },
+  "pgnNotice": {
+    "saved": "Gespeichert: {{path}}",
+    "saveFailed": "Speichern fehlgeschlagen: {{message}}",
+    "importFailed": "Import fehlgeschlagen: {{message}}",
+    "invalidFile": "Die Datei enthält kein gültiges PGN.",
+    "loadFailed": "Partie konnte nicht geladen werden.",
+    "invalidSavedFile": "Die gespeicherte Datei enthält kein gültiges PGN.",
+    "imported": "Partie importiert – Ansicht, Analyse und Tutor stehen bereit.",
+    "loadedFromLibrary": "Partie aus der Bibliothek geladen – Ansicht, Analyse und Tutor stehen bereit."
+  },
+  "tutor": {
+    "unknownEval": "unbekannt",
+    "title": "Tutor",
+    "modeAriaLabel": "Tutor-Modus",
+    "modeOffLabel": "Still",
+    "modeOffHint": "Nur auf Nachfrage",
+    "modeMistakesLabel": "Fehler",
+    "modeMistakesHint": "Kommentiert deine Fehler und Blunder",
+    "modeChattyLabel": "Aktiv",
+    "modeChattyHint": "Auch Ungenauigkeiten und Engine-Patzer",
+    "undoMove": "↶ Zurücknehmen",
+    "undoHint": "Letzten Zug zurücknehmen",
+    "redoMove": "↷ Wiederherstellen",
+    "redoHint": "Zurückgenommenen Zug wiederherstellen",
+    "emptyPlaceholder": "Ich melde mich bei Fehlern – oder frag mich direkt, z. B. „Was ist hier der Plan?“ Auch die Analyse-Linien oben lassen sich anklicken.",
+    "hidePreview": "✕ Vorschlag ausblenden",
+    "showPreview": "↗ {{move}} auf dem Brett zeigen",
+    "suggestMove": "💡 Zugvorschlag",
+    "suggestMoveHintReady": "Zugvorschlag mit Erklärung anfordern",
+    "suggestMoveHintWait": "Erst wenn du am Zug bist und die Analyse bereit ist",
+    "questionPlaceholder": "Frage an den Tutor …",
+    "send": "Senden"
+  },
+  "notation": {
+    "opening": "Eröffnung",
+    "middlegame": "Mittelspiel",
+    "endgame": "Endspiel"
+  },
+  "report": {
+    "gameInProgress": "Partie läuft noch",
+    "title": "Partie-Report",
+    "blunderCount": "{{count}} Blunder",
+    "mistakeCount": "{{count}} Fehler",
+    "inaccuracyCount": "{{count}} Ungenauigkeiten",
+    "bestMoveCount": "{{count}} beste Züge",
+    "criticalMoments": "Kritische Momente",
+    "noApiKey": "Kein API-Key hinterlegt.",
+    "setKeyNow": "Jetzt in den Einstellungen setzen",
+    "placeholder": "Fasst die Partie zusammen: wiederkehrende Fehlermuster, die kritischsten Momente und konkrete Lernpunkte für die nächste Partie.",
+    "generate": "Report erstellen",
+    "regenerate": "Neu erstellen"
+  },
+  "settings": {
+    "title": "Engine-Einstellungen",
+    "opponentEngine": "Gegner-Engine",
+    "engineKind": "Engine-Art",
+    "engineKindStockfish": "Stockfish (klassisch, Elo-begrenzt)",
+    "engineKindMaia": "Maia (lc0, menschliches Spiel)",
+    "engineKindCustom": "Andere UCI-Engine",
+    "pathToLc0": "Pfad zu lc0",
+    "chooseLc0Binary": "lc0-Binary wählen",
+    "browse": "Durchsuchen…",
+    "strength": "Spielstärke",
+    "maiaWeightsFile": "Maia-Gewichtsdatei (.pb.gz)",
+    "chooseMaiaWeights": "Maia-Gewichtsdatei wählen",
+    "maiaPathPlaceholder": "/pfad/zu/maia-1200.pb.gz",
+    "maiaHintBeforeLink": "Die Stärkeauswahl oben setzt automatisch den passenden Pfad; eigene Netze (z. B. andere Stärken oder Varianten) lassen sich hier auch manuell wählen – weitere gibt es unter ",
+    "maiaHintAfterLink": ". Maia zieht ohne Suche direkt aus dem Netz – die Spielstärke steckt in der gewählten Datei, keine weitere Konfiguration nötig.",
+    "pathToEngine": "Pfad zur Engine",
+    "chooseEngine": "Engine wählen",
+    "limitStrength": "Spielstärke begrenzen (UCI_Elo)",
+    "elo": "Elo",
+    "moveTimeMs": "Bedenkzeit pro Zug (ms)",
+    "openingBook": "Eröffnungsbuch",
+    "useOpeningBookForOpponent": "Für den Gegner nutzen (erste 10 Vollzüge)",
+    "openingBookHint": "Der Gegner zieht dabei zufällig aus bekannten Eröffnungslinien statt immer nach dem Engine-Bestzug – realistischer und abwechslungsreicher. Danach übernimmt die Engine.",
+    "clock": "Bedenkzeit (Schachuhr)",
+    "timeControl": "Zeitkontrolle",
+    "baseTimeMinutes": "Grundzeit (Minuten)",
+    "incrementSeconds": "Inkrement (Sekunden/Zug)",
+    "clockHintUnlimited": "Freies Spiel ohne Uhr – jede Seite hat beliebig viel Bedenkzeit.",
+    "clockHintTimed": "Läuft die Uhr einer Seite ab, verliert sie die Partie sofort durch Zeitüberschreitung. Speichern setzt beide Uhren auf die hier gewählte Grundzeit zurück.",
+    "sound": "Sound",
+    "moveSoundLabel": "Klick-Geräusch bei jedem Zug",
+    "analysisEngine": "Analyse-Engine (Stockfish)",
+    "pathToStockfish": "Pfad zu Stockfish",
+    "chooseStockfish": "Stockfish wählen",
+    "llmTutor": "LLM-Tutor",
+    "provider": "Anbieter",
+    "model": "Modell",
+    "apiKey": "API-Key",
+    "apiKeySavedKeychain": "✓ gespeichert (Keychain)",
+    "apiKeyReplacePlaceholder": "Neuen Key eingeben, um zu ersetzen",
+    "apiKeyAvailableAt": "API-Key erhältlich unter {{hint}}.",
+    "deleteStoredKey": "Gespeicherten Key löschen",
+    "cancel": "Abbrechen",
+    "saveAndApply": "Speichern & anwenden"
+  },
+  "clock": {
+    "presets": {
+      "unlimited": "Frei (keine Zeitkontrolle)",
+      "classical": "Klassisch (Turnierschach)",
+      "rapid": "Schnellschach (Rapid)",
+      "blitz": "Blitzschach",
+      "bullet": "Bullet-Schach"
+    }
+  },
+  "outcome": {
+    "checkmateWhite": "Weiß gewinnt durch Matt",
+    "checkmateBlack": "Schwarz gewinnt durch Matt",
+    "stalemate": "Remis durch Patt",
+    "threefold": "Remis durch Stellungswiederholung",
+    "insufficientMaterial": "Remis: ungenügendes Material",
+    "fiftyMoves": "Remis: 50-Züge-Regel",
+    "draw": "Remis",
+    "wins": "{{winner}} gewinnt",
+    "winsByTimeForfeit": "{{winner}} gewinnt durch Zeitüberschreitung"
+  },
+  "pgn": {
+    "white": "Weiß",
+    "black": "Schwarz",
+    "player": "Spieler",
+    "moveCommentLossPct": "{{label}} (−{{pct}} % Gewinnchance)"
+  },
+  "moveList": {
+    "title": "Partie",
+    "noMoves": "Noch keine Züge.",
+    "discardedContinuation": "Zurückgenommene Fortsetzung"
+  },
+  "library": {
+    "title": "Partie-Bibliothek",
+    "loading": "Lädt …",
+    "empty": "Noch keine gespeicherten Partien. Partien werden automatisch gespeichert, sobald sie enden.",
+    "halfMoves": "{{count}} Halbzüge",
+    "open": "Öffnen",
+    "delete": "Löschen",
+    "resultWhiteWins": "Weiß gewinnt",
+    "resultBlackWins": "Schwarz gewinnt",
+    "resultDraw": "Remis",
+    "resultOpen": "Offen"
+  },
+  "info": {
+    "author": "Autor: Daniel Buch",
+    "licenseFreeSoftware": "Freie Software unter der",
+    "licenseSuffix": "(oder später) – ohne Gewährleistung.",
+    "sourceCode": "Quellcode auf GitHub"
+  },
+  "bluetooth": {
+    "chooseDevice": "Bluetooth-Gerät wählen",
+    "multipleFound": "Mehrere passende Geräte gefunden – welches soll verbunden werden?",
+    "connect": "Verbinden"
+  },
+  "chessnut": {
+    "statusUnsupported": "Nicht unterstützt",
+    "statusDisconnected": "Getrennt",
+    "statusConnecting": "Verbinde …",
+    "statusConnected": "Verbunden",
+    "statusError": "Fehler",
+    "bestMoveHint": "Den besten Zug der laufenden Stockfish-Analyse auf dem Brett blinken lassen (Von- und Ziel-Feld im Wechsel), solange du am Zug bist",
+    "bestMoveLabel": "Bester Zug",
+    "beepHint": "Signalton direkt am Brett bei Schach, einem erkannten ungültigen Zugversuch oder Zeitüberschreitung",
+    "beepLabel": "🔔 Signalton",
+    "pleaseReplay": "Bitte nachziehen: {{squares}}",
+    "disconnect": "Trennen",
+    "connect": "Verbinden"
+  },
+  "analysis": {
+    "title": "Stockfish-Analyse",
+    "depth": "Tiefe {{depth}}",
+    "showOnBoard": "Auf dem Brett anzeigen"
+  },
+  "legend": {
+    "move": "Zug",
+    "moveFollowUp": " (& Folgezüge blasser)",
+    "attacks": "greift an",
+    "defends": "deckt",
+    "pins": "fesselt",
+    "discovers": "deckt auf",
+    "becomesWeak": "wird schwach",
+    "check": "Schach"
+  },
+  "evalBar": {
+    "whiteWinPct": "Weiß gewinnt zu {{pct}} %"
+  }
+}

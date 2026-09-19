@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/daniel_buch'
 const GPL_URL = 'https://www.gnu.org/licenses/gpl-3.0.html'
 const SOURCE_URL = 'https://github.com/dbuch-github/ai-chess-tutor'
@@ -8,6 +10,7 @@ interface InfoDialogProps {
 
 /** Info-Overlay, das direkt nach dem Start der App erscheint (wegklickbar per Backdrop/Button). */
 export function InfoDialog({ onClose }: InfoDialogProps): React.JSX.Element {
+  const { t } = useTranslation()
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div className="dialog info-dialog" onClick={(e) => e.stopPropagation()}>
@@ -16,15 +19,15 @@ export function InfoDialog({ onClose }: InfoDialogProps): React.JSX.Element {
             Root auf statt gegen das Verzeichnis der HTML-Datei und bricht das Bild. */}
         <img className="info-icon" src="app-icon.png" alt="" width={144} height={144} />
         <h2>AI Chess Tutor</h2>
-        <p className="info-author">Autor: Daniel Buch</p>
+        <p className="info-author">{t('info.author')}</p>
         <p className="info-license">
-          Freie Software unter der{' '}
+          {t('info.licenseFreeSoftware')}{' '}
           <a href={GPL_URL} target="_blank" rel="noreferrer">
             GNU GPL v3.0
           </a>{' '}
-          (oder später) – ohne Gewährleistung.{' '}
+          {t('info.licenseSuffix')}{' '}
           <a href={SOURCE_URL} target="_blank" rel="noreferrer">
-            Quellcode auf GitHub
+            {t('info.sourceCode')}
           </a>
         </p>
         <button
@@ -35,7 +38,7 @@ export function InfoDialog({ onClose }: InfoDialogProps): React.JSX.Element {
         </button>
         <div className="dialog-actions">
           <button className="btn" onClick={onClose}>
-            Schließen
+            {t('common.close')}
           </button>
         </div>
       </div>

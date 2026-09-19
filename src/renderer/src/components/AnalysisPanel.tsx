@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { AnalysisLine, AnalysisSnapshot } from '../../../shared/types'
 import { formatScore } from '../game/classify'
 import { buildLinePreview } from '../game/boardVisuals'
@@ -17,6 +18,7 @@ function lineKey(multipv: number): string {
 }
 
 export function AnalysisPanel({ snapshot, currentFen, boardPreview }: AnalysisPanelProps): React.JSX.Element {
+  const { t } = useTranslation()
   const isCurrent = snapshot?.fen === currentFen
   const lines: AnalysisLine[] = isCurrent && snapshot ? snapshot.lines : []
   const sideToMove = (snapshot?.fen.split(' ')[1] ?? 'w') as 'w' | 'b'
@@ -25,8 +27,8 @@ export function AnalysisPanel({ snapshot, currentFen, boardPreview }: AnalysisPa
   return (
     <section className="panel analysis-panel">
       <header className="panel-header">
-        <h2>Stockfish-Analyse</h2>
-        {depth !== undefined && <span className="panel-meta">Tiefe {depth}</span>}
+        <h2>{t('analysis.title')}</h2>
+        {depth !== undefined && <span className="panel-meta">{t('analysis.depth', { depth })}</span>}
       </header>
       {/* Immer MAX_LINES Zeilen reservieren (auch bei 0–2 vorliegenden Linien) –
           sonst wächst/schrumpft die Box bei jeder neuen Analyse-Tiefe sichtbar. */}
@@ -51,7 +53,7 @@ export function AnalysisPanel({ snapshot, currentFen, boardPreview }: AnalysisPa
                 type="button"
                 className={`analysis-line-btn ${active ? 'active' : ''}`}
                 disabled={!isCurrent}
-                title="Auf dem Brett anzeigen"
+                title={t('analysis.showOnBoard')}
                 onClick={() => {
                   const preview = buildLinePreview(currentFen, line.pvUci)
                   if (preview) boardPreview.toggle(key, preview)

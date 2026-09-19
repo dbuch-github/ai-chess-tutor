@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Chess } from 'chess.js'
+import { useTranslation } from 'react-i18next'
 import type { AnalysisLine, AnalysisSnapshot } from '../../../shared/types'
 import { classifyMove, MIN_CLASSIFY_DEPTH, type Classification } from './classify'
 import { pickBookMove } from './openingBook'
 import { parsePgn } from './pgn'
-import { boardOutcome, type GameOutcome } from './result'
+import { boardOutcome, describeOutcome, type GameOutcome } from './result'
+import '../i18n' // stellt sicher, dass i18next initialisiert ist, bevor useTranslation() hier greift
 
 export type CapturablePiece = 'p' | 'n' | 'b' | 'r' | 'q'
 
@@ -85,6 +87,7 @@ function legalDestsOf(chess: Chess): Map<string, string[]> {
 }
 
 export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi {
+  const { t } = useTranslation()
   const chessRef = useRef(new Chess())
   const initialFenRef = useRef(START_FEN)
   const [initialComment, setInitialComment] = useState<string>()
@@ -123,7 +126,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     outcomeRef.current = next
     setOutcome(next)
   }, [])
-  const result = outcome?.description ?? null
+  const result = outcome ? describeOutcome(outcome, t) : null
   const [engineError, setEngineError] = useState<string | null>(null)
   const [snapshot, setSnapshot] = useState<AnalysisSnapshot | null>(null)
   const [legalDests, setLegalDests] = useState<Map<string, string[]>>(() =>

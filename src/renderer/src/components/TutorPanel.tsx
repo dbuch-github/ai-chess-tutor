@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { TutorApi, TutorMessage } from '../game/useTutor'
 import type { BoardPreviewApi } from '../game/useBoardPreview'
 import type { TutorMode } from '../settings'
@@ -18,12 +19,6 @@ interface TutorPanelProps {
   canRedo: boolean
 }
 
-const MODES: { value: TutorMode; label: string; hint: string }[] = [
-  { value: 'off', label: 'Still', hint: 'Nur auf Nachfrage' },
-  { value: 'mistakes', label: 'Fehler', hint: 'Kommentiert deine Fehler und Blunder' },
-  { value: 'chatty', label: 'Aktiv', hint: 'Auch Ungenauigkeiten und Engine-Patzer' }
-]
-
 function MessageBubble({
   message,
   tutor,
@@ -33,6 +28,7 @@ function MessageBubble({
   tutor: TutorApi
   boardPreview: BoardPreviewApi
 }): React.JSX.Element {
+  const { t } = useTranslation()
   const isActive = boardPreview.isActive(`msg-${message.id}`)
   return (
     <div className={`tutor-msg ${message.role}`}>
@@ -43,7 +39,7 @@ function MessageBubble({
           className={`preview-toggle ${isActive ? 'active' : ''}`}
           onClick={() => tutor.togglePreview(message)}
         >
-          {isActive ? '✕ Vorschlag ausblenden' : `↗ ${message.preview.sanMove} auf dem Brett zeigen`}
+          {isActive ? t('tutor.hidePreview') : t('tutor.showPreview', { move: message.preview.sanMove })}
         </button>
       )}
     </div>
@@ -62,6 +58,7 @@ export function TutorPanel({
   onRedo,
   canRedo
 }: TutorPanelProps): React.JSX.Element {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
   const endRef = useRef<HTMLDivElement>(null)
   const lastMessage = tutor.messages.at(-1)
@@ -75,6 +72,12 @@ export function TutorPanel({
       s.discovered.length > 0 ||
       s.weak.length > 0 ||
       s.followUp.length > 0)
+
+  const MODES: { value: TutorMode; label: string; hint: string }[] = [
+    { value: 'off', label: t('tutor.modeOffLabel'), hint: t('tutor.modeOffHint') },
+    { value: 'mistakes', label: t('tutor.modeMistakesLabel'), hint: t('tutor.modeMistakesHint') },
+    { value: 'chatty', label: t('tutor.modeChattyLabel'), hint: t('tutor.modeChattyHint') }
+  ]
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'nearest' })
@@ -90,8 +93,8 @@ export function TutorPanel({
   return (
     <section className="panel tutor-panel">
       <header className="panel-header">
-        <h2>Tutor</h2>
-        <div className="mode-switch" role="radiogroup" aria-label="Tutor-Modus">
+        <h2>{t('tutor.title')}</h2>
+        <div className="mode-switch" role="radiogroup" aria-label={t('tutor.modeAriaLabel')}>
           {MODES.map((m) => (
             <button
               key={m.value}
@@ -106,11 +109,11 @@ export function TutorPanel({
       </header>
 
       <div className="move-controls">
-        <button className="btn" onClick={onUndo} disabled={!canUndo} title="Letzten Zug zurücknehmen">
-          ↶ Zurücknehmen
+        <button className="btn" onClick={onUndo} disabled={!canUndo} title={t('tutor.undoHint')}>
+          {t('tutor.undoMove')}
         </button>
-        <button className="btn" onClick={onRedo} disabled={!canRedo} title="Zurückgenommenen Zug wiederherstellen">
-          ↷ Wiederherstellen
+        <button className="btn" onClick={onRedo} disabled={!canRedo} title={t('tutor.redoHint')}>
+          {t('tutor.redoMove')}
         </button>
       </div>
 
@@ -118,16 +121,13 @@ export function TutorPanel({
 
       {tutor.status && !tutor.status.hasApiKey ? (
         <p className="panel-empty">
-          Kein API-Key hinterlegt.{' '}
+          {t('report.noApiKey')}{' '}
           <button className="link-btn" onClick={onOpenSettings}>
-            Jetzt in den Einstellungen setzen
+            {t('report.setKeyNow')}
           </button>
         </p>
       ) : tutor.messages.length === 0 ? (
-        <p className="panel-empty">
-          Ich melde mich bei Fehlern – oder frag mich direkt, z. B. „Was ist hier der Plan?“ Auch die
-          Analyse-Linien oben lassen sich anklicken.
-        </p>
+        <p className="panel-empty">{t('tutor.emptyPlaceholder')}</p>
       ) : (
         <div className="tutor-messages cg-wrap">
           {tutor.messages.map((m) => (
@@ -142,15 +142,15 @@ export function TutorPanel({
           className="btn"
           onClick={tutor.suggestMove}
           disabled={!canSuggest || tutor.busy || !tutor.status?.hasApiKey}
-          title={canSuggest ? 'Zugvorschlag mit Erklärung anfordern' : 'Erst wenn du am Zug bist und die Analyse bereit ist'}
+          title={canSuggest ? t('tutor.suggestMoveHintReady') : t('tutor.suggestMoveHintWait')}
         >
-          💡 Zugvorschlag
+          {t('tutor.suggestMove')}
         </button>
         <input
           id="tutor-question"
           type="text"
           value={input}
-          placeholder="Frage an den Tutor …"
+          placeholder={t('tutor.questionPlaceholder')}
           disabled={tutor.busy || !tutor.status?.hasApiKey}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -158,7 +158,7 @@ export function TutorPanel({
           }}
         />
         <button className="btn" onClick={submit} disabled={tutor.busy || !input.trim()}>
-          Senden
+          {t('tutor.send')}
         </button>
       </div>
     </section>

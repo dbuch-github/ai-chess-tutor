@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { ChessnutBoardApi } from '../chessnut/useChessnutBoard'
 import type { ChessnutSyncApi } from '../chessnut/useChessnutSync'
 
@@ -12,14 +13,6 @@ interface ChessnutPanelProps {
   onToggleBeep: () => void
 }
 
-const STATUS_LABELS: Record<ChessnutBoardApi['status'], string> = {
-  unsupported: 'Nicht unterstützt',
-  disconnected: 'Getrennt',
-  connecting: 'Verbinde …',
-  connected: 'Verbunden',
-  error: 'Fehler'
-}
-
 /** Einzeiler unter dem Brett: Status, Batterie und Korrekturhinweis kompakt in einer Zeile. */
 export function ChessnutPanel({
   chessnut,
@@ -30,7 +23,16 @@ export function ChessnutPanel({
   beepEnabled,
   onToggleBeep
 }: ChessnutPanelProps): React.JSX.Element {
+  const { t } = useTranslation()
   const connected = chessnut.status === 'connected'
+
+  const STATUS_LABELS: Record<ChessnutBoardApi['status'], string> = {
+    unsupported: t('chessnut.statusUnsupported'),
+    disconnected: t('chessnut.statusDisconnected'),
+    connecting: t('chessnut.statusConnecting'),
+    connected: t('chessnut.statusConnected'),
+    error: t('chessnut.statusError')
+  }
 
   return (
     <div className="chessnut-bar">
@@ -44,33 +46,29 @@ export function ChessnutPanel({
       )}
 
       {connected && bestMoveAvailable && (
-        <label
-          className="chessnut-toggle"
-          title="Den besten Zug der laufenden Stockfish-Analyse auf dem Brett blinken lassen (Von- und Ziel-Feld im Wechsel), solange du am Zug bist"
-        >
+        <label className="chessnut-toggle" title={t('chessnut.bestMoveHint')}>
           <input type="checkbox" checked={bestMoveBlink} onChange={onToggleBestMoveBlink} />
           <span className="toggle-track" aria-hidden="true">
             <span className="toggle-thumb" />
           </span>
-          <span className="chessnut-toggle-label">Bester Zug</span>
+          <span className="chessnut-toggle-label">{t('chessnut.bestMoveLabel')}</span>
         </label>
       )}
 
       {connected && (
-        <label
-          className="chessnut-toggle"
-          title="Signalton direkt am Brett bei Schach, einem erkannten ungültigen Zugversuch oder Zeitüberschreitung"
-        >
+        <label className="chessnut-toggle" title={t('chessnut.beepHint')}>
           <input type="checkbox" checked={beepEnabled} onChange={onToggleBeep} />
           <span className="toggle-track" aria-hidden="true">
             <span className="toggle-thumb" />
           </span>
-          <span className="chessnut-toggle-label">🔔 Signalton</span>
+          <span className="chessnut-toggle-label">{t('chessnut.beepLabel')}</span>
         </label>
       )}
 
       {connected && sync.mismatches.length > 0 && (
-        <span className="chessnut-mismatch-inline">Bitte nachziehen: {sync.mismatches.join(', ')}</span>
+        <span className="chessnut-mismatch-inline">
+          {t('chessnut.pleaseReplay', { squares: sync.mismatches.join(', ') })}
+        </span>
       )}
 
       {!connected && chessnut.status === 'error' && chessnut.error && (
@@ -83,11 +81,11 @@ export function ChessnutPanel({
 
       {connected ? (
         <button className="btn" onClick={chessnut.disconnect}>
-          Trennen
+          {t('chessnut.disconnect')}
         </button>
       ) : (
         <button className="btn" onClick={chessnut.connect} disabled={chessnut.status === 'unsupported'}>
-          Verbinden
+          {t('chessnut.connect')}
         </button>
       )}
     </div>

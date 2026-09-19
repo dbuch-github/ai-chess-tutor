@@ -1,4 +1,12 @@
-import type { EngineKind, LlmProviderId } from '../../shared/types'
+import type { EngineKind, LlmProviderId, SupportedLocale } from '../../shared/types'
+
+const SUPPORTED_LOCALES: SupportedLocale[] = ['en', 'de', 'fr', 'es', 'it']
+
+/** Systemsprache erkennen (nur beim allerersten Start relevant, siehe loadSettings) – Fallback Englisch. */
+function detectLocale(): SupportedLocale {
+  const lang = (navigator.language || 'en').split('-')[0]
+  return (SUPPORTED_LOCALES as string[]).includes(lang) ? (lang as SupportedLocale) : 'en'
+}
 
 export type TutorMode = 'off' | 'mistakes' | 'chatty'
 
@@ -6,6 +14,8 @@ export type TutorMode = 'off' | 'mistakes' | 'chatty'
 export type ClockMode = 'unlimited' | 'classical' | 'rapid' | 'blitz' | 'bullet'
 
 export interface AppSettings {
+  /** UI-Sprache; steuert auch die Antwortsprache des LLM-Tutors. */
+  locale: SupportedLocale
   engineKind: EngineKind
   opponentPath: string
   /** Nur bei engineKind === 'maia': Pfad zur .pb.gz-Gewichtsdatei. */
@@ -34,17 +44,21 @@ export interface AppSettings {
   chessnutBeepEnabled: boolean
 }
 
-/** Voreingestellte Grundzeit/Inkrement je Turnierkategorie – frei danach anpassbar. */
-export const CLOCK_PRESETS: Record<Exclude<ClockMode, 'unlimited'>, { minutes: number; increment: number; label: string }> = {
-  classical: { minutes: 60, increment: 30, label: 'Klassisch (Turnierschach)' },
-  rapid: { minutes: 15, increment: 10, label: 'Schnellschach (Rapid)' },
-  blitz: { minutes: 5, increment: 3, label: 'Blitzschach' },
-  bullet: { minutes: 1, increment: 1, label: 'Bullet-Schach' }
+/**
+ * Voreingestellte Grundzeit/Inkrement je Turnierkategorie – frei danach anpassbar. Labels
+ * liegen als Übersetzungs-Keys unter "clock.presets.<mode>" (siehe locales/*.json), nicht hier.
+ */
+export const CLOCK_PRESETS: Record<Exclude<ClockMode, 'unlimited'>, { minutes: number; increment: number }> = {
+  classical: { minutes: 60, increment: 30 },
+  rapid: { minutes: 15, increment: 10 },
+  blitz: { minutes: 5, increment: 3 },
+  bullet: { minutes: 1, increment: 1 }
 }
 
 const STORAGE_KEY = 'ai-chess-tutor.settings'
 
 export const DEFAULT_SETTINGS: AppSettings = {
+  locale: 'en',
   engineKind: 'stockfish',
   opponentPath: '',
   weightsPath: '',
@@ -77,10 +91,15 @@ export const TUTOR_MODEL_KEY: Record<LlmProviderId, keyof AppSettings> = {
 export function loadSettings(): AppSettings {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { ...DEFAULT_SETTINGS }
-    return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) }
+    if (!raw) return { ...DEFAULT_SETTINGS, locale: detectLocale() }
+    const stored = JSON.parse(raw) as Partial<AppSettings>
+    // Nur beim allerersten Start (bzw. bei einem alten Settings-Blob ohne "locale") aus der
+    // Systemsprache vorauswählen – eine bereits getroffene Auswahl (auch eine frühere
+    // Auto-Erkennung) bleibt danach bestehen, statt bei jedem Start neu erkannt zu werden.
+    const locale = stored.locale ?? detectLocale()
+    return { ...DEFAULT_SETTINGS, ...stored, locale }
   } catch {
-    return { ...DEFAULT_SETTINGS }
+    return { ...DEFAULT_SETTINGS, locale: detectLocale() }
   }
 }
 
