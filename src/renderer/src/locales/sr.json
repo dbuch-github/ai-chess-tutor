@@ -238,7 +238,10 @@
       "pin": "Vezivanje",
       "fork": "Viljuška",
       "skewer": "Ražanj",
-      "discoveredAttack": "Otkriveni napad"
+      "discoveredAttack": "Otkriveni napad",
+      "trapped": "Zarobljena figura",
+      "overworked": "Preopterećena figura",
+      "underpromotion": "Potpromocija"
     }
   },
   "legend": {

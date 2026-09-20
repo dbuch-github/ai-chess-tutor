@@ -238,7 +238,10 @@
       "pin": "Clouage",
       "fork": "Fourchette",
       "skewer": "Enfilade",
-      "discoveredAttack": "Attaque à la découverte"
+      "discoveredAttack": "Attaque à la découverte",
+      "trapped": "Pièce piégée",
+      "overworked": "Pièce surchargée",
+      "underpromotion": "Sous-promotion"
     }
   },
   "legend": {

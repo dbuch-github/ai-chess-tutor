@@ -13,8 +13,11 @@ test('fork: knight move attacking a rook and a bishop at once', () => {
 test('pin: queen move pins a knight to the king along the d-file', () => {
   const fen = '3k4/8/3n4/8/8/8/3Q4/4K3 w - - 0 1'
   const findings = findTactics(fen)
-  const pin = findings.find((f) => f.type === 'pin' && f.from === 'd2' && f.to === 'd5')
-  assert.ok(pin, 'expected a pin finding for Qd2-d5')
+  // Mehrere Damenzüge entlang der d-Linie (d1/d3/d4/d5) erzeugen dieselbe
+  // Fesselung; welcher davon nach der Deduplizierung übrig bleibt, ist
+  // nicht relevant – nur dass die Fesselung selbst erkannt wird.
+  const pin = findings.find((f) => f.type === 'pin')
+  assert.ok(pin, 'expected a pin finding along the d-file')
   assert.deepEqual(pin!.targets, ['d6'])
 })
 
@@ -55,9 +58,11 @@ test('discoveredCheck: moving a blocker uncovers a rook check (not a double chec
 test('discoveredCheck: a move that both checks directly and uncovers a rook check counts as double', () => {
   const fen = '4k3/8/8/8/4N3/8/8/K3R3 w - - 0 1'
   const findings = findTactics(fen)
-  const found = findings.find((f) => f.type === 'discoveredCheck' && f.from === 'e4' && f.to === 'd6')
-  assert.ok(found, 'expected a discoveredCheck finding for Ne4-d6')
-  assert.ok(found!.double, 'expected the double flag to be set for a double check')
+  // Sowohl Ne4-d6+ als auch Ne4-f6+ liefern dasselbe Doppelschach (Ziel e8);
+  // welcher Zug nach der Deduplizierung übrig bleibt, ist nicht relevant.
+  const found = findings.find((f) => f.type === 'discoveredCheck' && f.double)
+  assert.ok(found, 'expected a double-check finding')
+  assert.deepEqual(found!.targets, ['e8'])
 })
 
 test('discoveredAttack: moving a blocker uncovers a rook attack on the queen (not a check)', () => {
@@ -72,4 +77,35 @@ test('negative case: capturing into an equally defended square is not flagged as
   const fen = '4k3/1b6/8/3n4/8/2N5/8/4K3 w - - 0 1'
   const findings = findTactics(fen)
   assert.ok(!findings.some((f) => f.to === 'd5'), 'Nxd5 trades knight for knight and should not be surfaced')
+})
+
+test('trapped: a cornered knight has no square the bishop does not already cover', () => {
+  // Turm a1 greift den Springer auf a8 an, Läufer a5 deckt dessen beide
+  // einzigen Fluchtfelder (b6/c7, dieselbe Diagonale) – der Springer ist
+  // unabhängig vom eigentlichen weißen Zug gefangen.
+  const fen = 'n3k3/8/8/8/B7/8/8/R3K3 w - - 0 1'
+  const findings = findTactics(fen)
+  const trapped = findings.find((f) => f.type === 'trapped')
+  assert.ok(trapped, 'expected a trapped-piece finding')
+  assert.deepEqual(trapped!.targets, ['a8'])
+  assert.equal(trapped!.gain, 3)
+})
+
+test('overworked: the rook is the sole defender of two pieces along different lines', () => {
+  // Turm d8 deckt sowohl den Springer d5 (Linie) als auch den Läufer h8
+  // (Reihe) exklusiv. Läufer a2-b3 greift d5 an – der Turm kann nicht beides
+  // gleichzeitig retten.
+  const fen = 'k2r3b/8/8/3n4/8/8/B7/4K3 w - - 0 1'
+  const findings = findTactics(fen)
+  const overworked = findings.find((f) => f.type === 'overworked' && f.from === 'a2' && f.to === 'b3')
+  assert.ok(overworked, 'expected an overworked-defender finding for Ba2-b3')
+  assert.deepEqual(overworked!.targets, ['h8'])
+})
+
+test('underpromotion: a knight promotion checks the king where a queen would not', () => {
+  const fen = '8/1P1k4/8/8/8/8/8/4K3 w - - 0 1'
+  const findings = findTactics(fen)
+  const under = findings.find((f) => f.type === 'underpromotion' && f.promotion === 'n')
+  assert.ok(under, 'expected an underpromotion finding for b7-b8=N+')
+  assert.equal(under!.to, 'b8')
 })

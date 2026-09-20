@@ -238,7 +238,10 @@
       "pin": "Inchiodatura",
       "fork": "Forchetta",
       "skewer": "Infilata",
-      "discoveredAttack": "Attacco di scoperta"
+      "discoveredAttack": "Attacco di scoperta",
+      "trapped": "Pezzo intrappolato",
+      "overworked": "Pezzo sovraccarico",
+      "underpromotion": "Sottopromozione"
     }
   },
   "legend": {

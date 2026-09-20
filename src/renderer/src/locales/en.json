@@ -238,7 +238,10 @@
       "pin": "Pin",
       "fork": "Fork",
       "skewer": "Skewer",
-      "discoveredAttack": "Discovered attack"
+      "discoveredAttack": "Discovered attack",
+      "trapped": "Trapped piece",
+      "overworked": "Overworked piece",
+      "underpromotion": "Underpromotion"
     }
   },
   "legend": {

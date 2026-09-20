@@ -202,6 +202,24 @@ export function minDefenderValue(board: Board, square: string, color: PieceColor
   return min
 }
 
+/** Felder aller Figuren der angegebenen Farbe, die `square` decken/angreifen –
+ *  Grundlage für die Überlastungs-Erkennung (siehe game/tactics.ts): eine
+ *  Figur mit genau einem Verteidiger ist im Ernstfall verloren, wenn dieser
+ *  Verteidiger anderswo gebraucht wird. */
+export function defendersOf(board: Board, square: string, color: PieceColor): string[] {
+  const defenders: string[] = []
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const cell = board[r][c]
+      if (!cell || cell.color !== color || cell.type === 'k') continue
+      if (reachableOccupied(board, r, c, cell).some((hit) => hit.square === square)) {
+        defenders.push(cell.square)
+      }
+    }
+  }
+  return defenders
+}
+
 /**
  * Simuliert einen Zug auf einer Stellung und berechnet, was die gezogene
  * Figur von ihrem Zielfeld aus bewirkt: Angriffe, Deckungen, Fesselungen,

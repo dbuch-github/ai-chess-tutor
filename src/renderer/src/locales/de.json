@@ -238,7 +238,10 @@
       "pin": "Fesselung",
       "fork": "Gabel",
       "skewer": "Spieß",
-      "discoveredAttack": "Abzugsangriff"
+      "discoveredAttack": "Abzugsangriff",
+      "trapped": "Eingesperrte Figur",
+      "overworked": "Überlastung",
+      "underpromotion": "Unterverwandlung"
     }
   },
   "legend": {

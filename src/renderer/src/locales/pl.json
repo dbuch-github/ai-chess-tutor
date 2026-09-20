@@ -238,7 +238,10 @@
       "pin": "Związanie",
       "fork": "Widelec",
       "skewer": "Szpikulec",
-      "discoveredAttack": "Atak z odkrycia"
+      "discoveredAttack": "Atak z odkrycia",
+      "trapped": "Uwięziona bierka",
+      "overworked": "Przeciążona bierka",
+      "underpromotion": "Podpromocja"
     }
   },
   "legend": {

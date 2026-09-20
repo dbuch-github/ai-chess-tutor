@@ -238,7 +238,10 @@
       "pin": "Cravada",
       "fork": "Garfada",
       "skewer": "Espetada",
-      "discoveredAttack": "Ataque descoberto"
+      "discoveredAttack": "Ataque descoberto",
+      "trapped": "Peça presa",
+      "overworked": "Peça sobrecarregada",
+      "underpromotion": "Subpromoção"
     }
   },
   "legend": {

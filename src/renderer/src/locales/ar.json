@@ -238,7 +238,10 @@
       "pin": "تثبيت",
       "fork": "شوكة",
       "skewer": "سيخ",
-      "discoveredAttack": "هجوم مكشوف"
+      "discoveredAttack": "هجوم مكشوف",
+      "trapped": "قطعة محاصرة",
+      "overworked": "قطعة مثقلة بالمهام",
+      "underpromotion": "ترقية ناقصة"
     }
   },
   "legend": {

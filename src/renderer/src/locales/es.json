@@ -238,7 +238,10 @@
       "pin": "Clavada",
       "fork": "Horquilla",
       "skewer": "Ensarte",
-      "discoveredAttack": "Ataque descubierto"
+      "discoveredAttack": "Ataque descubierto",
+      "trapped": "Pieza atrapada",
+      "overworked": "Pieza sobrecargada",
+      "underpromotion": "Subpromoción"
     }
   },
   "legend": {

@@ -238,7 +238,10 @@
       "pin": "牵制",
       "fork": "捉双",
       "skewer": "串击",
-      "discoveredAttack": "闪击"
+      "discoveredAttack": "闪击",
+      "trapped": "被困棋子",
+      "overworked": "过载棋子",
+      "underpromotion": "非后升变"
     }
   },
   "legend": {

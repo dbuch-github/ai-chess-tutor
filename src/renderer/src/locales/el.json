@@ -238,7 +238,10 @@
       "pin": "Καρφί",
       "fork": "Πιρούνι",
       "skewer": "Σούβλισμα",
-      "discoveredAttack": "Ανακαλυπτική επίθεση"
+      "discoveredAttack": "Ανακαλυπτική επίθεση",
+      "trapped": "Παγιδευμένο κομμάτι",
+      "overworked": "Υπερφορτωμένο κομμάτι",
+      "underpromotion": "Υποπροαγωγή"
     }
   },
   "legend": {

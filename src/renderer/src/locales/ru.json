@@ -238,7 +238,10 @@
       "pin": "Связка",
       "fork": "Вилка",
       "skewer": "Сквозной удар",
-      "discoveredAttack": "Вскрытое нападение"
+      "discoveredAttack": "Вскрытое нападение",
+      "trapped": "Запертая фигура",
+      "overworked": "Перегруженная фигура",
+      "underpromotion": "Неполное превращение"
     }
   },
   "legend": {

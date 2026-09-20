@@ -238,7 +238,10 @@
       "pin": "पिन",
       "fork": "फोर्क",
       "skewer": "स्क्यूअर",
-      "discoveredAttack": "बेपर्दा हमला"
+      "discoveredAttack": "बेपर्दा हमला",
+      "trapped": "फंसा हुआ मोहरा",
+      "overworked": "अतिभारित मोहरा",
+      "underpromotion": "न्यून उन्नयन"
     }
   },
   "legend": {

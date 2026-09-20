@@ -238,7 +238,10 @@
       "pin": "Bağlama",
       "fork": "Çatal",
       "skewer": "Şiş",
-      "discoveredAttack": "Keşif saldırısı"
+      "discoveredAttack": "Keşif saldırısı",
+      "trapped": "Sıkışmış taş",
+      "overworked": "Aşırı yüklenmiş taş",
+      "underpromotion": "Eksik terfi"
     }
   },
   "legend": {

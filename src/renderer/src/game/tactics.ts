@@ -1,8 +1,19 @@
 import { Chess } from 'chess.js'
-import { computeMoveImpact, isCoveredByAnyPiece, squareToRC, PIECE_VALUES } from './boardVisuals'
+import type { Square } from 'chess.js'
+import { computeMoveImpact, defendersOf, isCoveredByAnyPiece, squareToRC, PIECE_VALUES } from './boardVisuals'
 import type { CapturablePiece } from './useGame'
 
-export type TacticType = 'check' | 'discoveredCheck' | 'hanging' | 'pin' | 'fork' | 'skewer' | 'discoveredAttack'
+export type TacticType =
+  | 'check'
+  | 'discoveredCheck'
+  | 'hanging'
+  | 'pin'
+  | 'fork'
+  | 'skewer'
+  | 'discoveredAttack'
+  | 'trapped'
+  | 'overworked'
+  | 'underpromotion'
 
 export interface TacticFinding {
   /** Eindeutig je Zug+Muster – dient als sourceKey für boardPreview.toggle(). */
@@ -14,7 +25,7 @@ export interface TacticFinding {
   to: string
   promotion?: string
   san: string
-  /** Geschätzter Materialgewinn in Bauerneinheiten (Schach/Fesselung: kleiner Fixwert). */
+  /** Geschätzter Materialgewinn in Bauerneinheiten (Schach/Fesselung/Unterverwandlung: kleiner Fixwert). */
   gain: number
   /** Betroffene gegnerische Felder, für die Beschriftung im Panel. */
   targets: string[]
@@ -23,12 +34,45 @@ export interface TacticFinding {
 const MAX_FINDINGS = 6
 const CHECK_GAIN = 0.5
 const PIN_GAIN = 0.5
+const UNDERPROMOTION_GAIN = 1
+/** Ab dieser Figurenwertigkeit lohnt sich die Überlastungs-Prüfung (Bauern sind zu billig,
+ *  um als "überlastet" pädagogisch interessant zu sein). */
+const OVERLOAD_MIN_VALUE = 3
 
 function valueAt(board: ReturnType<Chess['board']>, square: string): number {
   const [r, c] = squareToRC(square)
   const cell = board[r]?.[c]
   if (!cell) return 0
   return cell.type === 'k' ? Infinity : PIECE_VALUES[cell.type as CapturablePiece]
+}
+
+/** Für jede gegnerische Figur ab OVERLOAD_MIN_VALUE mit genau einem Verteidiger: welche
+ *  anderen Ziele fallen, wenn dieser Verteidiger anderswo gebraucht wird? Liefert eine
+ *  Zuordnung Ziel -> die übrigen vom selben (alleinigen) Verteidiger gedeckten Ziele. */
+function findOverloadedTargets(board: ReturnType<Chess['board']>, opponent: 'w' | 'b'): Map<string, string[]> {
+  const byDefender = new Map<string, string[]>()
+  for (const row of board) {
+    for (const cell of row) {
+      if (!cell || cell.color !== opponent || cell.type === 'k') continue
+      if (PIECE_VALUES[cell.type as CapturablePiece] < OVERLOAD_MIN_VALUE) continue
+      const defs = defendersOf(board, cell.square, opponent)
+      if (defs.length !== 1) continue
+      const list = byDefender.get(defs[0]) ?? []
+      list.push(cell.square)
+      byDefender.set(defs[0], list)
+    }
+  }
+  const overloadedBy = new Map<string, string[]>()
+  for (const targets of byDefender.values()) {
+    if (targets.length < 2) continue
+    for (const t of targets) {
+      overloadedBy.set(
+        t,
+        targets.filter((x) => x !== t)
+      )
+    }
+  }
+  return overloadedBy
 }
 
 /**
@@ -41,12 +85,16 @@ function valueAt(board: ReturnType<Chess['board']>, square: string): number {
  */
 export function findTactics(fen: string): TacticFinding[] {
   const chess = new Chess(fen)
-  const opponent = chess.turn() === 'w' ? 'b' : 'w'
+  const mover = chess.turn()
+  const opponent = mover === 'w' ? 'b' : 'w'
   const findings: TacticFinding[] = []
+  const overloadedBy = findOverloadedTargets(chess.board(), opponent)
 
   for (const move of chess.moves({ verbose: true })) {
-    // Unterverwandlung ist kein Stufe-1-Muster – nur die Damen-Variante
-    // betrachten, sonst vervierfachen sich die Funde auf jedem Bauern-Endfeld.
+    // Unterverwandlung ist ein eigener Durchlauf (muss mit der Damenumwandlung
+    // an derselben Stelle verglichen werden) – hier nur die Damen-Variante
+    // betrachten, sonst vervierfachen sich die übrigen Funde auf jedem
+    // Bauern-Endfeld.
     if (move.promotion && move.promotion !== 'q') continue
 
     const impact = computeMoveImpact(fen, move.from, move.to, move.promotion)
@@ -126,8 +174,88 @@ export function findTactics(fen: string): TacticFinding[] {
         push('discoveredAttack', targetValue, [d.targetSquare])
       }
     }
+
+    // Überlastung: greift dieser Zug eines der vorab ermittelten, exklusiv
+    // gedeckten Ziele an?
+    for (const atk of impact.attacks) {
+      const siblings = overloadedBy.get(atk)
+      if (siblings && siblings.length > 0) {
+        push(
+          'overworked',
+          Math.min(...siblings.map((s) => valueAt(afterBoard, s))),
+          siblings
+        )
+      }
+    }
+
+    // Eingesperrte Figur: eine von mir angegriffene gegnerische Nicht-Bauern-,
+    // Nicht-König-Figur ohne sicheres Fluchtfeld.
+    for (const row of afterBoard) {
+      for (const cell of row) {
+        if (!cell || cell.color !== opponent || cell.type === 'k' || cell.type === 'p') continue
+        if (!isCoveredByAnyPiece(afterBoard, cell.square, mover)) continue
+        const escapes = after.moves({ square: cell.square as Square, verbose: true })
+        const noSafeEscape =
+          escapes.length === 0 || escapes.every((esc) => isCoveredByAnyPiece(afterBoard, esc.to, mover))
+        if (noSafeEscape) {
+          push('trapped', valueAt(afterBoard, cell.square), [cell.square])
+        }
+      }
+    }
   }
 
-  findings.sort((a, b) => b.gain - a.gain)
-  return findings.slice(0, MAX_FINDINGS)
+  // Unterverwandlung: separater Durchlauf, weil jede Nicht-Damen-Umwandlung mit
+  // der Damenumwandlung an derselben Stelle verglichen werden muss.
+  const promotionMoves = chess.moves({ verbose: true }).filter((m) => m.promotion)
+  const queenBySquarePair = new Map<string, (typeof promotionMoves)[number]>()
+  for (const m of promotionMoves) if (m.promotion === 'q') queenBySquarePair.set(`${m.from}-${m.to}`, m)
+
+  for (const move of promotionMoves) {
+    if (move.promotion === 'q') continue
+    const queenMove = queenBySquarePair.get(`${move.from}-${move.to}`)
+    if (!queenMove) continue
+
+    const impact = computeMoveImpact(fen, move.from, move.to, move.promotion)
+    if (!impact) continue
+    const after = new Chess(fen)
+    after.move({ from: move.from, to: move.to, promotion: move.promotion })
+    if (isCoveredByAnyPiece(after.board(), move.to, opponent)) continue
+
+    const queenImpact = computeMoveImpact(fen, queenMove.from, queenMove.to, 'q')
+    const queenAfter = new Chess(fen)
+    queenAfter.move({ from: queenMove.from, to: queenMove.to, promotion: 'q' })
+
+    const avoidsStalemate = queenAfter.isStalemate() && !after.isStalemate()
+    const givesExtraCheck = impact.directCheck && !(queenImpact?.directCheck ?? false)
+    if (avoidsStalemate || givesExtraCheck) {
+      findings.push({
+        key: `underpromotion-${move.from}-${move.to}-${move.promotion}`,
+        type: 'underpromotion',
+        from: move.from,
+        to: move.to,
+        promotion: move.promotion,
+        san: move.san,
+        gain: UNDERPROMOTION_GAIN,
+        targets: [move.to]
+      })
+    }
+  }
+
+  // Dieselbe taktische Tatsache (z. B. "der Springer auf d6 ist eingesperrt")
+  // kann über viele verschiedene, belanglose Züge hinweg unverändert bestehen
+  // bleiben – ohne Deduplizierung würden solche Wiederholungen die Liste
+  // dominieren und andere Funde (mit demselben Ziel, aber anderem Muster,
+  // z. B. eine Fesselung auf demselben Feld) verdrängen.
+  const deduped = new Map<string, TacticFinding>()
+  for (const finding of findings) {
+    // "double" muss Teil des Schlüssels sein – Einfach- und Doppelschach mit
+    // demselben Zielfeld sind unterschiedliche, beide erwähnenswerte Funde.
+    const key = `${finding.type}:${finding.double ? 1 : 0}:${[...finding.targets].sort().join(',')}`
+    const existing = deduped.get(key)
+    if (!existing || finding.gain > existing.gain) deduped.set(key, finding)
+  }
+
+  const result = [...deduped.values()]
+  result.sort((a, b) => b.gain - a.gain)
+  return result.slice(0, MAX_FINDINGS)
 }
