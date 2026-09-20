@@ -121,6 +121,8 @@
     "limitStrength": "限制棋力 (UCI_Elo)",
     "elo": "等级分",
     "moveTimeMs": "每步用时 (毫秒)",
+    "adaptiveStrength": "根据我的等级分自动调整引擎强度",
+    "estimatedEloHint": "估算的棋力：等级分 ≈ {{elo}}（{{games}} 局计分对局）",
     "openingBook": "开局库",
     "useOpeningBookForOpponent": "用于对手（前 10 个完整回合）",
     "openingBookHint": "此时对手会从已知的开局变例中随机选择走法，而不总是遵循引擎的最佳走法——更真实、更多样。之后由引擎接管。",

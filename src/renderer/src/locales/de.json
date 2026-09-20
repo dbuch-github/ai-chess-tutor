@@ -121,6 +121,8 @@
     "limitStrength": "Spielstärke begrenzen (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Bedenkzeit pro Zug (ms)",
+    "adaptiveStrength": "Spielstärke automatisch an meine Elo anpassen",
+    "estimatedEloHint": "Geschätzte Spielstärke: Elo ≈ {{elo}} ({{games}} gewertete Partien)",
     "openingBook": "Eröffnungsbuch",
     "useOpeningBookForOpponent": "Für den Gegner nutzen (erste 10 Vollzüge)",
     "openingBookHint": "Der Gegner zieht dabei zufällig aus bekannten Eröffnungslinien statt immer nach dem Engine-Bestzug – realistischer und abwechslungsreicher. Danach übernimmt die Engine.",

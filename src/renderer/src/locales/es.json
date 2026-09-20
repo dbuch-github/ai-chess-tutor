@@ -121,6 +121,8 @@
     "limitStrength": "Limitar el nivel de juego (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Tiempo por jugada (ms)",
+    "adaptiveStrength": "Adaptar automáticamente la fuerza del motor a mi Elo",
+    "estimatedEloHint": "Nivel de juego estimado: Elo ≈ {{elo}} ({{games}} partidas clasificadas)",
     "openingBook": "Libro de aperturas",
     "useOpeningBookForOpponent": "Usar para el rival (primeras 10 jugadas completas)",
     "openingBookHint": "El rival juega entonces al azar líneas de apertura conocidas en lugar de seguir siempre la mejor jugada del motor – más realista y variado. Después, el motor toma el control.",

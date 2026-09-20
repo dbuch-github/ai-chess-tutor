@@ -29,6 +29,15 @@ export type TutorMode = 'off' | 'mistakes' | 'chatty'
 /** 'unlimited' = freies Spiel ohne Uhr; die anderen sind Turnierkategorien nach Grundzeit. */
 export type ClockMode = 'unlimited' | 'classical' | 'rapid' | 'blitz' | 'bullet'
 
+/** Bei CSSLab/maia-chess offiziell verfügbare Netz-Stärken (siehe scripts/fetch-engines.mjs). */
+export const MAIA_LEVELS = [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
+
+/** Spielstärke aus einem "…/maia-1500.pb.gz"-Pfad, falls erkennbar. */
+export function levelFromWeightsPath(path: string): number | null {
+  const m = /maia-(\d+)\.pb\.gz$/.exec(path)
+  return m ? Number(m[1]) : null
+}
+
 export interface AppSettings {
   /** UI-Sprache; steuert auch die Antwortsprache des LLM-Tutors. */
   locale: SupportedLocale
@@ -58,6 +67,12 @@ export interface AppSettings {
   chessnutBestMoveBlink: boolean
   /** Chessnut Air: Signalton bei Schach, ungültigem Zugversuch oder Zeitüberschreitung. */
   chessnutBeepEnabled: boolean
+  /** Aus abgeschlossenen Partien gegen Stockfish/Maia geschätzte eigene Elo (Standard-Rating-Update). */
+  estimatedElo: number
+  /** Anzahl der bisher gewerteten Partien (steuert den K-Faktor, siehe game/rating.ts). */
+  ratedGamesCount: number
+  /** Engine-Stärke automatisch aus estimatedElo ableiten statt aus elo/weightsPath. */
+  adaptiveStrength: boolean
 }
 
 /**
@@ -94,7 +109,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
   clockIncrementSeconds: 10,
   moveSoundEnabled: true,
   chessnutBestMoveBlink: true,
-  chessnutBeepEnabled: true
+  chessnutBeepEnabled: true,
+  estimatedElo: 1500,
+  ratedGamesCount: 0,
+  adaptiveStrength: false
 }
 
 /** Feld in AppSettings, in dem das Modell für den jeweiligen Provider steht. */

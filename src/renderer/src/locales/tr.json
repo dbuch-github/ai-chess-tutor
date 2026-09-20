@@ -121,6 +121,8 @@
     "limitStrength": "Oyun gücünü sınırla (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Hamle başına süre (ms)",
+    "adaptiveStrength": "Motor gücünü otomatik olarak Elo puanıma göre ayarla",
+    "estimatedEloHint": "Tahmini oyun gücü: Elo ≈ {{elo}} ({{games}} derecelendirilmiş oyun)",
     "openingBook": "Açılış kitabı",
     "useOpeningBookForOpponent": "Rakip için kullan (ilk 10 tam hamle)",
     "openingBookHint": "Rakip o zaman her zaman motorun en iyi hamlesini izlemek yerine bilinen açılış hatlarından rastgele oynar – daha gerçekçi ve çeşitli. Bundan sonra motor devralır.",

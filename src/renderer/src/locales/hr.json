@@ -121,6 +121,8 @@
     "limitStrength": "Ograniči jačinu igre (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Vrijeme po potezu (ms)",
+    "adaptiveStrength": "Automatski prilagodi jačinu stroja mom Elo rejtingu",
+    "estimatedEloHint": "Procijenjena jakost igre: Elo ≈ {{elo}} ({{games}} rangiranih partija)",
     "openingBook": "Knjiga otvaranja",
     "useOpeningBookForOpponent": "Koristi za protivnika (prvih 10 punih poteza)",
     "openingBookHint": "Protivnik tada nasumično igra iz poznatih linija otvaranja umjesto da uvijek slijedi najbolji potez motora – realističnije i raznovrsnije. Nakon toga preuzima motor.",

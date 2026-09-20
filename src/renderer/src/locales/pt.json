@@ -121,6 +121,8 @@
     "limitStrength": "Limitar força de jogo (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Tempo por lance (ms)",
+    "adaptiveStrength": "Ajustar automaticamente a força do motor ao meu Elo",
+    "estimatedEloHint": "Força de jogo estimada: Elo ≈ {{elo}} ({{games}} partidas avaliadas)",
     "openingBook": "Livro de aberturas",
     "useOpeningBookForOpponent": "Usar para o adversário (primeiros 10 lances completos)",
     "openingBookHint": "O adversário então joga aleatoriamente a partir de linhas de abertura conhecidas, em vez de sempre seguir o melhor lance do motor – mais realista e variado. Depois disso, o motor assume.",

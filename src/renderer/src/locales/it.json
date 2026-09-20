@@ -121,6 +121,8 @@
     "limitStrength": "Limita la forza di gioco (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Tempo per mossa (ms)",
+    "adaptiveStrength": "Adatta automaticamente la forza del motore al mio Elo",
+    "estimatedEloHint": "Forza di gioco stimata: Elo ≈ {{elo}} ({{games}} partite classificate)",
     "openingBook": "Libro delle aperture",
     "useOpeningBookForOpponent": "Usa per l'avversario (prime 10 mosse complete)",
     "openingBookHint": "L'avversario gioca quindi in modo casuale linee di apertura note invece di seguire sempre la mossa migliore del motore – più realistico e vario. Dopo, subentra il motore.",

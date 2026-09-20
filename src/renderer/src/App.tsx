@@ -22,6 +22,8 @@ import { useTutor } from './game/useTutor'
 import { useBoardPreview } from './game/useBoardPreview'
 import { useGameReport } from './game/useGameReport'
 import { useGameLibrary } from './game/useGameLibrary'
+import { usePlayerRating } from './game/usePlayerRating'
+import { clampElo, nearestLevel } from './game/rating'
 import { useChessClock, formatClockMs } from './game/useClock'
 import { useMoveSound } from './game/useMoveSound'
 import { useChessnutBoard } from './chessnut/useChessnutBoard'
@@ -34,7 +36,15 @@ import { computeCriticalMoments, computeReportStats } from './game/gameReport'
 import { detectOpening } from './game/openingBook'
 import { buildPgn, suggestedPgnFilename } from './game/pgn'
 import { MIN_CLASSIFY_DEPTH } from './game/classify'
-import { loadSettings, saveSettings, TUTOR_MODEL_KEY, type AppSettings, type TutorMode } from './settings'
+import {
+  loadSettings,
+  saveSettings,
+  levelFromWeightsPath,
+  MAIA_LEVELS,
+  TUTOR_MODEL_KEY,
+  type AppSettings,
+  type TutorMode
+} from './settings'
 import type { BluetoothDeviceInfo } from '../../shared/types'
 
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -55,6 +65,11 @@ export function App(): React.JSX.Element {
   const [pgnNotice, setPgnNotice] = useState<{ ok: boolean; text: string } | null>(null)
   const [bluetoothDevices, setBluetoothDevices] = useState<BluetoothDeviceInfo[] | null>(null)
   const configureSeq = useRef(0)
+  /** Elo, mit der der Gegner für die gerade laufende Partie tatsächlich konfiguriert wurde
+   *  (null = unbekannt, z. B. "custom"-Engine oder Stockfish ohne limitStrength) – separat
+   *  von settings.elo gehalten, damit ein Settings-Wechsel mitten in der Partie das
+   *  Rating-Update am Ende nicht verfälscht. */
+  const activeOpponentEloRef = useRef<number | null>(null)
 
   useEffect(() => window.api.onBluetoothDeviceList(setBluetoothDevices), [])
 
@@ -109,13 +124,31 @@ export function App(): React.JSX.Element {
     }
     if (!opponentPath || !analysisPath) return
 
+    // Bei aktiver Adaptivität die geschätzte eigene Elo statt der manuellen Felder
+    // verwenden ("custom"-Engines haben keinen bekannten Stärkemechanismus, siehe Plan).
+    const adaptive = s.adaptiveStrength && s.engineKind !== 'custom'
+    const adaptiveMaiaLevel = adaptive && s.engineKind === 'maia' ? nearestLevel(s.estimatedElo, MAIA_LEVELS) : null
+    const effectiveWeightsPath =
+      adaptiveMaiaLevel != null ? await window.api.getDefaultMaiaWeightsPath(adaptiveMaiaLevel) : weightsPath
+    const effectiveLimitStrength = adaptive && s.engineKind === 'stockfish' ? true : s.limitStrength
+    const effectiveElo =
+      adaptive && s.engineKind === 'stockfish'
+        ? clampElo(Math.round(s.estimatedElo / 10) * 10, 1320, 3190)
+        : s.elo
+    activeOpponentEloRef.current =
+      s.engineKind === 'maia'
+        ? (adaptiveMaiaLevel ?? levelFromWeightsPath(effectiveWeightsPath))
+        : s.engineKind === 'stockfish' && effectiveLimitStrength
+          ? effectiveElo
+          : null
+
     const [opp, ana] = await Promise.all([
       window.api.configureOpponent({
         kind: s.engineKind,
         enginePath: opponentPath,
-        weightsPath: s.engineKind === 'maia' ? weightsPath : undefined,
-        limitStrength: s.limitStrength,
-        elo: s.elo,
+        weightsPath: s.engineKind === 'maia' ? effectiveWeightsPath : undefined,
+        limitStrength: effectiveLimitStrength,
+        elo: effectiveElo,
         moveTimeMs: s.moveTimeMs
       }),
       window.api.configureAnalysis({
@@ -135,6 +168,13 @@ export function App(): React.JSX.Element {
     // Initial configuration only – changes go through the settings dialog
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  usePlayerRating(game, activeOpponentEloRef, settings, (next) => {
+    setSettings(next)
+    // Bei aktiver Adaptivität soll die nächste Partie sofort die neu geschätzte
+    // Stärke bekommen, nicht erst beim nächsten Öffnen der Einstellungen.
+    if (next.adaptiveStrength) applyEngineSettings(next)
+  })
 
   const handleSaveSettings = (next: AppSettings, apiKeyChange?: string): void => {
     setSettings(next)

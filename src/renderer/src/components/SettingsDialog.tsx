@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EngineKind, LlmProviderId, TutorStatus } from '../../../shared/types'
-import { CLOCK_PRESETS, DEFAULT_SETTINGS, TUTOR_MODEL_KEY, type AppSettings, type ClockMode } from '../settings'
+import {
+  CLOCK_PRESETS,
+  DEFAULT_SETTINGS,
+  levelFromWeightsPath,
+  MAIA_LEVELS,
+  TUTOR_MODEL_KEY,
+  type AppSettings,
+  type ClockMode
+} from '../settings'
 
 interface SettingsDialogProps {
   settings: AppSettings
@@ -9,9 +17,6 @@ interface SettingsDialogProps {
   onSave: (settings: AppSettings, apiKeyChange?: string) => void
   onClose: () => void
 }
-
-/** Bei CSSLab/maia-chess offiziell verfügbare Netz-Stärken (siehe scripts/fetch-engines.mjs). */
-const MAIA_LEVELS = [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
 
 const TUTOR_KEY_HINTS: Record<LlmProviderId, { label: string; keyPlaceholder: string; keyHint: string }> = {
   anthropic: { label: 'Anthropic (Claude)', keyPlaceholder: 'sk-ant-…', keyHint: 'console.anthropic.com' },
@@ -24,12 +29,6 @@ const TUTOR_PROVIDER_IDS: LlmProviderId[] = ['anthropic', 'openai', 'google']
 function dirnameOf(path: string): string | undefined {
   const idx = path.lastIndexOf('/')
   return idx > 0 ? path.slice(0, idx) : undefined
-}
-
-/** Spielstärke aus einem "…/maia-1500.pb.gz"-Pfad, falls erkennbar. */
-function levelFromWeightsPath(path: string): number | null {
-  const m = /maia-(\d+)\.pb\.gz$/.exec(path)
-  return m ? Number(m[1]) : null
 }
 
 export function SettingsDialog({
@@ -153,6 +152,7 @@ export function SettingsDialog({
               <select
                 id="maia-level"
                 value={levelFromWeightsPath(draft.weightsPath) ?? levelFromWeightsPath(defaultWeightsPath) ?? 1200}
+                disabled={draft.adaptiveStrength}
                 onChange={async (e) => {
                   const level = Number(e.target.value)
                   update('weightsPath', await window.api.getDefaultMaiaWeightsPath(level))
@@ -226,6 +226,7 @@ export function SettingsDialog({
                 id="limit-strength"
                 type="checkbox"
                 checked={draft.limitStrength}
+                disabled={draft.adaptiveStrength}
                 onChange={(e) => update('limitStrength', e.target.checked)}
               />
               {t('settings.limitStrength')}
@@ -240,7 +241,7 @@ export function SettingsDialog({
                   max={3190}
                   step={10}
                   value={draft.elo}
-                  disabled={!draft.limitStrength}
+                  disabled={!draft.limitStrength || draft.adaptiveStrength}
                   onChange={(e) => update('elo', Number(e.target.value))}
                 />
               </label>
@@ -257,6 +258,23 @@ export function SettingsDialog({
                 />
               </label>
             </div>
+          </>
+        )}
+
+        {draft.engineKind !== 'custom' && (
+          <>
+            <label className="row">
+              <input
+                id="adaptive-strength"
+                type="checkbox"
+                checked={draft.adaptiveStrength}
+                onChange={(e) => update('adaptiveStrength', e.target.checked)}
+              />
+              {t('settings.adaptiveStrength')}
+            </label>
+            <p className="field-hint">
+              {t('settings.estimatedEloHint', { elo: draft.estimatedElo, games: draft.ratedGamesCount })}
+            </p>
           </>
         )}
 

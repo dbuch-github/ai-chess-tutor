@@ -121,6 +121,8 @@
     "limitStrength": "Limit playing strength (UCI_Elo)",
     "elo": "Elo",
     "moveTimeMs": "Time per move (ms)",
+    "adaptiveStrength": "Automatically adjust engine strength to my Elo",
+    "estimatedEloHint": "Estimated playing strength: Elo ≈ {{elo}} ({{games}} rated games)",
     "openingBook": "Opening book",
     "useOpeningBookForOpponent": "Use for opponent (first 10 full moves)",
     "openingBookHint": "The opponent then plays randomly from known opening lines instead of always following the engine's best move – more realistic and varied. After that, the engine takes over.",
