@@ -6,6 +6,7 @@ import { CLASSIFY_LABELS, type LabeledClassification } from '../../../shared/cla
 import type { SupportedLocale } from '../../../shared/types'
 import { historySan } from '../game/notation'
 import { figurineSan } from './Figurine'
+import { HelpHint } from './HelpHint'
 
 const BADGE_SYMBOLS: Record<Classification, string | null> = {
   best: '★',
@@ -72,7 +73,10 @@ export function MoveList({ moves }: { moves: MoveRecord[] }): React.JSX.Element 
   return (
     <section className="panel move-list">
       <header className="panel-header">
-        <h2>{t('moveList.title')}</h2>
+        <span className="panel-title">
+          <h2>{t('moveList.title')}</h2>
+          <HelpHint section="moveList" />
+        </span>
       </header>
       {rows.length === 0 ? (
         <p className="panel-empty">{t('moveList.noMoves')}</p>

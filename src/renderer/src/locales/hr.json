@@ -33,7 +33,8 @@
     "reportHint": "Sažetak partije s obrascima pogrešaka i točkama za učenje",
     "settings": "Postavke",
     "language": "Odaberi jezik",
-    "info": "O aplikaciji"
+    "info": "O aplikaciji",
+    "help": "Pomoć"
   },
   "status": {
     "engineThinking": "Motor razmišlja…",

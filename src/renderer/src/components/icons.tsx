@@ -68,6 +68,26 @@ export function InfoIcon({ size }: IconProps): React.JSX.Element {
   )
 }
 
+interface QuestionIconProps extends IconProps {
+  /** true: nur das Fragezeichen ohne die eigene Kreis-Kontur – für Kontexte, die
+   *  bereits selbst einen Kreis als Button-Rahmen zeichnen (siehe HelpHint.tsx),
+   *  damit dort nicht zwei Kreise übereinanderliegen. */
+  bare?: boolean
+}
+
+/** Kreis mit "?" – für den direkten Hilfe-Zugang und die kleinen Kontexthilfe-Buttons
+ *  an Panel-Titeln (siehe HelpHint.tsx). Hook-Pfad + gefüllter Punkt (wie beim "i" in
+ *  InfoIcon) statt Text-Glyph, damit die Zentrierung nicht von Font-Metriken abhängt. */
+export function QuestionIcon({ size, bare }: QuestionIconProps): React.JSX.Element {
+  return (
+    <svg {...svgProps(size)}>
+      {!bare && <circle cx="10" cy="10" r="7.3" />}
+      <path d="M7.88 7.81a2.19 2.19 0 0 1 4.26 0.73c0 1.46 -2.19 2.19 -2.19 2.19" />
+      <circle cx="10" cy="13.7" r="0.95" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 /** Diskette, Basis für Export-/Import-Symbol. */
 function Disk(): React.JSX.Element {
   return (
@@ -117,6 +137,22 @@ export function CameraIcon({ size }: IconProps): React.JSX.Element {
     <svg {...svgProps(size)}>
       <circle cx="10" cy="10" r="7" />
       <circle cx="10" cy="10" r="2.6" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+interface StatusRingIconProps extends IconProps {
+  /** true: Kreis mit Haken (an), false: leerer Kreis (aus). */
+  on: boolean
+}
+
+/** Leerer Kreis (aus) / Kreis mit Haken (an) – Status-Indikator für Toggle-Buttons wie
+ *  "Analyse" (statt eines dauerhaften Hover-artigen Farbzustands am ganzen Button). */
+export function StatusRingIcon({ size, on }: StatusRingIconProps): React.JSX.Element {
+  return (
+    <svg {...svgProps(size)}>
+      <circle cx="10" cy="10" r="7.3" />
+      {on && <path d="M6.3 10.3 L8.8 12.8 L13.7 7.4" />}
     </svg>
   )
 }

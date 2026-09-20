@@ -144,14 +144,6 @@ body {
   font-weight: 600;
 }
 
-/* Gedrückter Zustand für feste Toggle-Buttons (z. B. Analyse) – der Zustand
-   zeigt sich über die Färbung, nicht über wechselnden Text, damit die
-   Topbar beim Umschalten nicht in der Breite springt. */
-.btn.pressed {
-  background: color-mix(in srgb, var(--accent) 22%, var(--surface-2));
-  border-color: var(--accent);
-}
-
 /* Zahnrad war als reiner Textglyph (⚙︎) kaum erkennbar – jetzt eigenes
    SVG-Icon (siehe icons.tsx/GearIcon), Größe passend zu den übrigen
    Menü-Icons statt der vorherigen 1.4rem-Emoji-Variante. */
@@ -587,6 +579,62 @@ body {
   letter-spacing: 0.09em;
   color: var(--ink-soft);
   margin: 0;
+}
+
+.panel-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.help-hint {
+  display: inline-flex;
+}
+
+.help-hint-btn {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--ink-soft);
+  background: transparent;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.help-hint-btn:hover,
+.help-hint-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.help-hint-popover {
+  position: fixed;
+  z-index: 50;
+  width: 260px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.help-hint-popover h4 {
+  margin: 0 0 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.help-hint-popover p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--ink);
 }
 
 .panel-meta {
@@ -1213,9 +1261,21 @@ piece.figurine.black {
 
 /* ---- Partie-Report ---- */
 .report-dialog,
-.settings-dialog,
-.help-dialog {
+.settings-dialog {
   width: min(680px, 92vw);
+}
+
+.help-dialog {
+  width: min(920px, 94vw);
+}
+
+.help-screenshot {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  margin: 6px 0 4px;
+  display: block;
 }
 
 .report-stats {

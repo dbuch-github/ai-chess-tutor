@@ -33,7 +33,8 @@
     "reportHint": "Summary of the game with error patterns and learning points",
     "settings": "Settings",
     "language": "Choose language",
-    "info": "About"
+    "info": "About",
+    "help": "Help"
   },
   "status": {
     "engineThinking": "Engine thinking …",

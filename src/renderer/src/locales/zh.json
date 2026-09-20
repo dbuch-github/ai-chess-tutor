@@ -33,7 +33,8 @@
     "reportHint": "包含错误模式和学习要点的对局总结",
     "settings": "设置",
     "language": "选择语言",
-    "info": "关于"
+    "info": "关于",
+    "help": "帮助"
   },
   "status": {
     "engineThinking": "引擎思考中…",

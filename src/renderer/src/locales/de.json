@@ -33,7 +33,8 @@
     "reportHint": "Zusammenfassung der Partie mit Fehlermustern und Lernpunkten",
     "settings": "Einstellungen",
     "language": "Sprache wählen",
-    "info": "Info"
+    "info": "Info",
+    "help": "Hilfe"
   },
   "status": {
     "engineThinking": "Engine denkt …",

@@ -33,7 +33,8 @@
     "reportHint": "Résumé de la partie avec les erreurs récurrentes et les points à retenir",
     "settings": "Paramètres",
     "language": "Choisir la langue",
-    "info": "À propos"
+    "info": "À propos",
+    "help": "Aide"
   },
   "status": {
     "engineThinking": "Le moteur réfléchit…",

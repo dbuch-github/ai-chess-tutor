@@ -10,7 +10,21 @@ import { InfoDialog } from './components/InfoDialog'
 import { HelpDialog } from './components/HelpDialog'
 import { TopbarDropdown } from './components/TopbarDropdown'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
-import { BoardIcon, BooksIcon, CameraIcon, ChartIcon, ExportIcon, FolderIcon, GearIcon, ImportIcon, InfoIcon, KingIcon, ReportIcon } from './components/icons'
+import {
+  BoardIcon,
+  BooksIcon,
+  CameraIcon,
+  ChartIcon,
+  ExportIcon,
+  FolderIcon,
+  GearIcon,
+  ImportIcon,
+  InfoIcon,
+  KingIcon,
+  QuestionIcon,
+  ReportIcon,
+  StatusRingIcon
+} from './components/icons'
 import { CapturedRow, PIECE_VALUES } from './components/CapturedRow'
 import { TutorPanel } from './components/TutorPanel'
 import { GameReportDialog } from './components/GameReportDialog'
@@ -430,12 +444,8 @@ export function App(): React.JSX.Element {
               </span>
             </button>
           </TopbarDropdown>
-          <button
-            className={`btn ${settings.showAnalysis ? 'pressed' : ''}`}
-            onClick={toggleAnalysis}
-            aria-pressed={settings.showAnalysis}
-          >
-            <ChartIcon /> {t('topbar.analysis')}
+          <button className="btn" onClick={toggleAnalysis} aria-pressed={settings.showAnalysis}>
+            <ChartIcon /> {t('topbar.analysis')} <StatusRingIcon on={settings.showAnalysis} size={14} />
           </button>
           <button
             className="btn"
@@ -447,6 +457,9 @@ export function App(): React.JSX.Element {
           </button>
           <button className="btn btn-settings" onClick={() => setShowInfo(true)} aria-label={t('topbar.info')}>
             <InfoIcon />
+          </button>
+          <button className="btn btn-settings" onClick={() => setShowHelp(true)} aria-label={t('topbar.help')}>
+            <QuestionIcon />
           </button>
           <button className="btn btn-settings" onClick={() => setShowSettings(true)} aria-label={t('topbar.settings')}>
             <GearIcon />

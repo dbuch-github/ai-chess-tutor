@@ -33,7 +33,8 @@
     "reportHint": "Hata kalıpları ve öğrenme noktalarıyla oyun özeti",
     "settings": "Ayarlar",
     "language": "Dil seçin",
-    "info": "Hakkında"
+    "info": "Hakkında",
+    "help": "Yardım"
   },
   "status": {
     "engineThinking": "Motor düşünüyor…",

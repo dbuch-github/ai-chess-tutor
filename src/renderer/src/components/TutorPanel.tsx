@@ -5,6 +5,7 @@ import type { BoardPreviewApi } from '../game/useBoardPreview'
 import type { TutorMode } from '../settings'
 import { figurineText } from './Figurine'
 import { VisualLegend } from './VisualLegend'
+import { HelpHint } from './HelpHint'
 
 interface TutorPanelProps {
   tutor: TutorApi
@@ -93,7 +94,10 @@ export function TutorPanel({
   return (
     <section className="panel tutor-panel">
       <header className="panel-header">
-        <h2>{t('tutor.title')}</h2>
+        <span className="panel-title">
+          <h2>{t('tutor.title')}</h2>
+          <HelpHint section="tutor" />
+        </span>
         <div className="mode-switch" role="radiogroup" aria-label={t('tutor.modeAriaLabel')}>
           {MODES.map((m) => (
             <button

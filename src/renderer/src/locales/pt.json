@@ -33,7 +33,8 @@
     "reportHint": "Resumo da partida com padrões de erro e pontos de aprendizado",
     "settings": "Configurações",
     "language": "Escolher idioma",
-    "info": "Sobre"
+    "info": "Sobre",
+    "help": "Ajuda"
   },
   "status": {
     "engineThinking": "O motor está pensando…",

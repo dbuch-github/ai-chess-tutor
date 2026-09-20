@@ -4,6 +4,7 @@ import { formatScore } from '../game/classify'
 import { buildLinePreview } from '../game/boardVisuals'
 import type { BoardPreviewApi } from '../game/useBoardPreview'
 import { pvToSan } from '../game/notation'
+import { HelpHint } from './HelpHint'
 
 interface AnalysisPanelProps {
   snapshot: AnalysisSnapshot | null
@@ -27,7 +28,10 @@ export function AnalysisPanel({ snapshot, currentFen, boardPreview }: AnalysisPa
   return (
     <section className="panel analysis-panel">
       <header className="panel-header">
-        <h2>{t('analysis.title')}</h2>
+        <span className="panel-title">
+          <h2>{t('analysis.title')}</h2>
+          <HelpHint section="analysis" />
+        </span>
         {depth !== undefined && <span className="panel-meta">{t('analysis.depth', { depth })}</span>}
       </header>
       {/* Immer MAX_LINES Zeilen reservieren (auch bei 0–2 vorliegenden Linien) –

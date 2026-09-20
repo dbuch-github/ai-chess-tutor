@@ -33,7 +33,8 @@
     "reportHint": "Podsumowanie partii z wzorcami błędów i punktami do nauki",
     "settings": "Ustawienia",
     "language": "Wybierz język",
-    "info": "O programie"
+    "info": "O programie",
+    "help": "Pomoc"
   },
   "status": {
     "engineThinking": "Silnik myśli…",

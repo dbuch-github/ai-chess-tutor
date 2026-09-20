@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { ChessnutBoardApi } from '../chessnut/useChessnutBoard'
 import type { ChessnutSyncApi } from '../chessnut/useChessnutSync'
+import { HelpHint } from './HelpHint'
 
 interface ChessnutPanelProps {
   chessnut: ChessnutBoardApi
@@ -37,6 +38,7 @@ export function ChessnutPanel({
   return (
     <div className="chessnut-bar">
       <span className="chessnut-bar-label">♟️ Chessnut Air</span>
+      <HelpHint section="chessnut" placement="above" />
       <span className={`chessnut-status ${chessnut.status}`}>{STATUS_LABELS[chessnut.status]}</span>
 
       {connected && chessnut.battery && (

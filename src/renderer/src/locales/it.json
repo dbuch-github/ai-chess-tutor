@@ -33,7 +33,8 @@
     "reportHint": "Riepilogo della partita con errori ricorrenti e punti di apprendimento",
     "settings": "Impostazioni",
     "language": "Scegli lingua",
-    "info": "Informazioni"
+    "info": "Informazioni",
+    "help": "Aiuto"
   },
   "status": {
     "engineThinking": "Il motore sta pensando…",
