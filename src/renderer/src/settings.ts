@@ -51,6 +51,8 @@ export interface AppSettings {
   analysisPath: string
   showAnalysis: boolean
   useOpeningBook: boolean
+  /** Zeigt neben der erkannten Eröffnung eine Vorschau der nächsten bekannten Theoriezüge. */
+  showOpeningPreview: boolean
   tutorProvider: LlmProviderId
   tutorModelAnthropic: string
   tutorModelOpenAI: string
@@ -99,6 +101,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   analysisPath: '',
   showAnalysis: true,
   useOpeningBook: true,
+  showOpeningPreview: false,
   tutorProvider: 'anthropic',
   tutorModelAnthropic: 'claude-opus-5',
   tutorModelOpenAI: 'gpt-5.1',

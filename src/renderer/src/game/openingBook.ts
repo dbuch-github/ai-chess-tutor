@@ -74,3 +74,31 @@ export function pickBookMove(playedSan: string[]): string | null {
   }
   return [...bucket.keys()][0] // Rundungsausreißer
 }
+
+export const PREVIEW_PLIES = 3
+
+/**
+ * Vorschau der nächsten bekannten Theoriezüge ab der aktuellen Stellung – im
+ * Unterschied zu pickBookMove() deterministisch (an jedem Schritt der in der
+ * Datenbank häufigste Folgezug statt eine Zufallswahl), damit die Anzeige bei
+ * jedem Render stabil bleibt statt bei jedem Aufruf zu wechseln.
+ */
+export function previewContinuation(playedSan: string[], count = PREVIEW_PLIES): string[] {
+  const result: string[] = []
+  const prefix = [...playedSan]
+  for (let i = 0; i < count; i++) {
+    const bucket = CONTINUATIONS.get(keyOf(prefix))
+    if (!bucket || bucket.size === 0) break
+    let bestMove = ''
+    let bestWeight = -1
+    for (const [move, weight] of bucket) {
+      if (weight > bestWeight) {
+        bestWeight = weight
+        bestMove = move
+      }
+    }
+    result.push(bestMove)
+    prefix.push(bestMove)
+  }
+  return result
+}

@@ -47,7 +47,8 @@
     "continuePlaying": "▶ Continua a giocare"
   },
   "opening": {
-    "detected": "{{matched}} semimosse riconosciute su {{total}}"
+    "detected": "{{matched}} semimosse riconosciute su {{total}}",
+    "previewLabel": "La teoria continua:"
   },
   "pgnNotice": {
     "saved": "Salvato: {{path}}",
@@ -127,6 +128,8 @@
     "openingBook": "Libro delle aperture",
     "useOpeningBookForOpponent": "Usa per l'avversario (prime 10 mosse complete)",
     "openingBookHint": "L'avversario gioca quindi in modo casuale linee di apertura note invece di seguire sempre la mossa migliore del motore – più realistico e vario. Dopo, subentra il motore.",
+    "showOpeningPreview": "Mostra anteprima delle prossime mosse di teoria",
+    "showOpeningPreviewHint": "Mostra le prossime mosse di teoria note accanto all'apertura rilevata, finché il database arriva più lontano.",
     "clock": "Orologio scacchistico (controllo del tempo)",
     "timeControl": "Controllo del tempo",
     "baseTimeMinutes": "Tempo base (minuti)",

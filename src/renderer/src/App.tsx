@@ -47,7 +47,8 @@ import { useChessnutBestMove } from './chessnut/useChessnutBestMove'
 import { useChessnutSignals } from './chessnut/useChessnutSignals'
 import { useChessnutThreatPreview } from './chessnut/useChessnutThreatPreview'
 import { computeCriticalMoments, computeReportStats } from './game/gameReport'
-import { detectOpening } from './game/openingBook'
+import { detectOpening, previewContinuation } from './game/openingBook'
+import { formatSanSequence } from './game/notation'
 import { buildPgn, suggestedPgnFilename } from './game/pgn'
 import { MIN_CLASSIFY_DEPTH } from './game/classify'
 import {
@@ -340,6 +341,13 @@ export function App(): React.JSX.Element {
   const opening = useMemo(() => game.initialFen === new Chess().fen()
     ? detectOpening(game.moves.map((m) => m.san)) : null, [game.moves, game.initialFen])
 
+  const openingPreview = useMemo(() => {
+    if (!opening || !settings.showOpeningPreview) return null
+    const playedSan = game.moves.map((m) => m.san)
+    const preview = previewContinuation(playedSan)
+    return preview.length ? formatSanSequence(playedSan.length, preview) : null
+  }, [opening, settings.showOpeningPreview, game.moves])
+
   const currentLine = game.getEval(game.fen)
   const canSuggest =
     !game.result &&
@@ -559,6 +567,7 @@ export function App(): React.JSX.Element {
               📖 {opening.name} <span className="opening-eco">({opening.eco})</span>
             </div>
           )}
+          {openingPreview && <div className="opening-preview">{t('opening.previewLabel')} {openingPreview}</div>}
           {game.engineError && <div className="error-line">{t('app.engineError', { message: game.engineError })}</div>}
           {settings.showAnalysis && (
             <>

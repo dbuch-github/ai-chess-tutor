@@ -289,6 +289,16 @@ export function SettingsDialog({
           {t('settings.useOpeningBookForOpponent')}
         </label>
         <p className="field-hint">{t('settings.openingBookHint')}</p>
+        <label className="row">
+          <input
+            id="show-opening-preview"
+            type="checkbox"
+            checked={draft.showOpeningPreview}
+            onChange={(e) => update('showOpeningPreview', e.target.checked)}
+          />
+          {t('settings.showOpeningPreview')}
+        </label>
+        <p className="field-hint">{t('settings.showOpeningPreviewHint')}</p>
 
         <h3>{t('settings.clock')}</h3>
         <label>

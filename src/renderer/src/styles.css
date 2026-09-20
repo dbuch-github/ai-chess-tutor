@@ -553,6 +553,13 @@ body {
   opacity: 0.8;
 }
 
+.opening-preview {
+  padding: 0 14px 2px;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
 .error-line {
   background: color-mix(in srgb, var(--bad) 14%, transparent);
   color: var(--bad);

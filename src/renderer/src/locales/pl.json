@@ -47,7 +47,8 @@
     "continuePlaying": "▶ Kontynuuj grę"
   },
   "opening": {
-    "detected": "Rozpoznano {{matched}} z {{total}} półruchów"
+    "detected": "Rozpoznano {{matched}} z {{total}} półruchów",
+    "previewLabel": "Dalszy ciąg teorii:"
   },
   "pgnNotice": {
     "saved": "Zapisano: {{path}}",
@@ -127,6 +128,8 @@
     "openingBook": "Księga debiutów",
     "useOpeningBookForOpponent": "Użyj dla przeciwnika (pierwsze 10 pełnych ruchów)",
     "openingBookHint": "Przeciwnik gra wtedy losowo ze znanych linii debiutowych zamiast zawsze podążać za najlepszym ruchem silnika – bardziej realistycznie i różnorodnie. Potem przejmuje silnik.",
+    "showOpeningPreview": "Pokaż podgląd kolejnych ruchów teorii",
+    "showOpeningPreviewHint": "Pokazuje kolejne znane ruchy teorii obok wykrytego debiutu, dopóki baza danych sięga dalej.",
     "clock": "Zegar szachowy (kontrola czasu)",
     "timeControl": "Kontrola czasu",
     "baseTimeMinutes": "Czas podstawowy (minuty)",

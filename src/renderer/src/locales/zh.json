@@ -47,7 +47,8 @@
     "continuePlaying": "▶ 继续对局"
   },
   "opening": {
-    "detected": "已识别 {{total}} 个半回合中的 {{matched}} 个"
+    "detected": "已识别 {{total}} 个半回合中的 {{matched}} 个",
+    "previewLabel": "理论延续："
   },
   "pgnNotice": {
     "saved": "已保存：{{path}}",
@@ -127,6 +128,8 @@
     "openingBook": "开局库",
     "useOpeningBookForOpponent": "用于对手（前 10 个完整回合）",
     "openingBookHint": "此时对手会从已知的开局变例中随机选择走法，而不总是遵循引擎的最佳走法——更真实、更多样。之后由引擎接管。",
+    "showOpeningPreview": "显示接下来的理论着法预览",
+    "showOpeningPreviewHint": "只要数据库中还有数据，就在已识别的开局旁显示接下来已知的理论着法。",
     "clock": "棋钟（时间控制）",
     "timeControl": "时间控制",
     "baseTimeMinutes": "基础时间（分钟）",

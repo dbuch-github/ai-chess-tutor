@@ -47,7 +47,8 @@
     "continuePlaying": "▶ Seguir jugando"
   },
   "opening": {
-    "detected": "{{matched}} de {{total}} semijugadas reconocidas"
+    "detected": "{{matched}} de {{total}} semijugadas reconocidas",
+    "previewLabel": "Sigue la teoría:"
   },
   "pgnNotice": {
     "saved": "Guardado: {{path}}",
@@ -127,6 +128,8 @@
     "openingBook": "Libro de aperturas",
     "useOpeningBookForOpponent": "Usar para el rival (primeras 10 jugadas completas)",
     "openingBookHint": "El rival juega entonces al azar líneas de apertura conocidas en lugar de seguir siempre la mejor jugada del motor – más realista y variado. Después, el motor toma el control.",
+    "showOpeningPreview": "Mostrar vista previa de las próximas jugadas de teoría",
+    "showOpeningPreviewHint": "Muestra las próximas jugadas de teoría conocidas junto a la apertura detectada, mientras la base de datos llegue más lejos.",
     "clock": "Reloj de ajedrez (control de tiempo)",
     "timeControl": "Control de tiempo",
     "baseTimeMinutes": "Tiempo base (minutos)",

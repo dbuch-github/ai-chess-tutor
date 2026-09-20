@@ -47,7 +47,8 @@
     "continuePlaying": "▶ Continuer la partie"
   },
   "opening": {
-    "detected": "{{matched}} demi-coups reconnus sur {{total}}"
+    "detected": "{{matched}} demi-coups reconnus sur {{total}}",
+    "previewLabel": "Suite théorique :"
   },
   "pgnNotice": {
     "saved": "Enregistré : {{path}}",
@@ -127,6 +128,8 @@
     "openingBook": "Livre d'ouvertures",
     "useOpeningBookForOpponent": "Utiliser pour l'adversaire (10 premiers coups complets)",
     "openingBookHint": "L'adversaire joue alors aléatoirement des lignes d'ouverture connues au lieu de toujours suivre le meilleur coup du moteur – plus réaliste et varié. Le moteur prend ensuite le relais.",
+    "showOpeningPreview": "Afficher un aperçu des prochains coups de théorie",
+    "showOpeningPreviewHint": "Affiche les prochains coups de théorie connus à côté de l'ouverture détectée, tant que la base de données va plus loin.",
     "clock": "Pendule (cadence)",
     "timeControl": "Cadence",
     "baseTimeMinutes": "Temps de base (minutes)",
