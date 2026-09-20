@@ -48,7 +48,8 @@
   },
   "opening": {
     "detected": "{{matched}} von {{total}} Halbzügen erkannt",
-    "previewLabel": "Theorie weiter:"
+    "previewLabel": "Theorie weiter:",
+    "previewToggle": "Vorschau"
   },
   "pgnNotice": {
     "saved": "Gespeichert: {{path}}",
@@ -128,8 +129,8 @@
     "openingBook": "Eröffnungsbuch",
     "useOpeningBookForOpponent": "Für den Gegner nutzen (erste 10 Vollzüge)",
     "openingBookHint": "Der Gegner zieht dabei zufällig aus bekannten Eröffnungslinien statt immer nach dem Engine-Bestzug – realistischer und abwechslungsreicher. Danach übernimmt die Engine.",
-    "showOpeningPreview": "Vorschau der nächsten Theoriezüge anzeigen",
-    "showOpeningPreviewHint": "Zeigt neben der erkannten Eröffnung die nächsten bekannten Theoriezüge, solange die Datenbank noch weiterreicht.",
+    "showOpening": "Eröffnungen anzeigen",
+    "showOpeningHint": "Blendet den Bereich mit der erkannten Eröffnung (inkl. Theorie-Vorschau) im Spiel komplett ein oder aus.",
     "clock": "Bedenkzeit (Schachuhr)",
     "timeControl": "Zeitkontrolle",
     "baseTimeMinutes": "Grundzeit (Minuten)",

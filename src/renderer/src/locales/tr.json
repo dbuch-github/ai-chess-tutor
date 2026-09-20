@@ -48,7 +48,8 @@
   },
   "opening": {
     "detected": "{{total}} yarı hamleden {{matched}} tanesi tanındı",
-    "previewLabel": "Teori devam ediyor:"
+    "previewLabel": "Teori devam ediyor:",
+    "previewToggle": "Önizleme"
   },
   "pgnNotice": {
     "saved": "Kaydedildi: {{path}}",
@@ -128,8 +129,8 @@
     "openingBook": "Açılış kitabı",
     "useOpeningBookForOpponent": "Rakip için kullan (ilk 10 tam hamle)",
     "openingBookHint": "Rakip o zaman her zaman motorun en iyi hamlesini izlemek yerine bilinen açılış hatlarından rastgele oynar – daha gerçekçi ve çeşitli. Bundan sonra motor devralır.",
-    "showOpeningPreview": "Sıradaki teori hamlelerinin önizlemesini göster",
-    "showOpeningPreviewHint": "Veritabanı yeterli olduğu sürece, tespit edilen açılışın yanında bilinen sıradaki teori hamlelerini gösterir.",
+    "showOpening": "Açılışları göster",
+    "showOpeningHint": "Oyunda tespit edilen açılış alanını (teori önizlemesi dahil) tamamen gösterir veya gizler.",
     "clock": "Satranç saati (zaman kontrolü)",
     "timeControl": "Zaman kontrolü",
     "baseTimeMinutes": "Temel süre (dakika)",

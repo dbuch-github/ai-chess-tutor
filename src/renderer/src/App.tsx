@@ -211,6 +211,12 @@ export function App(): React.JSX.Element {
     saveSettings(next)
   }
 
+  const toggleOpeningPreview = (): void => {
+    const next = { ...settings, showOpeningPreview: !settings.showOpeningPreview }
+    setSettings(next)
+    saveSettings(next)
+  }
+
   const toggleChessnutBestMoveBlink = (): void => {
     const next = { ...settings, chessnutBestMoveBlink: !settings.chessnutBestMoveBlink }
     setSettings(next)
@@ -342,11 +348,11 @@ export function App(): React.JSX.Element {
     ? detectOpening(game.moves.map((m) => m.san)) : null, [game.moves, game.initialFen])
 
   const openingPreview = useMemo(() => {
-    if (!opening || !settings.showOpeningPreview) return null
+    if (!opening || !settings.showOpening || !settings.showOpeningPreview) return null
     const playedSan = game.moves.map((m) => m.san)
     const preview = previewContinuation(playedSan)
     return preview.length ? formatSanSequence(playedSan.length, preview) : null
-  }, [opening, settings.showOpeningPreview, game.moves])
+  }, [opening, settings.showOpening, settings.showOpeningPreview, game.moves])
 
   const currentLine = game.getEval(game.fen)
   const canSuggest =
@@ -559,15 +565,24 @@ export function App(): React.JSX.Element {
           ) : (
             <div className={`status-line ${game.result ? 'finished' : ''}`}>{statusText}</div>
           )}
-          {opening && (
-            <div
-              className="opening-line"
-              title={t('opening.detected', { matched: opening.matchedPlies, total: game.moves.length })}
-            >
-              📖 {opening.name} <span className="opening-eco">({opening.eco})</span>
+          {opening && settings.showOpening && (
+            <div className="panel opening-box">
+              <div
+                className="opening-line"
+                title={t('opening.detected', { matched: opening.matchedPlies, total: game.moves.length })}
+              >
+                📖 {opening.name} <span className="opening-eco">({opening.eco})</span>
+              </div>
+              <button
+                className="btn opening-preview-toggle"
+                onClick={toggleOpeningPreview}
+                aria-pressed={settings.showOpeningPreview}
+              >
+                {t('opening.previewToggle')} <StatusRingIcon on={settings.showOpeningPreview} size={14} />
+              </button>
+              {openingPreview && <div className="opening-preview">{t('opening.previewLabel')} {openingPreview}</div>}
             </div>
           )}
-          {openingPreview && <div className="opening-preview">{t('opening.previewLabel')} {openingPreview}</div>}
           {game.engineError && <div className="error-line">{t('app.engineError', { message: game.engineError })}</div>}
           {settings.showAnalysis && (
             <>

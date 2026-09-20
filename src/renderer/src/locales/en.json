@@ -48,7 +48,8 @@
   },
   "opening": {
     "detected": "{{matched}} of {{total}} half-moves recognized",
-    "previewLabel": "Theory continues:"
+    "previewLabel": "Theory continues:",
+    "previewToggle": "Preview"
   },
   "pgnNotice": {
     "saved": "Saved: {{path}}",
@@ -128,8 +129,8 @@
     "openingBook": "Opening book",
     "useOpeningBookForOpponent": "Use for opponent (first 10 full moves)",
     "openingBookHint": "The opponent then plays randomly from known opening lines instead of always following the engine's best move – more realistic and varied. After that, the engine takes over.",
-    "showOpeningPreview": "Show preview of upcoming book moves",
-    "showOpeningPreviewHint": "Shows the next known theory moves next to the detected opening, for as long as the database has data.",
+    "showOpening": "Show openings",
+    "showOpeningHint": "Shows or hides the detected-opening area (including the theory preview) in the game entirely.",
     "clock": "Chess clock (time control)",
     "timeControl": "Time control",
     "baseTimeMinutes": "Base time (minutes)",

@@ -291,14 +291,14 @@ export function SettingsDialog({
         <p className="field-hint">{t('settings.openingBookHint')}</p>
         <label className="row">
           <input
-            id="show-opening-preview"
+            id="show-opening"
             type="checkbox"
-            checked={draft.showOpeningPreview}
-            onChange={(e) => update('showOpeningPreview', e.target.checked)}
+            checked={draft.showOpening}
+            onChange={(e) => update('showOpening', e.target.checked)}
           />
-          {t('settings.showOpeningPreview')}
+          {t('settings.showOpening')}
         </label>
-        <p className="field-hint">{t('settings.showOpeningPreviewHint')}</p>
+        <p className="field-hint">{t('settings.showOpeningHint')}</p>
 
         <h3>{t('settings.clock')}</h3>
         <label>

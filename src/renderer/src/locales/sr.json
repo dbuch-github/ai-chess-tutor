@@ -48,7 +48,8 @@
   },
   "opening": {
     "detected": "Prepoznato {{matched}} od {{total}} polupoteza",
-    "previewLabel": "Teorija se nastavlja:"
+    "previewLabel": "Teorija se nastavlja:",
+    "previewToggle": "Pregled"
   },
   "pgnNotice": {
     "saved": "Sačuvano: {{path}}",
@@ -128,8 +129,8 @@
     "openingBook": "Knjiga otvaranja",
     "useOpeningBookForOpponent": "Koristi za protivnika (prvih 10 punih poteza)",
     "openingBookHint": "Protivnik tada nasumično igra iz poznatih linija otvaranja umesto da uvek prati najbolji potez motora – realističnije i raznovrsnije. Nakon toga preuzima motor.",
-    "showOpeningPreview": "Prikaži pregled sledećih teorijskih poteza",
-    "showOpeningPreviewHint": "Prikazuje sledeće poznate teorijske poteze pored prepoznatog otvaranja, sve dok baza podataka ide dalje.",
+    "showOpening": "Prikaži otvaranja",
+    "showOpeningHint": "Potpuno prikazuje ili sakriva oblast prepoznatog otvaranja (uključujući pregled teorije) tokom partije.",
     "clock": "Šahovski sat (kontrola vremena)",
     "timeControl": "Kontrola vremena",
     "baseTimeMinutes": "Osnovno vreme (minuti)",

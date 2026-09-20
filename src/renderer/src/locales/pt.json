@@ -48,7 +48,8 @@
   },
   "opening": {
     "detected": "{{matched}} de {{total}} meios-lances reconhecidos",
-    "previewLabel": "A teoria continua:"
+    "previewLabel": "A teoria continua:",
+    "previewToggle": "Pré-visualização"
   },
   "pgnNotice": {
     "saved": "Salvo: {{path}}",
@@ -128,8 +129,8 @@
     "openingBook": "Livro de aberturas",
     "useOpeningBookForOpponent": "Usar para o adversário (primeiros 10 lances completos)",
     "openingBookHint": "O adversário então joga aleatoriamente a partir de linhas de abertura conhecidas, em vez de sempre seguir o melhor lance do motor – mais realista e variado. Depois disso, o motor assume.",
-    "showOpeningPreview": "Mostrar pré-visualização dos próximos lances de teoria",
-    "showOpeningPreviewHint": "Mostra os próximos lances de teoria conhecidos ao lado da abertura detectada, enquanto a base de dados for mais longe.",
+    "showOpening": "Mostrar aberturas",
+    "showOpeningHint": "Mostra ou oculta totalmente a área da abertura detectada (incluindo a pré-visualização de teoria) na partida.",
     "clock": "Relógio de xadrez (controle de tempo)",
     "timeControl": "Controle de tempo",
     "baseTimeMinutes": "Tempo base (minutos)",
