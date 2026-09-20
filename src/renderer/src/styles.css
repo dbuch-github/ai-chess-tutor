@@ -154,7 +154,9 @@ body {
   padding: 6px 10px;
 }
 
-.btn-settings svg {
+/* Höhere Spezifität als ".btn svg" nötig (gleiche Spezifität + spätere Regel
+   würde sonst gewinnen und Info-/Hilfe-/Zahnrad-Icon aus der Mitte schieben). */
+.btn.btn-settings svg {
   margin-right: 0;
   vertical-align: 0;
 }
