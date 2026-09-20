@@ -539,20 +539,23 @@ body {
   color: var(--bad);
 }
 
-.opening-box {
+.opening-row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .opening-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.85rem;
   color: var(--ink-soft);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 100%;
+  min-width: 0;
 }
 
 .opening-eco {
@@ -561,14 +564,9 @@ body {
 }
 
 .opening-preview-toggle {
+  flex-shrink: 0;
   font-size: 0.8rem;
   padding: 4px 10px;
-}
-
-.opening-preview {
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-  font-variant-numeric: tabular-nums;
 }
 
 .error-line {

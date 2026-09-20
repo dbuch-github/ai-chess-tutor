@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "Prepoznato {{matched}} od {{total}} polupoteza",
-    "previewLabel": "Teorija se nastavlja:",
     "previewToggle": "Pregled"
   },
   "pgnNotice": {

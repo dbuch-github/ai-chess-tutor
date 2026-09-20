@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "Распознано {{matched}} из {{total}} полуходов",
-    "previewLabel": "Теория продолжается:",
     "previewToggle": "Предпросмотр"
   },
   "pgnNotice": {

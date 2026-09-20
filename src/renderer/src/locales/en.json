@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "{{matched}} of {{total}} half-moves recognized",
-    "previewLabel": "Theory continues:",
     "previewToggle": "Preview"
   },
   "pgnNotice": {

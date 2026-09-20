@@ -21,6 +21,7 @@ import {
   ImportIcon,
   InfoIcon,
   KingIcon,
+  OpenBookIcon,
   QuestionIcon,
   ReportIcon,
   StatusRingIcon
@@ -48,7 +49,7 @@ import { useChessnutSignals } from './chessnut/useChessnutSignals'
 import { useChessnutThreatPreview } from './chessnut/useChessnutThreatPreview'
 import { computeCriticalMoments, computeReportStats } from './game/gameReport'
 import { detectOpening, previewContinuation } from './game/openingBook'
-import { formatSanSequence } from './game/notation'
+import { buildLinePreview } from './game/boardVisuals'
 import { buildPgn, suggestedPgnFilename } from './game/pgn'
 import { MIN_CLASSIFY_DEPTH } from './game/classify'
 import {
@@ -211,12 +212,6 @@ export function App(): React.JSX.Element {
     saveSettings(next)
   }
 
-  const toggleOpeningPreview = (): void => {
-    const next = { ...settings, showOpeningPreview: !settings.showOpeningPreview }
-    setSettings(next)
-    saveSettings(next)
-  }
-
   const toggleChessnutBestMoveBlink = (): void => {
     const next = { ...settings, chessnutBestMoveBlink: !settings.chessnutBestMoveBlink }
     setSettings(next)
@@ -347,12 +342,21 @@ export function App(): React.JSX.Element {
   const opening = useMemo(() => game.initialFen === new Chess().fen()
     ? detectOpening(game.moves.map((m) => m.san)) : null, [game.moves, game.initialFen])
 
-  const openingPreview = useMemo(() => {
-    if (!opening || !settings.showOpening || !settings.showOpeningPreview) return null
-    const playedSan = game.moves.map((m) => m.san)
-    const preview = previewContinuation(playedSan)
-    return preview.length ? formatSanSequence(playedSan.length, preview) : null
-  }, [opening, settings.showOpening, settings.showOpeningPreview, game.moves])
+  // UCI statt SAN, damit sich daraus per buildLinePreview() dieselbe Board-Vorschau
+  // (Pfeile fürs Brett) bauen lässt wie bei den anklickbaren Analyse-Linien.
+  const openingPreviewUci = useMemo(() => {
+    if (!opening || !settings.showOpening) return null
+    const previewSan = previewContinuation(game.moves.map((m) => m.san))
+    if (previewSan.length === 0) return null
+    const chess = new Chess(game.fen)
+    const uci: string[] = []
+    for (const san of previewSan) {
+      const move = chess.move(san)
+      if (!move) break
+      uci.push(move.from + move.to + (move.promotion ?? ''))
+    }
+    return uci.length ? uci : null
+  }, [opening, settings.showOpening, game.moves, game.fen])
 
   const currentLine = game.getEval(game.fen)
   const canSuggest =
@@ -567,20 +571,27 @@ export function App(): React.JSX.Element {
           )}
           {opening && settings.showOpening && (
             <div className="panel opening-box">
-              <div
-                className="opening-line"
-                title={t('opening.detected', { matched: opening.matchedPlies, total: game.moves.length })}
-              >
-                📖 {opening.name} <span className="opening-eco">({opening.eco})</span>
+              <div className="opening-row">
+                <div
+                  className="opening-line"
+                  title={t('opening.detected', { matched: opening.matchedPlies, total: game.moves.length })}
+                >
+                  <OpenBookIcon size={16} /> {opening.name} <span className="opening-eco">({opening.eco})</span>
+                </div>
+                {openingPreviewUci && (
+                  <button
+                    className="btn opening-preview-toggle"
+                    title={t('analysis.showOnBoard')}
+                    aria-pressed={boardPreview.isActive('opening-book')}
+                    onClick={() => {
+                      const preview = buildLinePreview(game.fen, openingPreviewUci)
+                      if (preview) boardPreview.toggle('opening-book', preview)
+                    }}
+                  >
+                    {t('opening.previewToggle')} <StatusRingIcon on={boardPreview.isActive('opening-book')} size={14} />
+                  </button>
+                )}
               </div>
-              <button
-                className="btn opening-preview-toggle"
-                onClick={toggleOpeningPreview}
-                aria-pressed={settings.showOpeningPreview}
-              >
-                {t('opening.previewToggle')} <StatusRingIcon on={settings.showOpeningPreview} size={14} />
-              </button>
-              {openingPreview && <div className="opening-preview">{t('opening.previewLabel')} {openingPreview}</div>}
             </div>
           )}
           {game.engineError && <div className="error-line">{t('app.engineError', { message: game.engineError })}</div>}

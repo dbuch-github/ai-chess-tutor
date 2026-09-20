@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "{{matched}} demi-coups reconnus sur {{total}}",
-    "previewLabel": "Suite théorique :",
     "previewToggle": "Aperçu"
   },
   "pgnNotice": {

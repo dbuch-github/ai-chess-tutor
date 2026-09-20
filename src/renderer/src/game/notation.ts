@@ -26,20 +26,6 @@ export function pvToSan(fen: string, pvUci: string[], maxPlies = MAX_PV_PLIES): 
   return parts.length ? prefix + parts.join(' ') : '—'
 }
 
-/** Reine SAN-Zugfolge (z. B. eine Eröffnungsbuch-Vorschau) nummeriert formatieren,
- *  ausgehend von der Halbzug-Nummer `startPly` (0 = 1. Weiß). */
-export function formatSanSequence(startPly: number, sans: string[]): string {
-  const parts: string[] = []
-  for (const [i, san] of sans.entries()) {
-    const ply = startPly + i
-    const moveNo = Math.floor(ply / 2) + 1
-    const isWhite = ply % 2 === 0
-    const prefix = isWhite ? `${moveNo}. ` : i === 0 ? `${moveNo}… ` : ''
-    parts.push(prefix + san)
-  }
-  return parts.join(' ')
-}
-
 /** Partieverlauf als nummerierter SAN-String: "1. e4 e5 2. Nf3 …". */
 export function historySan(moves: MoveRecord[]): string {
   const parts: string[] = []

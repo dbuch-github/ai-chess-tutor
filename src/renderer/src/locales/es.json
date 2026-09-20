@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "{{matched}} de {{total}} semijugadas reconocidas",
-    "previewLabel": "Sigue la teoría:",
     "previewToggle": "Vista previa"
   },
   "pgnNotice": {

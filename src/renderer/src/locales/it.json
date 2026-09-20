@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "{{matched}} semimosse riconosciute su {{total}}",
-    "previewLabel": "La teoria continua:",
     "previewToggle": "Anteprima"
   },
   "pgnNotice": {

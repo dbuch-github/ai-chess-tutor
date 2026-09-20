@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "تم التعرف على {{matched}} من أصل {{total}} نصف حركة",
-    "previewLabel": "تتابع النظرية:",
     "previewToggle": "معاينة"
   },
   "pgnNotice": {

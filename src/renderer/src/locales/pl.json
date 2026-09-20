@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "Rozpoznano {{matched}} z {{total}} półruchów",
-    "previewLabel": "Dalszy ciąg teorii:",
     "previewToggle": "Podgląd"
   },
   "pgnNotice": {

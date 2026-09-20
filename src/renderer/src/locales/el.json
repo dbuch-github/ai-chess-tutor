@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "Αναγνωρίστηκαν {{matched}} από {{total}} ημικινήσεις",
-    "previewLabel": "Η θεωρία συνεχίζει:",
     "previewToggle": "Προεπισκόπηση"
   },
   "pgnNotice": {

@@ -53,8 +53,6 @@ export interface AppSettings {
   useOpeningBook: boolean
   /** Ob der Eröffnungs-Bereich (Name/ECO + Vorschau-Umschalter) im Spiel überhaupt angezeigt wird. */
   showOpening: boolean
-  /** Zeigt innerhalb des Eröffnungs-Bereichs zusätzlich eine Vorschau der nächsten bekannten Theoriezüge. */
-  showOpeningPreview: boolean
   tutorProvider: LlmProviderId
   tutorModelAnthropic: string
   tutorModelOpenAI: string
@@ -104,7 +102,6 @@ export const DEFAULT_SETTINGS: AppSettings = {
   showAnalysis: true,
   useOpeningBook: true,
   showOpening: true,
-  showOpeningPreview: false,
   tutorProvider: 'anthropic',
   tutorModelAnthropic: 'claude-opus-5',
   tutorModelOpenAI: 'gpt-5.1',

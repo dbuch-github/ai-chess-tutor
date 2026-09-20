@@ -193,6 +193,17 @@ export function BooksIcon({ size }: IconProps): React.JSX.Element {
   )
 }
 
+/** Aufgeschlagenes Buch – Symbol für die erkannte Eröffnung (Eröffnungsbuch-Theorie),
+ *  bewusst anders als BooksIcon (Bibliothek), um beide Konzepte zu unterscheiden. */
+export function OpenBookIcon({ size }: IconProps): React.JSX.Element {
+  return (
+    <svg {...svgProps(size)}>
+      <path d="M10 6.2 C8.3 4.6 5.6 4 3 4.6 V14.6 C5.6 14 8.3 14.6 10 16.2 C11.7 14.6 14.4 14 17 14.6 V4.6 C14.4 4 11.7 4.6 10 6.2 Z" />
+      <path d="M10 6.2 V16.2" />
+    </svg>
+  )
+}
+
 /**
  * Königsfigur in echter Chessground-Optik (dieselben Sprites wie Brett/
  * Zugliste, siehe Figurine.tsx) statt Unicode-Glyphen oder Nachbau – der

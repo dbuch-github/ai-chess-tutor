@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "{{matched}} de {{total}} meios-lances reconhecidos",
-    "previewLabel": "A teoria continua:",
     "previewToggle": "Pré-visualização"
   },
   "pgnNotice": {

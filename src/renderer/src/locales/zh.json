@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "已识别 {{total}} 个半回合中的 {{matched}} 个",
-    "previewLabel": "理论延续：",
     "previewToggle": "预览"
   },
   "pgnNotice": {

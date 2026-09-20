@@ -48,7 +48,6 @@
   },
   "opening": {
     "detected": "{{total}} yarı hamleden {{matched}} tanesi tanındı",
-    "previewLabel": "Teori devam ediyor:",
     "previewToggle": "Önizleme"
   },
   "pgnNotice": {
