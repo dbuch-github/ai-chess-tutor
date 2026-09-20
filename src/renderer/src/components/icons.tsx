@@ -169,6 +169,15 @@ export function ChartIcon({ size }: IconProps): React.JSX.Element {
   )
 }
 
+/** Blitz – Symbol für das taktische Erkennungssystem (Gabel, Fesselung, Spieß, ...). */
+export function LightningIcon({ size }: IconProps): React.JSX.Element {
+  return (
+    <svg {...svgProps(size)}>
+      <polygon points="10.83 1.67 2.5 11.67 10 11.67 9.17 18.33 17.5 8.33 10 8.33" />
+    </svg>
+  )
+}
+
 /** Klemmbrett mit Textzeilen – Symbol für den Partie-Report. */
 export function ReportIcon({ size }: IconProps): React.JSX.Element {
   return (

@@ -29,6 +29,7 @@
     "importPgn": "导入 PGN",
     "library": "对局库",
     "analysis": "分析",
+    "tactics": "战术",
     "report": "对局报告",
     "reportHint": "包含错误模式和学习要点的对局总结",
     "settings": "设置",
@@ -226,6 +227,20 @@
     "depth": "深度 {{depth}}",
     "showOnBoard": "在棋盘上显示"
   },
+  "tactics": {
+    "title": "战术模式",
+    "empty": "当前局面未发现战术。",
+    "types": {
+      "check": "将军",
+      "discoveredCheck": "闪将",
+      "discoveredCheckDouble": "双将",
+      "hanging": "无保护棋子",
+      "pin": "牵制",
+      "fork": "捉双",
+      "skewer": "串击",
+      "discoveredAttack": "闪击"
+    }
+  },
   "legend": {
     "move": "走法",
     "moveFollowUp": "（及后续着法，颜色更淡）",
@@ -249,6 +264,8 @@
     "tutorText": "导师会自动点评你的走法（可配置：静默/错误/活跃），在聊天中回答问题，并可在你的请求下提供带解释的走法建议。这需要一个 LLM 提供方的 API 密钥（设置 → LLM 导师）。",
     "analysisTitle": "分析与评估条",
     "analysisText": "Stockfish 分析会显示当前局面的三条最佳变着；棋盘旁的评估条显示谁占优势。点击某条分析线会在棋盘上预览该走法。",
+    "tacticsTitle": "战术",
+    "tacticsText": "显示你在当前局面中可以走出的战术模式（将军、牵制、捉双、串击、闪击、无保护棋子）——通过顶部的战术按钮开关。点击某个结果会在棋盘上以箭头显示。",
     "moveListTitle": "走法列表与记谱法",
     "moveListText": "走法列表以棋子符号记谱显示对局，并带有错误标记（★ 最佳走法，?! 不精确，? 错误，?? 重大失误）。被悔棋后以不同方式继续的走法会作为分支变着保留下来。",
     "chessnutTitle": "Chessnut Air（实体棋盘）",

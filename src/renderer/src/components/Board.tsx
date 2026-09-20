@@ -100,6 +100,9 @@ function suggestionToShapes(s: ActivePreview): DrawShape[] {
     shapes.push({ orig: s.to as Key, dest: pin.kingSquare as Key, brush: 'purple' })
     shapes.push({ orig: pin.pinnedSquare as Key, brush: 'yellow' })
   }
+  for (const skewer of s.skewers) {
+    shapes.push({ orig: skewer.frontSquare as Key, dest: skewer.behindSquare as Key, brush: 'yellow' })
+  }
   if (s.isCheck && s.checkedKingSquare) {
     shapes.push({ orig: s.checkedKingSquare as Key, brush: 'pink' })
   }

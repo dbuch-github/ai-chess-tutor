@@ -1,8 +1,20 @@
 import { Chess } from 'chess.js'
+import type { CapturablePiece } from './useGame'
+
+/** Materialwerte in Bauerneinheiten – Basis für Sicherheits-/Vorteilsprüfungen
+ *  (siehe minDefenderValue) und die Taktik-Erkennung (game/tactics.ts). */
+export const PIECE_VALUES: Record<CapturablePiece, number> = { p: 1, n: 3, b: 3, r: 5, q: 9 }
 
 export interface PinInfo {
   pinnedSquare: string
   kingSquare: string
+}
+
+export interface SkewerInfo {
+  /** Vordere, wertvollere Figur, die weichen muss. */
+  frontSquare: string
+  /** Dahinterliegende, schwächere Figur, die danach fällt. */
+  behindSquare: string
 }
 
 export interface DiscoveredAttack {
@@ -26,8 +38,13 @@ export interface MoveImpact {
   defends: string[]
   /** Fesselungen, die durch diesen Zug entlang der Linie/Diagonale entstehen. */
   pins: PinInfo[]
-  /** Setzt der Zug den gegnerischen König ins Schach? */
+  /** Spieße, die durch diesen Zug entlang der Linie/Diagonale entstehen. */
+  skewers: SkewerInfo[]
+  /** Setzt der Zug den gegnerischen König ins Schach (direkt oder aufgedeckt)? */
   isCheck: boolean
+  /** Gibt speziell die gezogene Figur selbst Schach (im Unterschied zu einem rein
+   *  aufgedeckten Schach einer anderen Figur) – für Doppelschach-Erkennung. */
+  directCheck: boolean
   /** Feld des gegnerischen Königs, falls isCheck – für die Hervorhebung. */
   checkedKingSquare?: string
   /** Angriffe, die entstehen, weil das verlassene Feld eine eigene Linie freigibt. */
@@ -47,6 +64,7 @@ export interface MovePreview {
   attacks: string[]
   defends: string[]
   pins: PinInfo[]
+  skewers: SkewerInfo[]
   isCheck: boolean
   checkedKingSquare?: string
   discovered: DiscoveredAttack[]
@@ -96,7 +114,7 @@ function inBounds(r: number, c: number): boolean {
   return r >= 0 && r < 8 && c >= 0 && c < 8
 }
 
-function squareToRC(square: string): [number, number] {
+export function squareToRC(square: string): [number, number] {
   return [8 - Number(square[1]), square.charCodeAt(0) - 'a'.charCodeAt(0)]
 }
 
@@ -161,15 +179,27 @@ function reachableOccupied(board: Board, r: number, c: number, piece: { type: st
 }
 
 /** Deckt irgendeine Figur der angegebenen Farbe das Feld `square`? */
-function isCoveredByAnyPiece(board: Board, square: string, color: PieceColor): boolean {
+export function isCoveredByAnyPiece(board: Board, square: string, color: PieceColor): boolean {
+  return minDefenderValue(board, square, color) !== null
+}
+
+/** Niedrigster Materialwert einer Figur der angegebenen Farbe, die `square`
+ *  deckt/angreift – `null`, wenn keine. Grundlage für die Sicherheitsprüfung
+ *  "kann dieses Feld danach kostenlos zurückgeschlagen werden?" (siehe
+ *  game/tactics.ts), ohne dafür eine vollständige Zugtausch-Simulation (SEE)
+ *  zu benötigen. */
+export function minDefenderValue(board: Board, square: string, color: PieceColor): number | null {
+  let min: number | null = null
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       const cell = board[r][c]
       if (!cell || cell.color !== color) continue
-      if (reachableOccupied(board, r, c, cell).some((hit) => hit.square === square)) return true
+      if (!reachableOccupied(board, r, c, cell).some((hit) => hit.square === square)) continue
+      const value = cell.type === 'k' ? Infinity : PIECE_VALUES[cell.type as CapturablePiece]
+      if (min === null || value < min) min = value
     }
   }
-  return false
+  return min
 }
 
 /**
@@ -208,9 +238,14 @@ export function computeMoveImpact(fenBefore: string, from: string, to: string, p
 
   const attacks: string[] = []
   const defends: string[] = []
+  // Schach direkt durch die gezogene Figur selbst (im Unterschied zu isCheck,
+  // das auch bei einem rein aufgedeckten Schach wahr ist) – für die
+  // Doppelschach-Erkennung in game/tactics.ts.
+  let directCheck = false
   for (const cell of reachableOccupied(board, rank, file, piece)) {
     if (cell.color === opponent) {
-      if (cell.type !== 'k') attacks.push(cell.square) // Schach wird separat als isCheck geführt
+      if (cell.type === 'k') directCheck = true
+      else attacks.push(cell.square) // Schach wird separat als isCheck geführt
     } else if (cell.square !== to && cell.type !== 'k') {
       // Das eigene Königsfeld "deckt" jede Figur ohnehin irgendwie – keine
       // lehrreiche Information, deshalb hier ausgeblendet.
@@ -218,9 +253,15 @@ export function computeMoveImpact(fenBefore: string, from: string, to: string, p
     }
   }
 
-  // Fesselungen: bei Läufer/Turm/Dame hinter der ersten getroffenen
-  // gegnerischen Figur in derselben Richtung nach deren König weitersuchen.
+  // Fesselungen/Spieße: bei Läufer/Turm/Dame hinter der ersten getroffenen
+  // gegnerischen Figur in derselben Richtung weitersuchen. Ist die dahinter-
+  // liegende Figur der König, ist die vordere gefesselt (absolute Fesselung).
+  // Ist es eine andere gegnerische Figur, entscheidet der Wertevergleich:
+  // vordere Figur wertvoller als die dahinterliegende -> Spieß (die vordere
+  // muss weichen, die schwächere dahinter fällt danach); sonst (gleich- oder
+  // niedrigwertiger) -> relative Fesselung.
   const pins: PinInfo[] = []
+  const skewers: SkewerInfo[] = []
   if (piece.type === 'b' || piece.type === 'r' || piece.type === 'q') {
     const dirs = piece.type === 'b' ? BISHOP_DIRS : piece.type === 'r' ? ROOK_DIRS : QUEEN_DIRS
     for (const [dr, dc] of dirs) {
@@ -239,6 +280,11 @@ export function computeMoveImpact(fenBefore: string, from: string, to: string, p
         if (behind) {
           if (behind.type === 'k' && behind.color === opponent) {
             pins.push({ pinnedSquare: first.square, kingSquare: behind.square })
+          } else if (
+            behind.color === opponent &&
+            PIECE_VALUES[first.type as CapturablePiece] > PIECE_VALUES[behind.type as CapturablePiece]
+          ) {
+            skewers.push({ frontSquare: first.square, behindSquare: behind.square })
           }
           break
         }
@@ -297,7 +343,7 @@ export function computeMoveImpact(fenBefore: string, from: string, to: string, p
     }
   }
 
-  return { attacks, defends, pins, isCheck, checkedKingSquare, discovered, weak, san: move.san }
+  return { attacks, defends, pins, skewers, isCheck, directCheck, checkedKingSquare, discovered, weak, san: move.san }
 }
 
 const MAX_FOLLOWUP_PLIES = 2
@@ -337,6 +383,7 @@ export function buildLinePreview(fen: string, pvUci: string[], maxFollowUpPlies 
     attacks: impact.attacks,
     defends: impact.defends,
     pins: impact.pins,
+    skewers: impact.skewers,
     isCheck: impact.isCheck,
     checkedKingSquare: impact.checkedKingSquare,
     discovered: impact.discovered,

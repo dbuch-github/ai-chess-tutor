@@ -50,6 +50,8 @@ export interface AppSettings {
   moveTimeMs: number
   analysisPath: string
   showAnalysis: boolean
+  /** Trainings-Zusatz: taktische Muster (Gabel, Fesselung, Spieß, ...), die die Seite am Zug jetzt spielen könnte. */
+  showTactics: boolean
   useOpeningBook: boolean
   /** Ob der Eröffnungs-Bereich (Name/ECO + Vorschau-Umschalter) im Spiel überhaupt angezeigt wird. */
   showOpening: boolean
@@ -100,6 +102,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   moveTimeMs: 1000,
   analysisPath: '',
   showAnalysis: true,
+  showTactics: false,
   useOpeningBook: true,
   showOpening: true,
   tutorProvider: 'anthropic',

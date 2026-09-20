@@ -29,6 +29,7 @@
     "importPgn": "PGN importieren",
     "library": "Bibliothek",
     "analysis": "Analyse",
+    "tactics": "Taktik",
     "report": "Partie-Report",
     "reportHint": "Zusammenfassung der Partie mit Fehlermustern und Lernpunkten",
     "settings": "Einstellungen",
@@ -226,6 +227,20 @@
     "depth": "Tiefe {{depth}}",
     "showOnBoard": "Auf dem Brett anzeigen"
   },
+  "tactics": {
+    "title": "Taktische Muster",
+    "empty": "Keine Taktik in der aktuellen Stellung gefunden.",
+    "types": {
+      "check": "Schach",
+      "discoveredCheck": "Abzugsschach",
+      "discoveredCheckDouble": "Doppelschach",
+      "hanging": "Hängende Figur",
+      "pin": "Fesselung",
+      "fork": "Gabel",
+      "skewer": "Spieß",
+      "discoveredAttack": "Abzugsangriff"
+    }
+  },
   "legend": {
     "move": "Zug",
     "moveFollowUp": " (& Folgezüge blasser)",
@@ -249,6 +264,8 @@
     "tutorText": "Der Tutor kommentiert deine Züge automatisch (einstellbar: Still/Fehler/Aktiv), beantwortet Fragen im Chat und schlägt auf Wunsch einen Zug mit Erklärung vor. Dafür wird ein API-Key eines LLM-Anbieters benötigt (Einstellungen → LLM-Tutor).",
     "analysisTitle": "Analyse & Bewertungsleiste",
     "analysisText": "Die Stockfish-Analyse zeigt die drei besten Zugfolgen der aktuellen Stellung; die Bewertungsleiste links vom Brett visualisiert, wer im Vorteil ist. Ein Klick auf eine Analyse-Linie zeigt sie als Vorschau auf dem Brett.",
+    "tacticsTitle": "Taktik",
+    "tacticsText": "Zeigt taktische Muster (Schach, Fesselung, Gabel, Spieß, Abzugsangriff, hängende Figuren), die du in der aktuellen Stellung spielen könntest – ein-/ausschaltbar über den Taktik-Button in der Kopfzeile. Ein Klick auf einen Fund zeigt ihn als Pfeil auf dem Brett.",
     "moveListTitle": "Zugliste & Notation",
     "moveListText": "Die Zugliste zeigt die Partie in Figurinen-Notation mit Fehler-Kennzeichnung (★ Bester Zug, ?! Ungenauigkeit, ? Fehler, ?? Blunder). Zurückgenommene und anders fortgesetzte Züge bleiben als Nebenvariante erhalten.",
     "chessnutTitle": "Chessnut Air (physisches Brett)",

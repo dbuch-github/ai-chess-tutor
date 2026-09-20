@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Board } from './components/Board'
 import { EvalBar } from './components/EvalBar'
 import { AnalysisPanel } from './components/AnalysisPanel'
+import { TacticsPanel } from './components/TacticsPanel'
 import { MoveList } from './components/MoveList'
 import { SettingsDialog } from './components/SettingsDialog'
 import { InfoDialog } from './components/InfoDialog'
@@ -21,6 +22,7 @@ import {
   ImportIcon,
   InfoIcon,
   KingIcon,
+  LightningIcon,
   OpenBookIcon,
   QuestionIcon,
   ReportIcon,
@@ -208,6 +210,12 @@ export function App(): React.JSX.Element {
 
   const toggleAnalysis = (): void => {
     const next = { ...settings, showAnalysis: !settings.showAnalysis }
+    setSettings(next)
+    saveSettings(next)
+  }
+
+  const toggleTactics = (): void => {
+    const next = { ...settings, showTactics: !settings.showTactics }
     setSettings(next)
     saveSettings(next)
   }
@@ -465,6 +473,9 @@ export function App(): React.JSX.Element {
           <button className="btn" onClick={toggleAnalysis} aria-pressed={settings.showAnalysis}>
             <ChartIcon /> {t('topbar.analysis')} <StatusRingIcon on={settings.showAnalysis} size={14} />
           </button>
+          <button className="btn" onClick={toggleTactics} aria-pressed={settings.showTactics}>
+            <LightningIcon /> {t('topbar.tactics')} <StatusRingIcon on={settings.showTactics} size={14} />
+          </button>
           <button
             className="btn"
             onClick={() => setShowReport(true)}
@@ -602,6 +613,9 @@ export function App(): React.JSX.Element {
                 <div className="error-line">{t('app.analysisError', { message: analysisStatus.error })}</div>
               )}
             </>
+          )}
+          {settings.showTactics && !game.result && !game.reviewMode && (
+            <TacticsPanel fen={game.fen} boardPreview={boardPreview} />
           )}
           <TutorPanel
             tutor={tutor}

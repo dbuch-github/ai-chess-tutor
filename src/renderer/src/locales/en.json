@@ -29,6 +29,7 @@
     "importPgn": "Import PGN",
     "library": "Library",
     "analysis": "Analysis",
+    "tactics": "Tactics",
     "report": "Game report",
     "reportHint": "Summary of the game with error patterns and learning points",
     "settings": "Settings",
@@ -226,6 +227,20 @@
     "depth": "Depth {{depth}}",
     "showOnBoard": "Show on the board"
   },
+  "tactics": {
+    "title": "Tactical Patterns",
+    "empty": "No tactics found in the current position.",
+    "types": {
+      "check": "Check",
+      "discoveredCheck": "Discovered check",
+      "discoveredCheckDouble": "Double check",
+      "hanging": "Hanging piece",
+      "pin": "Pin",
+      "fork": "Fork",
+      "skewer": "Skewer",
+      "discoveredAttack": "Discovered attack"
+    }
+  },
   "legend": {
     "move": "Move",
     "moveFollowUp": " (& follow-ups paler)",
@@ -249,6 +264,8 @@
     "tutorText": "The tutor automatically comments on your moves (configurable: Silent/Mistakes/Active), answers questions in the chat, and can suggest a move with an explanation on request. This requires an API key from an LLM provider (Settings → LLM tutor).",
     "analysisTitle": "Analysis & evaluation bar",
     "analysisText": "The Stockfish analysis shows the three best lines for the current position; the evaluation bar next to the board shows who is ahead. Clicking an analysis line previews it on the board.",
+    "tacticsTitle": "Tactics",
+    "tacticsText": "Shows tactical patterns (checks, pins, forks, skewers, discovered attacks, hanging pieces) you could play in the current position – toggle via the Tactics button in the topbar. Clicking a finding shows it as an arrow on the board.",
     "moveListTitle": "Move list & notation",
     "moveListText": "The move list shows the game in figurine notation with error markers (★ best move, ?! inaccuracy, ? mistake, ?? blunder). A move that was undone and then continued differently is kept as a side variation.",
     "chessnutTitle": "Chessnut Air (physical board)",

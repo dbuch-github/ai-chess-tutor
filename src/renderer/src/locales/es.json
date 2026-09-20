@@ -29,6 +29,7 @@
     "importPgn": "Importar PGN",
     "library": "Biblioteca",
     "analysis": "Análisis",
+    "tactics": "Táctica",
     "report": "Informe de la partida",
     "reportHint": "Resumen de la partida con patrones de error y puntos de aprendizaje",
     "settings": "Ajustes",
@@ -226,6 +227,20 @@
     "depth": "Profundidad {{depth}}",
     "showOnBoard": "Mostrar en el tablero"
   },
+  "tactics": {
+    "title": "Patrones tácticos",
+    "empty": "No se encontraron tácticas en la posición actual.",
+    "types": {
+      "check": "Jaque",
+      "discoveredCheck": "Jaque descubierto",
+      "discoveredCheckDouble": "Jaque doble",
+      "hanging": "Pieza colgada",
+      "pin": "Clavada",
+      "fork": "Horquilla",
+      "skewer": "Ensarte",
+      "discoveredAttack": "Ataque descubierto"
+    }
+  },
   "legend": {
     "move": "Jugada",
     "moveFollowUp": " (& jugadas siguientes más tenues)",
@@ -249,6 +264,8 @@
     "tutorText": "El tutor comenta automáticamente tus jugadas (configurable: Silencio/Errores/Activo), responde preguntas en el chat y puede sugerir una jugada con explicación si se lo pides. Para ello se necesita una clave de API de un proveedor de LLM (Ajustes → Tutor LLM).",
     "analysisTitle": "Análisis y barra de evaluación",
     "analysisText": "El análisis de Stockfish muestra las tres mejores líneas para la posición actual; la barra de evaluación junto al tablero muestra quién está mejor. Al hacer clic en una línea de análisis se previsualiza en el tablero.",
+    "tacticsTitle": "Táctica",
+    "tacticsText": "Muestra patrones tácticos (jaques, clavadas, horquillas, ensartes, ataques descubiertos, piezas colgadas) que podrías jugar en la posición actual – actívalo con el botón Táctica en la barra superior. Al hacer clic en un resultado se muestra como una flecha en el tablero.",
     "moveListTitle": "Lista de jugadas y notación",
     "moveListText": "La lista de jugadas muestra la partida en notación con figuras e indicadores de error (★ mejor jugada, ?! imprecisión, ? error, ?? error grave). Una jugada deshecha y continuada de otra forma se conserva como variante secundaria.",
     "chessnutTitle": "Chessnut Air (tablero físico)",

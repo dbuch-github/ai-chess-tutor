@@ -29,6 +29,7 @@
     "importPgn": "Uvezi PGN",
     "library": "Biblioteka",
     "analysis": "Analiza",
+    "tactics": "Taktika",
     "report": "Izveštaj o partiji",
     "reportHint": "Rezime partije sa obrascima grešaka i tačkama za učenje",
     "settings": "Podešavanja",
@@ -226,6 +227,20 @@
     "depth": "Dubina {{depth}}",
     "showOnBoard": "Prikaži na tabli"
   },
+  "tactics": {
+    "title": "Taktički motivi",
+    "empty": "U trenutnoj poziciji nije pronađena taktika.",
+    "types": {
+      "check": "Šah",
+      "discoveredCheck": "Otkriveni šah",
+      "discoveredCheckDouble": "Dupli šah",
+      "hanging": "Nezaštićena figura",
+      "pin": "Vezivanje",
+      "fork": "Viljuška",
+      "skewer": "Ražanj",
+      "discoveredAttack": "Otkriveni napad"
+    }
+  },
   "legend": {
     "move": "Potez",
     "moveFollowUp": " (& naredni potezi bleđi)",
@@ -249,6 +264,8 @@
     "tutorText": "Trener automatski komentariše tvoje poteze (podesivo: Tih/Greške/Aktivan), odgovara na pitanja u razgovoru i na zahtev može da predloži potez sa objašnjenjem. Za to je potreban API ključ provajdera LLM-a (Podešavanja → LLM trener).",
     "analysisTitle": "Analiza i traka procene",
     "analysisText": "Stockfish analiza prikazuje tri najbolje linije za trenutnu poziciju; traka procene pored table prikazuje ko je u prednosti. Klik na liniju analize prikazuje je kao pregled na tabli.",
+    "tacticsTitle": "Taktika",
+    "tacticsText": "Prikazuje taktičke motive (šah, vezivanje, viljušku, ražanj, otkriveni napad, nezaštićene figure) koje možeš odigrati u trenutnoj poziciji – uključuje se dugmetom Taktika u gornjoj traci. Klik na nalaz prikazuje ga kao strelicu na tabli.",
     "moveListTitle": "Spisak poteza i notacija",
     "moveListText": "Spisak poteza prikazuje partiju u figurnoj notaciji sa oznakama grešaka (★ najbolji potez, ?! netačnost, ? greška, ?? krupan previd). Poništen potez koji je nastavljen drugačije ostaje sačuvan kao sporedna varijanta.",
     "chessnutTitle": "Chessnut Air (fizička tabla)",

@@ -29,6 +29,7 @@
     "importPgn": "PGN içe aktar",
     "library": "Kitaplık",
     "analysis": "Analiz",
+    "tactics": "Taktik",
     "report": "Oyun raporu",
     "reportHint": "Hata kalıpları ve öğrenme noktalarıyla oyun özeti",
     "settings": "Ayarlar",
@@ -226,6 +227,20 @@
     "depth": "Derinlik {{depth}}",
     "showOnBoard": "Tahtada göster"
   },
+  "tactics": {
+    "title": "Taktik Motifler",
+    "empty": "Mevcut pozisyonda taktik bulunamadı.",
+    "types": {
+      "check": "Şah",
+      "discoveredCheck": "Keşif şahı",
+      "discoveredCheckDouble": "Çifte şah",
+      "hanging": "Askıda taş",
+      "pin": "Bağlama",
+      "fork": "Çatal",
+      "skewer": "Şiş",
+      "discoveredAttack": "Keşif saldırısı"
+    }
+  },
   "legend": {
     "move": "Hamle",
     "moveFollowUp": " (ve sonraki hamleler daha soluk)",
@@ -249,6 +264,8 @@
     "tutorText": "Öğretmen hamlelerini otomatik olarak yorumlar (ayarlanabilir: Sessiz/Hatalar/Aktif), sohbette soruları yanıtlar ve istek üzerine açıklamalı bir hamle önerebilir. Bunun için bir LLM sağlayıcısının API anahtarı gerekir (Ayarlar → LLM öğretmeni).",
     "analysisTitle": "Analiz ve değerlendirme çubuğu",
     "analysisText": "Stockfish analizi mevcut pozisyon için en iyi üç hamle dizisini gösterir; tahtanın yanındaki değerlendirme çubuğu kimin avantajlı olduğunu gösterir. Bir analiz satırına tıklamak onu tahtada önizleme olarak gösterir.",
+    "tacticsTitle": "Taktik",
+    "tacticsText": "Mevcut pozisyonda oynayabileceğin taktik motiflerini (şah, bağlama, çatal, şiş, keşif saldırısı, askıda taşlar) gösterir – üst çubuktaki Taktik düğmesiyle açılır/kapanır. Bir sonuca tıklamak onu tahtada bir ok olarak gösterir.",
     "moveListTitle": "Hamle listesi ve notasyon",
     "moveListText": "Hamle listesi oyunu taş sembolleriyle ve hata işaretleriyle gösterir (★ en iyi hamle, ?! yanlışlık, ? hata, ?? gaf). Geri alınıp farklı şekilde devam ettirilen bir hamle, yan varyant olarak saklanır.",
     "chessnutTitle": "Chessnut Air (fiziksel tahta)",

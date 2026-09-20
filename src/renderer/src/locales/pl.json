@@ -29,6 +29,7 @@
     "importPgn": "Importuj PGN",
     "library": "Biblioteka",
     "analysis": "Analiza",
+    "tactics": "Taktyka",
     "report": "Raport z partii",
     "reportHint": "Podsumowanie partii z wzorcami błędów i punktami do nauki",
     "settings": "Ustawienia",
@@ -226,6 +227,20 @@
     "depth": "Głębokość {{depth}}",
     "showOnBoard": "Pokaż na szachownicy"
   },
+  "tactics": {
+    "title": "Motywy taktyczne",
+    "empty": "W obecnej pozycji nie znaleziono taktyki.",
+    "types": {
+      "check": "Szach",
+      "discoveredCheck": "Szach z odkrycia",
+      "discoveredCheckDouble": "Podwójny szach",
+      "hanging": "Wisząca bierka",
+      "pin": "Związanie",
+      "fork": "Widelec",
+      "skewer": "Szpikulec",
+      "discoveredAttack": "Atak z odkrycia"
+    }
+  },
   "legend": {
     "move": "Ruch",
     "moveFollowUp": " (i kolejne ruchy bledsze)",
@@ -249,6 +264,8 @@
     "tutorText": "Trener automatycznie komentuje Twoje ruchy (do wyboru: Cicho/Błędy/Aktywny), odpowiada na pytania na czacie i na życzenie może zasugerować ruch z wyjaśnieniem. Wymaga to klucza API dostawcy LLM (Ustawienia → Trener LLM).",
     "analysisTitle": "Analiza i pasek oceny",
     "analysisText": "Analiza Stockfisha pokazuje trzy najlepsze linie dla bieżącej pozycji; pasek oceny obok szachownicy pokazuje, kto ma przewagę. Kliknięcie linii analizy pokazuje jej podgląd na szachownicy.",
+    "tacticsTitle": "Taktyka",
+    "tacticsText": "Pokazuje motywy taktyczne (szachy, związania, widelce, szpikulce, ataki z odkrycia, wiszące bierki), które możesz zagrać w obecnej pozycji – włączane przyciskiem Taktyka na górnym pasku. Kliknięcie wyniku pokazuje go jako strzałkę na szachownicy.",
     "moveListTitle": "Lista ruchów i notacja",
     "moveListText": "Lista ruchów pokazuje partię w notacji figurkowej ze znacznikami błędów (★ najlepszy ruch, ?! niedokładność, ? błąd, ?? rażący błąd). Cofnięty i inaczej kontynuowany ruch pozostaje zachowany jako wariant poboczny.",
     "chessnutTitle": "Chessnut Air (fizyczna szachownica)",

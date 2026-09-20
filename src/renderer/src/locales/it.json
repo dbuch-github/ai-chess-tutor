@@ -29,6 +29,7 @@
     "importPgn": "Importa PGN",
     "library": "Libreria",
     "analysis": "Analisi",
+    "tactics": "Tattica",
     "report": "Report della partita",
     "reportHint": "Riepilogo della partita con errori ricorrenti e punti di apprendimento",
     "settings": "Impostazioni",
@@ -226,6 +227,20 @@
     "depth": "Profondità {{depth}}",
     "showOnBoard": "Mostra sulla scacchiera"
   },
+  "tactics": {
+    "title": "Motivi tattici",
+    "empty": "Nessuna tattica trovata nella posizione attuale.",
+    "types": {
+      "check": "Scacco",
+      "discoveredCheck": "Scacco di scoperta",
+      "discoveredCheckDouble": "Scacco doppio",
+      "hanging": "Pezzo indifeso",
+      "pin": "Inchiodatura",
+      "fork": "Forchetta",
+      "skewer": "Infilata",
+      "discoveredAttack": "Attacco di scoperta"
+    }
+  },
   "legend": {
     "move": "Mossa",
     "moveFollowUp": " (& mosse successive più sbiadite)",
@@ -249,6 +264,8 @@
     "tutorText": "Il tutor commenta automaticamente le tue mosse (impostabile: Silenzioso/Errori/Attivo), risponde alle domande in chat e su richiesta può suggerire una mossa con spiegazione. È necessaria una chiave API di un provider LLM (Impostazioni → Tutor LLM).",
     "analysisTitle": "Analisi e barra di valutazione",
     "analysisText": "L'analisi di Stockfish mostra le tre migliori linee per la posizione attuale; la barra di valutazione accanto alla scacchiera mostra chi è in vantaggio. Cliccando su una linea di analisi la si visualizza in anteprima sulla scacchiera.",
+    "tacticsTitle": "Tattica",
+    "tacticsText": "Mostra i motivi tattici (scacchi, inchiodature, forchette, infilate, attacchi di scoperta, pezzi indifesi) che potresti giocare nella posizione attuale – attivabile con il pulsante Tattica nella barra superiore. Un clic su un risultato lo mostra come freccia sulla scacchiera.",
     "moveListTitle": "Elenco mosse e notazione",
     "moveListText": "L’elenco delle mosse mostra la partita in notazione con figurine e indicatori di errore (★ mossa migliore, ?! imprecisione, ? errore, ?? errore grave). Una mossa annullata e poi proseguita diversamente viene conservata come variante secondaria.",
     "chessnutTitle": "Chessnut Air (scacchiera fisica)",

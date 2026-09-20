@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { QuestionIcon } from './icons'
 
-type HelpSection = 'tutor' | 'analysis' | 'moveList' | 'chessnut'
+type HelpSection = 'tutor' | 'analysis' | 'moveList' | 'chessnut' | 'tactics'
 
 interface HelpHintProps {
   section: HelpSection

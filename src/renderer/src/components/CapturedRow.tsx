@@ -1,6 +1,7 @@
 import type { CapturablePiece } from '../game/useGame'
+import { PIECE_VALUES } from '../game/boardVisuals'
 
-export const PIECE_VALUES: Record<CapturablePiece, number> = { p: 1, n: 3, b: 3, r: 5, q: 9 }
+export { PIECE_VALUES }
 
 const PIECE_NAMES: Record<CapturablePiece, string> = {
   p: 'pawn',

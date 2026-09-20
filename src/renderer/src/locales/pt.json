@@ -29,6 +29,7 @@
     "importPgn": "Importar PGN",
     "library": "Biblioteca",
     "analysis": "Análise",
+    "tactics": "Tática",
     "report": "Relatório da partida",
     "reportHint": "Resumo da partida com padrões de erro e pontos de aprendizado",
     "settings": "Configurações",
@@ -226,6 +227,20 @@
     "depth": "Profundidade {{depth}}",
     "showOnBoard": "Mostrar no tabuleiro"
   },
+  "tactics": {
+    "title": "Padrões táticos",
+    "empty": "Nenhuma tática encontrada na posição atual.",
+    "types": {
+      "check": "Xeque",
+      "discoveredCheck": "Xeque descoberto",
+      "discoveredCheckDouble": "Xeque duplo",
+      "hanging": "Peça pendurada",
+      "pin": "Cravada",
+      "fork": "Garfada",
+      "skewer": "Espetada",
+      "discoveredAttack": "Ataque descoberto"
+    }
+  },
   "legend": {
     "move": "Lance",
     "moveFollowUp": " (& lances seguintes mais claros)",
@@ -249,6 +264,8 @@
     "tutorText": "O tutor comenta automaticamente seus lances (configurável: Silencioso/Erros/Ativo), responde perguntas no chat e pode sugerir um lance com explicação quando solicitado. Isso requer uma chave de API de um provedor de LLM (Configurações → Tutor LLM).",
     "analysisTitle": "Análise e barra de avaliação",
     "analysisText": "A análise do Stockfish mostra as três melhores linhas para a posição atual; a barra de avaliação ao lado do tabuleiro mostra quem está em vantagem. Clicar em uma linha de análise a exibe como prévia no tabuleiro.",
+    "tacticsTitle": "Tática",
+    "tacticsText": "Mostra padrões táticos (xeques, cravadas, garfadas, espetadas, ataques descobertos, peças penduradas) que você poderia jogar na posição atual – ativável pelo botão Tática na barra superior. Clicar num resultado mostra-o como uma seta no tabuleiro.",
     "moveListTitle": "Lista de lances e notação",
     "moveListText": "A lista de lances mostra a partida em notação com figuras e marcadores de erro (★ melhor lance, ?! imprecisão, ? erro, ?? erro grave). Um lance desfeito e continuado de forma diferente é mantido como variante secundária.",
     "chessnutTitle": "Chessnut Air (tabuleiro físico)",

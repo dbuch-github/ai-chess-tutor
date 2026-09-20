@@ -29,6 +29,7 @@
     "importPgn": "Importer le PGN",
     "library": "Bibliothèque",
     "analysis": "Analyse",
+    "tactics": "Tactique",
     "report": "Rapport de partie",
     "reportHint": "Résumé de la partie avec les erreurs récurrentes et les points à retenir",
     "settings": "Paramètres",
@@ -226,6 +227,20 @@
     "depth": "Profondeur {{depth}}",
     "showOnBoard": "Afficher sur l'échiquier"
   },
+  "tactics": {
+    "title": "Motifs tactiques",
+    "empty": "Aucune tactique trouvée dans la position actuelle.",
+    "types": {
+      "check": "Échec",
+      "discoveredCheck": "Échec à la découverte",
+      "discoveredCheckDouble": "Échec double",
+      "hanging": "Pièce en prise",
+      "pin": "Clouage",
+      "fork": "Fourchette",
+      "skewer": "Enfilade",
+      "discoveredAttack": "Attaque à la découverte"
+    }
+  },
   "legend": {
     "move": "Coup",
     "moveFollowUp": " (& coups suivants plus pâles)",
@@ -249,6 +264,8 @@
     "tutorText": "Le tuteur commente automatiquement vos coups (réglable : Silencieux/Erreurs/Actif), répond aux questions dans le chat et peut suggérer un coup avec explication sur demande. Cela nécessite une clé API d'un fournisseur LLM (Paramètres → Tuteur LLM).",
     "analysisTitle": "Analyse et barre d'évaluation",
     "analysisText": "L'analyse Stockfish affiche les trois meilleures lignes pour la position actuelle ; la barre d'évaluation à côté de l'échiquier montre qui est avantagé. Cliquer sur une ligne d'analyse l'affiche en aperçu sur l'échiquier.",
+    "tacticsTitle": "Tactique",
+    "tacticsText": "Affiche les motifs tactiques (échecs, clouages, fourchettes, enfilades, attaques à la découverte, pièces en prise) que tu pourrais jouer dans la position actuelle – à activer via le bouton Tactique dans la barre supérieure. Cliquer sur un résultat l'affiche sous forme de flèche sur l'échiquier.",
     "moveListTitle": "Liste des coups et notation",
     "moveListText": "La liste des coups affiche la partie en notation figurine avec des marqueurs d'erreur (★ meilleur coup, ?! imprécision, ? erreur, ?? gaffe). Un coup annulé puis poursuivi différemment est conservé comme variante annexe.",
     "chessnutTitle": "Chessnut Air (échiquier physique)",
