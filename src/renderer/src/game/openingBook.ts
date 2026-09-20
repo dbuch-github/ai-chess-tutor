@@ -75,7 +75,7 @@ export function pickBookMove(playedSan: string[]): string | null {
   return [...bucket.keys()][0] // Rundungsausreißer
 }
 
-export const PREVIEW_PLIES = 3
+export const PREVIEW_PLIES = 5
 
 /**
  * Vorschau der nächsten bekannten Theoriezüge ab der aktuellen Stellung – im

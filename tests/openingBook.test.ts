@@ -6,7 +6,7 @@ test('previewContinuation is deterministic (same input -> same output, unlike pi
   const a = previewContinuation(['e4'])
   const b = previewContinuation(['e4'])
   assert.deepEqual(a, b)
-  assert.ok(a.length > 0 && a.length <= 3)
+  assert.ok(a.length > 0 && a.length <= 5)
 })
 
 test('previewContinuation returns nothing once the position has left the opening book', () => {

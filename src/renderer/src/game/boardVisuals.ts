@@ -304,10 +304,11 @@ const MAX_FOLLOWUP_PLIES = 2
 
 /**
  * Baut die vollständige Board-Vorschau für eine Engine-Hauptvariante: den
- * ersten Zug mit voller Wirkungsanalyse, plus die nächsten ein bis zwei
- * Halbzüge als schlichter Pfeil-Trail.
+ * ersten Zug mit voller Wirkungsanalyse, plus die nächsten Halbzüge als
+ * schlichter Pfeil-Trail (Default: ein bis zwei, z. B. für Analyse-Zeilen;
+ * für die Eröffnungsvorschau wird ein größerer Wert übergeben).
  */
-export function buildLinePreview(fen: string, pvUci: string[]): MovePreview | null {
+export function buildLinePreview(fen: string, pvUci: string[], maxFollowUpPlies = MAX_FOLLOWUP_PLIES): MovePreview | null {
   if (pvUci.length === 0) return null
   const [firstUci, ...restUci] = pvUci
   const from = firstUci.slice(0, 2)
@@ -320,7 +321,7 @@ export function buildLinePreview(fen: string, pvUci: string[]): MovePreview | nu
   try {
     const chess = new Chess(fen)
     chess.move({ from, to, promotion: promotion ?? 'q' })
-    for (const uci of restUci.slice(0, MAX_FOLLOWUP_PLIES)) {
+    for (const uci of restUci.slice(0, maxFollowUpPlies)) {
       const mv = chess.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), promotion: uci.slice(4) || 'q' })
       followUp.push({ from: mv.from, to: mv.to, sanMove: mv.san })
     }

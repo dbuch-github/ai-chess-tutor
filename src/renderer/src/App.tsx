@@ -584,7 +584,7 @@ export function App(): React.JSX.Element {
                     title={t('analysis.showOnBoard')}
                     aria-pressed={boardPreview.isActive('opening-book')}
                     onClick={() => {
-                      const preview = buildLinePreview(game.fen, openingPreviewUci)
+                      const preview = buildLinePreview(game.fen, openingPreviewUci, 4)
                       if (preview) boardPreview.toggle('opening-book', preview)
                     }}
                   >
