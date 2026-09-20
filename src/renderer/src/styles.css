@@ -1213,7 +1213,8 @@ piece.figurine.black {
 
 /* ---- Partie-Report ---- */
 .report-dialog,
-.settings-dialog {
+.settings-dialog,
+.help-dialog {
   width: min(680px, 92vw);
 }
 

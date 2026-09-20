@@ -32,7 +32,8 @@
     "report": "Oyun raporu",
     "reportHint": "Hata kalıpları ve öğrenme noktalarıyla oyun özeti",
     "settings": "Ayarlar",
-    "language": "Dil seçin"
+    "language": "Dil seçin",
+    "info": "Hakkında"
   },
   "status": {
     "engineThinking": "Motor düşünüyor…",
@@ -192,7 +193,8 @@
     "author": "Yazar: Daniel Buch",
     "licenseFreeSoftware": "Şu lisans altında özgür yazılım:",
     "licenseSuffix": "(veya sonraki) – garanti verilmez.",
-    "sourceCode": "GitHub'da kaynak kodu"
+    "sourceCode": "GitHub'da kaynak kodu",
+    "help": "Yardım"
   },
   "bluetooth": {
     "chooseDevice": "Bluetooth cihazı seç",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Beyaz {{pct}} % kazanma şansına sahip"
+  },
+  "help": {
+    "title": "Yardım",
+    "overviewTitle": "Genel bakış",
+    "overviewText": "AI Chess Tutor, dijital bir satranç tahtasını Stockfish analiz motoru ve hamlelerini açıklayan bir yapay zeka öğretmeniyle birleştirir. İsteğe bağlı olarak fiziksel bir Chessnut Air tahtası bağlayabilirsin.",
+    "newGameTitle": "Yeni oyun ve modlar",
+    "newGameText": "\"Yeni oyun\", motora karşı bir oyun başlatır (Beyaz veya Siyah olarak) ya da fiziksel bir tahtada iki kişi arasındaki oyunu kaydeder (OTB). Rakip motoru Ayarlar'dan seçilir: Elo sınırlı klasik Stockfish veya insana benzer oyun için Maia.",
+    "tutorTitle": "Öğretmen",
+    "tutorText": "Öğretmen hamlelerini otomatik olarak yorumlar (ayarlanabilir: Sessiz/Hatalar/Aktif), sohbette soruları yanıtlar ve istek üzerine açıklamalı bir hamle önerebilir. Bunun için bir LLM sağlayıcısının API anahtarı gerekir (Ayarlar → LLM öğretmeni).",
+    "analysisTitle": "Analiz ve değerlendirme çubuğu",
+    "analysisText": "Stockfish analizi mevcut pozisyon için en iyi üç hamle dizisini gösterir; tahtanın yanındaki değerlendirme çubuğu kimin avantajlı olduğunu gösterir. Bir analiz satırına tıklamak onu tahtada önizleme olarak gösterir.",
+    "moveListTitle": "Hamle listesi ve notasyon",
+    "moveListText": "Hamle listesi oyunu taş sembolleriyle ve hata işaretleriyle gösterir (★ en iyi hamle, ?! yanlışlık, ? hata, ?? gaf). Geri alınıp farklı şekilde devam ettirilen bir hamle, yan varyant olarak saklanır.",
+    "chessnutTitle": "Chessnut Air (fiziksel tahta)",
+    "chessnutText": "Bluetooth üzerinden bir Chessnut Air tahtası eşleştirmek için ekranın altındaki \"Bağlan\" seçeneğini kullan. LED'ler son hamleyi ve düzeltme ipuçlarını gösterir; bir anahtar, analizin en iyi hamlesinin tahtada yanıp sönmesini sağlar.",
+    "pgnTitle": "PGN ve oyun kitaplığı",
+    "pgnText": "Oyunlar PGN olarak dışa aktarılabilir veya PGN'den içe aktarılabilir (\"Dosya\" menüsü); tamamlanan her oyun ayrıca otomatik olarak yerel kitaplığa kaydedilir ve buradan daha sonra tekrar açılabilir.",
+    "clockTitle": "Satranç saati",
+    "clockText": "Ayarlar'da isteğe bağlı olarak turnuva ön ayarlarına sahip bir satranç saati (Klasik/Hızlı/Blitz/Bullet) veya serbest temel süre/ek süre etkinleştirilebilir.",
+    "settingsTitle": "Ayarlar",
+    "settingsText": "Dişli simgesi, rakip motoru, açılış kitabını, satranç saatini, sesi, analiz motorunu ve LLM öğretmenini yapılandırmanı sağlar.",
+    "languageTitle": "Dil",
+    "languageText": "Uygulamanın dilini (ve öğretmenin yanıt dilini) istediğin zaman değiştirmek için sağ üstteki bayrağı kullan."
   }
 }

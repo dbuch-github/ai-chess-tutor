@@ -7,9 +7,10 @@ import { AnalysisPanel } from './components/AnalysisPanel'
 import { MoveList } from './components/MoveList'
 import { SettingsDialog } from './components/SettingsDialog'
 import { InfoDialog } from './components/InfoDialog'
+import { HelpDialog } from './components/HelpDialog'
 import { TopbarDropdown } from './components/TopbarDropdown'
 import { LanguageSwitcher } from './components/LanguageSwitcher'
-import { BoardIcon, BooksIcon, CameraIcon, ChartIcon, ExportIcon, FolderIcon, GearIcon, ImportIcon, KingIcon, ReportIcon } from './components/icons'
+import { BoardIcon, BooksIcon, CameraIcon, ChartIcon, ExportIcon, FolderIcon, GearIcon, ImportIcon, InfoIcon, KingIcon, ReportIcon } from './components/icons'
 import { CapturedRow, PIECE_VALUES } from './components/CapturedRow'
 import { TutorPanel } from './components/TutorPanel'
 import { GameReportDialog } from './components/GameReportDialog'
@@ -47,6 +48,7 @@ export function App(): React.JSX.Element {
   const [opponentStatus, setOpponentStatus] = useState<EngineStatus>({ ready: false })
   const [analysisStatus, setAnalysisStatus] = useState<EngineStatus>({ ready: false })
   const [showInfo, setShowInfo] = useState(true)
+  const [showHelp, setShowHelp] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [showReport, setShowReport] = useState(false)
   const [showLibrary, setShowLibrary] = useState(false)
@@ -403,6 +405,9 @@ export function App(): React.JSX.Element {
           >
             <ReportIcon /> {t('topbar.report')}
           </button>
+          <button className="btn btn-settings" onClick={() => setShowInfo(true)} aria-label={t('topbar.info')}>
+            <InfoIcon />
+          </button>
           <button className="btn btn-settings" onClick={() => setShowSettings(true)} aria-label={t('topbar.settings')}>
             <GearIcon />
           </button>
@@ -526,7 +531,17 @@ export function App(): React.JSX.Element {
         </aside>
       </main>
 
-      {showInfo && <InfoDialog onClose={() => setShowInfo(false)} />}
+      {showInfo && (
+        <InfoDialog
+          onClose={() => setShowInfo(false)}
+          onOpenHelp={() => {
+            setShowInfo(false)
+            setShowHelp(true)
+          }}
+        />
+      )}
+
+      {showHelp && <HelpDialog onClose={() => setShowHelp(false)} />}
 
       {showSettings && (
         <SettingsDialog

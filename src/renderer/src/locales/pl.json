@@ -32,7 +32,8 @@
     "report": "Raport z partii",
     "reportHint": "Podsumowanie partii z wzorcami błędów i punktami do nauki",
     "settings": "Ustawienia",
-    "language": "Wybierz język"
+    "language": "Wybierz język",
+    "info": "O programie"
   },
   "status": {
     "engineThinking": "Silnik myśli…",
@@ -192,7 +193,8 @@
     "author": "Autor: Daniel Buch",
     "licenseFreeSoftware": "Wolne oprogramowanie na licencji",
     "licenseSuffix": "(lub późniejszej) – bez gwarancji.",
-    "sourceCode": "Kod źródłowy na GitHubie"
+    "sourceCode": "Kod źródłowy na GitHubie",
+    "help": "Pomoc"
   },
   "bluetooth": {
     "chooseDevice": "Wybierz urządzenie Bluetooth",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Białe wygrywają w {{pct}} %"
+  },
+  "help": {
+    "title": "Pomoc",
+    "overviewTitle": "Przegląd",
+    "overviewText": "AI Chess Tutor łączy cyfrową szachownicę z silnikiem analizy Stockfish i trenerem AI, który wyjaśnia Twoje ruchy. Opcjonalnie można podłączyć fizyczną szachownicę Chessnut Air.",
+    "newGameTitle": "Nowa partia i tryby",
+    "newGameText": "„Nowa partia” rozpoczyna grę z silnikiem (białymi lub czarnymi) albo rejestruje partię dwóch osób przy fizycznej szachownicy (OTB). Silnik przeciwnika wybiera się w Ustawieniach: klasyczny Stockfish z ograniczeniem Elo lub Maia dla gry przypominającej ludzką.",
+    "tutorTitle": "Trener",
+    "tutorText": "Trener automatycznie komentuje Twoje ruchy (do wyboru: Cicho/Błędy/Aktywny), odpowiada na pytania na czacie i na życzenie może zasugerować ruch z wyjaśnieniem. Wymaga to klucza API dostawcy LLM (Ustawienia → Trener LLM).",
+    "analysisTitle": "Analiza i pasek oceny",
+    "analysisText": "Analiza Stockfisha pokazuje trzy najlepsze linie dla bieżącej pozycji; pasek oceny obok szachownicy pokazuje, kto ma przewagę. Kliknięcie linii analizy pokazuje jej podgląd na szachownicy.",
+    "moveListTitle": "Lista ruchów i notacja",
+    "moveListText": "Lista ruchów pokazuje partię w notacji figurkowej ze znacznikami błędów (★ najlepszy ruch, ?! niedokładność, ? błąd, ?? rażący błąd). Cofnięty i inaczej kontynuowany ruch pozostaje zachowany jako wariant poboczny.",
+    "chessnutTitle": "Chessnut Air (fizyczna szachownica)",
+    "chessnutText": "Użyj przycisku „Połącz” na dole ekranu, aby sparować szachownicę Chessnut Air przez Bluetooth. Diody LED pokazują ostatni ruch i wskazówki korekcyjne; przełącznik pozwala migać na szachownicy najlepszym ruchem z analizy.",
+    "pgnTitle": "PGN i biblioteka partii",
+    "pgnText": "Partie można eksportować do PGN lub importować z PGN (menu „Plik”); każda zakończona partia jest też automatycznie zapisywana w lokalnej bibliotece, skąd można ją później ponownie otworzyć.",
+    "clockTitle": "Zegar szachowy",
+    "clockText": "W Ustawieniach można opcjonalnie włączyć zegar szachowy z ustawieniami turniejowymi (Klasyczne/Rapid/Blitz/Bullet) lub z dowolnym czasem podstawowym/dodatkiem.",
+    "settingsTitle": "Ustawienia",
+    "settingsText": "Ikona zębatki pozwala skonfigurować silnik przeciwnika, księgę debiutów, zegar szachowy, dźwięk, silnik analizy i trenera LLM.",
+    "languageTitle": "Język",
+    "languageText": "Użyj flagi w prawym górnym rogu, aby w dowolnym momencie zmienić język aplikacji (i język odpowiedzi trenera)."
   }
 }

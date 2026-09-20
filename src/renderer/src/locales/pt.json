@@ -32,7 +32,8 @@
     "report": "Relatório da partida",
     "reportHint": "Resumo da partida com padrões de erro e pontos de aprendizado",
     "settings": "Configurações",
-    "language": "Escolher idioma"
+    "language": "Escolher idioma",
+    "info": "Sobre"
   },
   "status": {
     "engineThinking": "O motor está pensando…",
@@ -192,7 +193,8 @@
     "author": "Autor: Daniel Buch",
     "licenseFreeSoftware": "Software livre sob a",
     "licenseSuffix": "(ou posterior) – sem garantia.",
-    "sourceCode": "Código-fonte no GitHub"
+    "sourceCode": "Código-fonte no GitHub",
+    "help": "Ajuda"
   },
   "bluetooth": {
     "chooseDevice": "Escolher dispositivo Bluetooth",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "As brancas vencem {{pct}} %"
+  },
+  "help": {
+    "title": "Ajuda",
+    "overviewTitle": "Visão geral",
+    "overviewText": "O AI Chess Tutor combina um tabuleiro de xadrez digital com um motor de análise Stockfish e um tutor de IA que explica seus lances. Opcionalmente, você pode conectar um tabuleiro físico Chessnut Air.",
+    "newGameTitle": "Nova partida e modos",
+    "newGameText": "\"Nova partida\" inicia uma partida contra o motor (com as brancas ou as pretas), ou registra uma partida entre duas pessoas em um tabuleiro físico (OTB). O motor adversário é escolhido nas Configurações: Stockfish clássico com limite de Elo, ou Maia para um jogo semelhante ao humano.",
+    "tutorTitle": "Tutor",
+    "tutorText": "O tutor comenta automaticamente seus lances (configurável: Silencioso/Erros/Ativo), responde perguntas no chat e pode sugerir um lance com explicação quando solicitado. Isso requer uma chave de API de um provedor de LLM (Configurações → Tutor LLM).",
+    "analysisTitle": "Análise e barra de avaliação",
+    "analysisText": "A análise do Stockfish mostra as três melhores linhas para a posição atual; a barra de avaliação ao lado do tabuleiro mostra quem está em vantagem. Clicar em uma linha de análise a exibe como prévia no tabuleiro.",
+    "moveListTitle": "Lista de lances e notação",
+    "moveListText": "A lista de lances mostra a partida em notação com figuras e marcadores de erro (★ melhor lance, ?! imprecisão, ? erro, ?? erro grave). Um lance desfeito e continuado de forma diferente é mantido como variante secundária.",
+    "chessnutTitle": "Chessnut Air (tabuleiro físico)",
+    "chessnutText": "Use \"Conectar\" na parte inferior da tela para parear um tabuleiro Chessnut Air via Bluetooth. Os LEDs mostram o último lance e avisos de correção; um alternador faz o melhor lance da análise piscar no tabuleiro.",
+    "pgnTitle": "PGN e biblioteca de partidas",
+    "pgnText": "As partidas podem ser exportadas para PGN ou importadas de PGN (menu \"Arquivo\"); cada partida concluída também é salva automaticamente na biblioteca local, de onde pode ser reaberta depois.",
+    "clockTitle": "Relógio de xadrez",
+    "clockText": "Nas Configurações é possível ativar opcionalmente um relógio de xadrez com predefinições de torneio (Clássico/Rápidas/Blitz/Bullet) ou um tempo base/incremento livre.",
+    "settingsTitle": "Configurações",
+    "settingsText": "O ícone de engrenagem permite configurar o motor adversário, o livro de aberturas, o relógio, o som, o motor de análise e o tutor LLM.",
+    "languageTitle": "Idioma",
+    "languageText": "Use a bandeira no canto superior direito para trocar o idioma do aplicativo (e o idioma das respostas do tutor) a qualquer momento."
   }
 }

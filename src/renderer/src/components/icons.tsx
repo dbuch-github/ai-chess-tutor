@@ -57,6 +57,17 @@ export function GearIcon({ size }: IconProps): React.JSX.Element {
   )
 }
 
+/** Kreis mit "i" – für den Info-/Über-Button. Punkt als gefüllter Akzent, wie beim übrigen Icon-Set. */
+export function InfoIcon({ size }: IconProps): React.JSX.Element {
+  return (
+    <svg {...svgProps(size)}>
+      <circle cx="10" cy="10" r="7.3" />
+      <circle cx="10" cy="6.4" r="0.95" fill="currentColor" stroke="none" />
+      <line x1="10" y1="9.3" x2="10" y2="14.3" />
+    </svg>
+  )
+}
+
 /** Diskette, Basis für Export-/Import-Symbol. */
 function Disk(): React.JSX.Element {
   return (

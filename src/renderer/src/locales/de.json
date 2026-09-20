@@ -32,7 +32,8 @@
     "report": "Partie-Report",
     "reportHint": "Zusammenfassung der Partie mit Fehlermustern und Lernpunkten",
     "settings": "Einstellungen",
-    "language": "Sprache wählen"
+    "language": "Sprache wählen",
+    "info": "Info"
   },
   "status": {
     "engineThinking": "Engine denkt …",
@@ -192,7 +193,8 @@
     "author": "Autor: Daniel Buch",
     "licenseFreeSoftware": "Freie Software unter der",
     "licenseSuffix": "(oder später) – ohne Gewährleistung.",
-    "sourceCode": "Quellcode auf GitHub"
+    "sourceCode": "Quellcode auf GitHub",
+    "help": "Hilfe"
   },
   "bluetooth": {
     "chooseDevice": "Bluetooth-Gerät wählen",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Weiß gewinnt zu {{pct}} %"
+  },
+  "help": {
+    "title": "Hilfe",
+    "overviewTitle": "Überblick",
+    "overviewText": "AI Chess Tutor verbindet ein digitales Schachbrett mit einer Stockfish-Analyse und einem KI-Tutor, der deine Züge erklärt. Optional lässt sich ein physisches Chessnut-Air-Brett anschließen.",
+    "newGameTitle": "Neue Partie & Modi",
+    "newGameText": "„Neue Partie\" startet ein Spiel gegen die Engine (als Weiß oder Schwarz) oder zeichnet eine Partie zwischen zwei Personen am physischen Brett auf (OTB). Die Gegner-Engine lässt sich in den Einstellungen wählen: klassisches Stockfish mit Elo-Begrenzung oder Maia für menschenähnliches Spiel.",
+    "tutorTitle": "Tutor",
+    "tutorText": "Der Tutor kommentiert deine Züge automatisch (einstellbar: Still/Fehler/Aktiv), beantwortet Fragen im Chat und schlägt auf Wunsch einen Zug mit Erklärung vor. Dafür wird ein API-Key eines LLM-Anbieters benötigt (Einstellungen → LLM-Tutor).",
+    "analysisTitle": "Analyse & Bewertungsleiste",
+    "analysisText": "Die Stockfish-Analyse zeigt die drei besten Zugfolgen der aktuellen Stellung; die Bewertungsleiste links vom Brett visualisiert, wer im Vorteil ist. Ein Klick auf eine Analyse-Linie zeigt sie als Vorschau auf dem Brett.",
+    "moveListTitle": "Zugliste & Notation",
+    "moveListText": "Die Zugliste zeigt die Partie in Figurinen-Notation mit Fehler-Kennzeichnung (★ Bester Zug, ?! Ungenauigkeit, ? Fehler, ?? Blunder). Zurückgenommene und anders fortgesetzte Züge bleiben als Nebenvariante erhalten.",
+    "chessnutTitle": "Chessnut Air (physisches Brett)",
+    "chessnutText": "Über „Verbinden\" am unteren Bildschirmrand lässt sich ein Chessnut-Air-Brett per Bluetooth verbinden. Die LEDs zeigen den letzten Zug und Korrekturhinweise; ein Toggle lässt den besten Analysezug auf dem Brett blinken.",
+    "pgnTitle": "PGN & Partie-Bibliothek",
+    "pgnText": "Partien lassen sich als PGN exportieren oder importieren (Menü „Datei\"); jede beendete Partie wird zusätzlich automatisch in der lokalen Bibliothek gespeichert und kann dort wieder geöffnet werden.",
+    "clockTitle": "Schachuhr",
+    "clockText": "Optional lässt sich unter Einstellungen eine Schachuhr mit Turnier-Voreinstellungen (Klassisch/Rapid/Blitz/Bullet) oder freier Grundzeit/Inkrement aktivieren.",
+    "settingsTitle": "Einstellungen",
+    "settingsText": "Über das Zahnrad-Symbol lassen sich Gegner-Engine, Eröffnungsbuch, Schachuhr, Sound, Analyse-Engine und der LLM-Tutor konfigurieren.",
+    "languageTitle": "Sprache",
+    "languageText": "Über die Flagge oben rechts lässt sich die Sprache der App und der Tutor-Antworten jederzeit wechseln."
   }
 }

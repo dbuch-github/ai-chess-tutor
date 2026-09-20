@@ -32,7 +32,8 @@
     "report": "Report della partita",
     "reportHint": "Riepilogo della partita con errori ricorrenti e punti di apprendimento",
     "settings": "Impostazioni",
-    "language": "Scegli lingua"
+    "language": "Scegli lingua",
+    "info": "Informazioni"
   },
   "status": {
     "engineThinking": "Il motore sta pensando…",
@@ -192,7 +193,8 @@
     "author": "Autore: Daniel Buch",
     "licenseFreeSoftware": "Software libero sotto la",
     "licenseSuffix": "(o successiva) – senza garanzia.",
-    "sourceCode": "Codice sorgente su GitHub"
+    "sourceCode": "Codice sorgente su GitHub",
+    "help": "Guida"
   },
   "bluetooth": {
     "chooseDevice": "Scegli dispositivo Bluetooth",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Il Bianco vince al {{pct}} %"
+  },
+  "help": {
+    "title": "Guida",
+    "overviewTitle": "Panoramica",
+    "overviewText": "AI Chess Tutor combina una scacchiera digitale con un motore di analisi Stockfish e un tutor IA che spiega le tue mosse. Puoi opzionalmente collegare una scacchiera fisica Chessnut Air.",
+    "newGameTitle": "Nuova partita e modalità",
+    "newGameText": "\"Nuova partita\" avvia una partita contro il motore (con il Bianco o il Nero), oppure registra una partita tra due persone su una scacchiera fisica (OTB). Il motore avversario si sceglie nelle Impostazioni: Stockfish classico con limite Elo, oppure Maia per un gioco simile a quello umano.",
+    "tutorTitle": "Tutor",
+    "tutorText": "Il tutor commenta automaticamente le tue mosse (impostabile: Silenzioso/Errori/Attivo), risponde alle domande in chat e su richiesta può suggerire una mossa con spiegazione. È necessaria una chiave API di un provider LLM (Impostazioni → Tutor LLM).",
+    "analysisTitle": "Analisi e barra di valutazione",
+    "analysisText": "L'analisi di Stockfish mostra le tre migliori linee per la posizione attuale; la barra di valutazione accanto alla scacchiera mostra chi è in vantaggio. Cliccando su una linea di analisi la si visualizza in anteprima sulla scacchiera.",
+    "moveListTitle": "Elenco mosse e notazione",
+    "moveListText": "L’elenco delle mosse mostra la partita in notazione con figurine e indicatori di errore (★ mossa migliore, ?! imprecisione, ? errore, ?? errore grave). Una mossa annullata e poi proseguita diversamente viene conservata come variante secondaria.",
+    "chessnutTitle": "Chessnut Air (scacchiera fisica)",
+    "chessnutText": "Usa \"Connetti\" in basso sullo schermo per collegare una scacchiera Chessnut Air via Bluetooth. I LED mostrano l’ultima mossa e le indicazioni di correzione; un interruttore fa lampeggiare sulla scacchiera la mossa migliore dell’analisi.",
+    "pgnTitle": "PGN e libreria delle partite",
+    "pgnText": "Le partite possono essere esportate in PGN o importate da PGN (menu \"File\"); ogni partita terminata viene anche salvata automaticamente nella libreria locale, da cui può essere riaperta in seguito.",
+    "clockTitle": "Orologio scacchistico",
+    "clockText": "Nelle Impostazioni è possibile attivare facoltativamente un orologio scacchistico con preimpostazioni da torneo (Classico/Rapid/Blitz/Bullet) oppure un tempo base/incremento libero.",
+    "settingsTitle": "Impostazioni",
+    "settingsText": "L’icona a forma di ingranaggio permette di configurare il motore avversario, il libro delle aperture, l’orologio, il suono, il motore di analisi e il tutor LLM.",
+    "languageTitle": "Lingua",
+    "languageText": "Usa la bandiera in alto a destra per cambiare in qualsiasi momento la lingua dell’app (e la lingua delle risposte del tutor)."
   }
 }

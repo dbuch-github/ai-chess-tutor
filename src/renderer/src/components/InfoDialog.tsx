@@ -6,10 +6,11 @@ const SOURCE_URL = 'https://github.com/dbuch-github/ai-chess-tutor'
 
 interface InfoDialogProps {
   onClose: () => void
+  onOpenHelp: () => void
 }
 
 /** Info-Overlay, das direkt nach dem Start der App erscheint (wegklickbar per Backdrop/Button). */
-export function InfoDialog({ onClose }: InfoDialogProps): React.JSX.Element {
+export function InfoDialog({ onClose, onOpenHelp }: InfoDialogProps): React.JSX.Element {
   const { t } = useTranslation()
   return (
     <div className="dialog-backdrop" onClick={onClose}>
@@ -37,6 +38,9 @@ export function InfoDialog({ onClose }: InfoDialogProps): React.JSX.Element {
           ☕ Buy Me a Coffee
         </button>
         <div className="dialog-actions">
+          <button className="btn" onClick={onOpenHelp}>
+            {t('info.help')}
+          </button>
           <button className="btn" onClick={onClose}>
             {t('common.close')}
           </button>

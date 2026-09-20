@@ -32,7 +32,8 @@
     "report": "Izvještaj o partiji",
     "reportHint": "Sažetak partije s obrascima pogrešaka i točkama za učenje",
     "settings": "Postavke",
-    "language": "Odaberi jezik"
+    "language": "Odaberi jezik",
+    "info": "O aplikaciji"
   },
   "status": {
     "engineThinking": "Motor razmišlja…",
@@ -192,7 +193,8 @@
     "author": "Autor: Daniel Buch",
     "licenseFreeSoftware": "Slobodan softver pod licencijom",
     "licenseSuffix": "(ili novijom) – bez ikakvog jamstva.",
-    "sourceCode": "Izvorni kod na GitHubu"
+    "sourceCode": "Izvorni kod na GitHubu",
+    "help": "Pomoć"
   },
   "bluetooth": {
     "chooseDevice": "Odaberi Bluetooth uređaj",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Bijeli pobjeđuju s {{pct}} %"
+  },
+  "help": {
+    "title": "Pomoć",
+    "overviewTitle": "Pregled",
+    "overviewText": "AI Chess Tutor kombinira digitalnu šahovsku ploču s Stockfish motorom za analizu i AI trenerom koji objašnjava tvoje poteze. Po želji možeš povezati fizičku ploču Chessnut Air.",
+    "newGameTitle": "Nova partija i načini rada",
+    "newGameText": "\"Nova partija\" pokreće igru protiv motora (bijelim ili crnim figurama) ili snima partiju dvoje ljudi za fizičkom pločom (OTB). Motor protivnika bira se u Postavkama: klasični Stockfish s ograničenjem Elo rejtinga ili Maia za igru sličnu ljudskoj.",
+    "tutorTitle": "Trener",
+    "tutorText": "Trener automatski komentira tvoje poteze (podesivo: Tih/Pogreške/Aktivan), odgovara na pitanja u razgovoru i na zahtjev može predložiti potez s objašnjenjem. Za to je potreban API ključ pružatelja LLM-a (Postavke → LLM trener).",
+    "analysisTitle": "Analiza i traka procjene",
+    "analysisText": "Stockfish analiza prikazuje tri najbolje linije za trenutnu poziciju; traka procjene pored ploče prikazuje tko je u prednosti. Klik na liniju analize prikazuje je kao pregled na ploči.",
+    "moveListTitle": "Popis poteza i notacija",
+    "moveListText": "Popis poteza prikazuje partiju u figurnoj notaciji s oznakama pogrešaka (★ najbolji potez, ?! netočnost, ? pogreška, ?? krupan previd). Poništeni potez koji je nastavljen drugačije ostaje sačuvan kao sporedna varijanta.",
+    "chessnutTitle": "Chessnut Air (fizička ploča)",
+    "chessnutText": "Koristi \"Poveži\" pri dnu zaslona za povezivanje ploče Chessnut Air putem Bluetootha. LED diode prikazuju posljednji potez i upute za ispravak; prekidač omogućuje da najbolji potez analize treperi na ploči.",
+    "pgnTitle": "PGN i knjižnica partija",
+    "pgnText": "Partije se mogu izvesti u PGN ili uvesti iz PGN-a (izbornik \"Datoteka\"); svaka završena partija automatski se sprema i u lokalnu knjižnicu, odakle se kasnije može ponovno otvoriti.",
+    "clockTitle": "Šahovski sat",
+    "clockText": "U Postavkama se po želji može uključiti šahovski sat s turnirskim postavkama (Klasično/Brzopotezni/Blic/Bullet) ili slobodno osnovno vrijeme/inkrement.",
+    "settingsTitle": "Postavke",
+    "settingsText": "Ikona zupčanika omogućuje konfiguriranje motora protivnika, knjige otvaranja, šahovskog sata, zvuka, motora za analizu i LLM trenera.",
+    "languageTitle": "Jezik",
+    "languageText": "Koristi zastavu gore desno za promjenu jezika aplikacije (i jezika odgovora trenera) u bilo kojem trenutku."
   }
 }

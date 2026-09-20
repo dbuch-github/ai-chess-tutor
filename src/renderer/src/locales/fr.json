@@ -32,7 +32,8 @@
     "report": "Rapport de partie",
     "reportHint": "Résumé de la partie avec les erreurs récurrentes et les points à retenir",
     "settings": "Paramètres",
-    "language": "Choisir la langue"
+    "language": "Choisir la langue",
+    "info": "À propos"
   },
   "status": {
     "engineThinking": "Le moteur réfléchit…",
@@ -192,7 +193,8 @@
     "author": "Auteur : Daniel Buch",
     "licenseFreeSoftware": "Logiciel libre sous",
     "licenseSuffix": "(ou ultérieure) – sans garantie.",
-    "sourceCode": "Code source sur GitHub"
+    "sourceCode": "Code source sur GitHub",
+    "help": "Aide"
   },
   "bluetooth": {
     "chooseDevice": "Choisir l'appareil Bluetooth",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Les Blancs gagnent à {{pct}} %"
+  },
+  "help": {
+    "title": "Aide",
+    "overviewTitle": "Aperçu",
+    "overviewText": "AI Chess Tutor combine un échiquier numérique avec un moteur d'analyse Stockfish et un tuteur IA qui explique vos coups. Vous pouvez éventuellement connecter un échiquier physique Chessnut Air.",
+    "newGameTitle": "Nouvelle partie et modes",
+    "newGameText": "« Nouvelle partie » démarre une partie contre le moteur (en tant que Blancs ou Noirs), ou enregistre une partie entre deux personnes sur un échiquier physique (OTB). Le moteur adverse se choisit dans les paramètres : Stockfish classique avec une limite Elo, ou Maia pour un jeu proche de l'humain.",
+    "tutorTitle": "Tuteur",
+    "tutorText": "Le tuteur commente automatiquement vos coups (réglable : Silencieux/Erreurs/Actif), répond aux questions dans le chat et peut suggérer un coup avec explication sur demande. Cela nécessite une clé API d'un fournisseur LLM (Paramètres → Tuteur LLM).",
+    "analysisTitle": "Analyse et barre d'évaluation",
+    "analysisText": "L'analyse Stockfish affiche les trois meilleures lignes pour la position actuelle ; la barre d'évaluation à côté de l'échiquier montre qui est avantagé. Cliquer sur une ligne d'analyse l'affiche en aperçu sur l'échiquier.",
+    "moveListTitle": "Liste des coups et notation",
+    "moveListText": "La liste des coups affiche la partie en notation figurine avec des marqueurs d'erreur (★ meilleur coup, ?! imprécision, ? erreur, ?? gaffe). Un coup annulé puis poursuivi différemment est conservé comme variante annexe.",
+    "chessnutTitle": "Chessnut Air (échiquier physique)",
+    "chessnutText": "Utilisez « Connecter » en bas de l'écran pour associer un échiquier Chessnut Air via Bluetooth. Les LED indiquent le dernier coup et les indications de correction ; un interrupteur permet de faire clignoter le meilleur coup de l'analyse sur l'échiquier.",
+    "pgnTitle": "PGN et bibliothèque de parties",
+    "pgnText": "Les parties peuvent être exportées vers ou importées depuis un PGN (menu « Fichier ») ; chaque partie terminée est également enregistrée automatiquement dans la bibliothèque locale, où elle peut être rouverte plus tard.",
+    "clockTitle": "Pendule d’échecs",
+    "clockText": "Une pendule avec des préréglages de tournoi (Classique/Rapide/Blitz/Bullet) ou un temps de base/incrément libre peut être activée dans les paramètres.",
+    "settingsTitle": "Paramètres",
+    "settingsText": "L'icône d'engrenage permet de configurer le moteur adverse, le livre d'ouvertures, la pendule, le son, le moteur d'analyse et le tuteur LLM.",
+    "languageTitle": "Langue",
+    "languageText": "Utilisez le drapeau en haut à droite pour changer la langue de l’application (et la langue de réponse du tuteur) à tout moment."
   }
 }

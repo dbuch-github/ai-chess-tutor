@@ -32,7 +32,8 @@
     "report": "对局报告",
     "reportHint": "包含错误模式和学习要点的对局总结",
     "settings": "设置",
-    "language": "选择语言"
+    "language": "选择语言",
+    "info": "关于"
   },
   "status": {
     "engineThinking": "引擎思考中…",
@@ -192,7 +193,8 @@
     "author": "作者：Daniel Buch",
     "licenseFreeSoftware": "基于以下许可证的自由软件：",
     "licenseSuffix": "（或更高版本）——不提供任何担保。",
-    "sourceCode": "GitHub 上的源代码"
+    "sourceCode": "GitHub 上的源代码",
+    "help": "帮助"
   },
   "bluetooth": {
     "chooseDevice": "选择蓝牙设备",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "白方获胜概率 {{pct}} %"
+  },
+  "help": {
+    "title": "帮助",
+    "overviewTitle": "概览",
+    "overviewText": "AI Chess Tutor 将数字棋盘与 Stockfish 分析引擎以及会讲解你走法的 AI 导师结合在一起。你也可以选择连接实体 Chessnut Air 棋盘。",
+    "newGameTitle": "新对局与模式",
+    "newGameText": "\"新对局\"会开始一局对抗引擎的对局（执白或执黑），或记录两人在实体棋盘上的对局（OTB）。对手引擎可在设置中选择：受等级分限制的经典 Stockfish，或用于类人下法的 Maia。",
+    "tutorTitle": "导师",
+    "tutorText": "导师会自动点评你的走法（可配置：静默/错误/活跃），在聊天中回答问题，并可在你的请求下提供带解释的走法建议。这需要一个 LLM 提供方的 API 密钥（设置 → LLM 导师）。",
+    "analysisTitle": "分析与评估条",
+    "analysisText": "Stockfish 分析会显示当前局面的三条最佳变着；棋盘旁的评估条显示谁占优势。点击某条分析线会在棋盘上预览该走法。",
+    "moveListTitle": "走法列表与记谱法",
+    "moveListText": "走法列表以棋子符号记谱显示对局，并带有错误标记（★ 最佳走法，?! 不精确，? 错误，?? 重大失误）。被悔棋后以不同方式继续的走法会作为分支变着保留下来。",
+    "chessnutTitle": "Chessnut Air（实体棋盘）",
+    "chessnutText": "使用屏幕底部的\"连接\"通过蓝牙配对 Chessnut Air 棋盘。指示灯会显示上一步棋和纠正提示；一个开关可让分析的最佳走法在棋盘上闪烁。",
+    "pgnTitle": "PGN 与对局库",
+    "pgnText": "对局可以导出为 PGN 或从 PGN 导入（\"文件\"菜单）；每局结束的对局也会自动保存到本地对局库，之后可从中重新打开。",
+    "clockTitle": "棋钟",
+    "clockText": "在设置中可以选择启用带比赛预设（经典/快棋/闪电战/超快棋）或自由基础时间/加时的棋钟。",
+    "settingsTitle": "设置",
+    "settingsText": "齿轮图标可用于配置对手引擎、开局库、棋钟、音效、分析引擎和 LLM 导师。",
+    "languageTitle": "语言",
+    "languageText": "使用右上角的旗帜图标，随时切换应用界面语言（以及导师回复所用的语言）。"
   }
 }

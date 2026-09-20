@@ -32,7 +32,8 @@
     "report": "Informe de la partida",
     "reportHint": "Resumen de la partida con patrones de error y puntos de aprendizaje",
     "settings": "Ajustes",
-    "language": "Elegir idioma"
+    "language": "Elegir idioma",
+    "info": "Acerca de"
   },
   "status": {
     "engineThinking": "El motor está pensando…",
@@ -192,7 +193,8 @@
     "author": "Autor: Daniel Buch",
     "licenseFreeSoftware": "Software libre bajo la",
     "licenseSuffix": "(o posterior) – sin garantía.",
-    "sourceCode": "Código fuente en GitHub"
+    "sourceCode": "Código fuente en GitHub",
+    "help": "Ayuda"
   },
   "bluetooth": {
     "chooseDevice": "Elegir dispositivo Bluetooth",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "Ganan las Blancas con {{pct}} %"
+  },
+  "help": {
+    "title": "Ayuda",
+    "overviewTitle": "Descripción general",
+    "overviewText": "AI Chess Tutor combina un tablero de ajedrez digital con un motor de análisis Stockfish y un tutor de IA que explica tus jugadas. Opcionalmente puedes conectar un tablero físico Chessnut Air.",
+    "newGameTitle": "Nueva partida y modos",
+    "newGameText": "«Nueva partida» inicia una partida contra el motor (con blancas o negras), o registra una partida entre dos personas en un tablero físico (OTB). El motor rival se elige en Ajustes: Stockfish clásico con límite de Elo, o Maia para un juego similar al humano.",
+    "tutorTitle": "Tutor",
+    "tutorText": "El tutor comenta automáticamente tus jugadas (configurable: Silencio/Errores/Activo), responde preguntas en el chat y puede sugerir una jugada con explicación si se lo pides. Para ello se necesita una clave de API de un proveedor de LLM (Ajustes → Tutor LLM).",
+    "analysisTitle": "Análisis y barra de evaluación",
+    "analysisText": "El análisis de Stockfish muestra las tres mejores líneas para la posición actual; la barra de evaluación junto al tablero muestra quién está mejor. Al hacer clic en una línea de análisis se previsualiza en el tablero.",
+    "moveListTitle": "Lista de jugadas y notación",
+    "moveListText": "La lista de jugadas muestra la partida en notación con figuras e indicadores de error (★ mejor jugada, ?! imprecisión, ? error, ?? error grave). Una jugada deshecha y continuada de otra forma se conserva como variante secundaria.",
+    "chessnutTitle": "Chessnut Air (tablero físico)",
+    "chessnutText": "Usa «Conectar» en la parte inferior de la pantalla para vincular un tablero Chessnut Air por Bluetooth. Los LED muestran la última jugada y avisos de corrección; un interruptor hace parpadear la mejor jugada del análisis en el tablero.",
+    "pgnTitle": "PGN y biblioteca de partidas",
+    "pgnText": "Las partidas se pueden exportar a PGN o importar desde PGN (menú «Archivo»); cada partida terminada también se guarda automáticamente en la biblioteca local, donde se puede volver a abrir más tarde.",
+    "clockTitle": "Reloj de ajedrez",
+    "clockText": "En Ajustes se puede activar opcionalmente un reloj de ajedrez con configuraciones de torneo (Clásico/Rápidas/Blitz/Bala) o un tiempo base/incremento libre.",
+    "settingsTitle": "Ajustes",
+    "settingsText": "El icono de engranaje permite configurar el motor rival, el libro de aperturas, el reloj de ajedrez, el sonido, el motor de análisis y el tutor LLM.",
+    "languageTitle": "Idioma",
+    "languageText": "Usa la bandera de arriba a la derecha para cambiar el idioma de la aplicación (y el idioma de las respuestas del tutor) en cualquier momento."
   }
 }

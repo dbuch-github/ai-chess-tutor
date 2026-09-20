@@ -32,7 +32,8 @@
     "report": "Game report",
     "reportHint": "Summary of the game with error patterns and learning points",
     "settings": "Settings",
-    "language": "Choose language"
+    "language": "Choose language",
+    "info": "About"
   },
   "status": {
     "engineThinking": "Engine thinking …",
@@ -192,7 +193,8 @@
     "author": "Author: Daniel Buch",
     "licenseFreeSoftware": "Free software under the",
     "licenseSuffix": "(or later) – without warranty.",
-    "sourceCode": "Source code on GitHub"
+    "sourceCode": "Source code on GitHub",
+    "help": "Help"
   },
   "bluetooth": {
     "chooseDevice": "Choose Bluetooth device",
@@ -230,5 +232,28 @@
   },
   "evalBar": {
     "whiteWinPct": "White wins {{pct}} %"
+  },
+  "help": {
+    "title": "Help",
+    "overviewTitle": "Overview",
+    "overviewText": "AI Chess Tutor combines a digital chessboard with a Stockfish analysis engine and an AI tutor that explains your moves. You can optionally connect a physical Chessnut Air board.",
+    "newGameTitle": "New game & modes",
+    "newGameText": "\"New game\" starts a game against the engine (as White or Black), or records a game between two people at a physical board (OTB). The opponent engine can be chosen in Settings: classic Stockfish with an Elo limit, or Maia for human-like play.",
+    "tutorTitle": "Tutor",
+    "tutorText": "The tutor automatically comments on your moves (configurable: Silent/Mistakes/Active), answers questions in the chat, and can suggest a move with an explanation on request. This requires an API key from an LLM provider (Settings → LLM tutor).",
+    "analysisTitle": "Analysis & evaluation bar",
+    "analysisText": "The Stockfish analysis shows the three best lines for the current position; the evaluation bar next to the board shows who is ahead. Clicking an analysis line previews it on the board.",
+    "moveListTitle": "Move list & notation",
+    "moveListText": "The move list shows the game in figurine notation with error markers (★ best move, ?! inaccuracy, ? mistake, ?? blunder). A move that was undone and then continued differently is kept as a side variation.",
+    "chessnutTitle": "Chessnut Air (physical board)",
+    "chessnutText": "Use \"Connect\" at the bottom of the screen to pair a Chessnut Air board over Bluetooth. The LEDs show the last move and correction hints; a toggle lets the best analysis move blink on the board.",
+    "pgnTitle": "PGN & game library",
+    "pgnText": "Games can be exported to or imported from PGN (\"File\" menu); every finished game is also saved automatically to the local library, where it can be reopened later.",
+    "clockTitle": "Chess clock",
+    "clockText": "A chess clock with tournament presets (Classical/Rapid/Blitz/Bullet) or a free base time/increment can optionally be enabled in Settings.",
+    "settingsTitle": "Settings",
+    "settingsText": "The gear icon lets you configure the opponent engine, opening book, chess clock, sound, analysis engine, and the LLM tutor.",
+    "languageTitle": "Language",
+    "languageText": "Use the flag in the top right to switch the app's language (and the tutor's reply language) at any time."
   }
 }
