@@ -14,6 +14,10 @@ engines as opponents, live Stockfish analysis and an LLM chess tutor.
   report with recurring mistake patterns and takeaways.
 - **Live analysis:** Stockfish running in the background (MultiPV 3) with an eval bar and
   automatic move classification (blunder/mistake/inaccuracy/best move).
+- **Tactical pattern detection:** spots forks, pins, skewers, discovered attacks/checks,
+  hanging pieces, trapped pieces, overloaded defenders and useful underpromotions for the
+  side to move — purely geometric, no engine search; clicking a finding previews it on the
+  board.
 - **Opponent engines:** classic Stockfish with Elo limiting, or Maia (lc0) for human-like
   play, plus a weighted opening book and live opening recognition.
 - **Chessnut Air via Web Bluetooth:** the physical board is the primary input device, with

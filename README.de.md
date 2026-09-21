@@ -14,6 +14,10 @@ Gegner, Live-Stockfish-Analyse und einen LLM-Schachtutor miteinander verbindet.
   mit wiederkehrenden Fehlermustern und Lernpunkten.
 - **Live-Analyse:** Stockfish im Hintergrund (MultiPV 3) mit Eval-Bar und automatischer
   Zugklassifikation (Blunder/Fehler/Ungenauigkeit/Bester Zug).
+- **Taktische Mustererkennung:** erkennt beim Zug am Zug Gabeln, Fesselungen, Spieße,
+  Abzugsangriffe/-schach, hängende Figuren, eingesperrte Figuren, überlastete Verteidiger
+  und sinnvolle Unterverwandlungen – rein geometrisch, ohne Engine-Suche; Klick auf einen
+  Fund zeigt ihn als Vorschau auf dem Brett.
 - **Gegner-Engines:** klassisches Stockfish mit Elo-Begrenzung oder Maia (lc0) für
   menschenähnliches Spiel, dazu ein gewichtetes Eröffnungsbuch und Live-Eröffnungserkennung.
 - **Chessnut Air per Web Bluetooth:** physisches Brett als führende Eingabe, LED-Feedback
