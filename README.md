@@ -2,346 +2,343 @@
 
 [![License: GPL-3.0](https://img.shields.io/github/license/dbuch-github/ai-chess-tutor)](LICENSE)
 
-Desktop-App (Electron + TypeScript + React), die ein Chessnut-Air-Brett, UCI-Engines als
-Gegner, Live-Stockfish-Analyse und einen LLM-Schachtutor miteinander verbindet.
+*English | [Deutsch](README.de.md)*
+
+Desktop app (Electron + TypeScript + React) that combines a Chessnut Air board, UCI
+engines as opponents, live Stockfish analysis and an LLM chess tutor.
 
 ## Features
 
-- **LLM-Schachtutor** (Anthropic/OpenAI/Google, frei wählbar): erklärt Züge, beantwortet
-  Rückfragen im gestreamten Chat, schlägt Züge vor und schreibt am Partieende einen Report
-  mit wiederkehrenden Fehlermustern und Lernpunkten.
-- **Live-Analyse:** Stockfish im Hintergrund (MultiPV 3) mit Eval-Bar und automatischer
-  Zugklassifikation (Blunder/Fehler/Ungenauigkeit/Bester Zug).
-- **Gegner-Engines:** klassisches Stockfish mit Elo-Begrenzung oder Maia (lc0) für
-  menschenähnliches Spiel, dazu ein gewichtetes Eröffnungsbuch und Live-Eröffnungserkennung.
-- **Chessnut Air per Web Bluetooth:** physisches Brett als führende Eingabe, LED-Feedback
-  nach jedem Zug, Korrekturhinweise bei Abweichungen, blinkende Zugvorschläge.
-- **PGN-Export/-Import:** inklusive Tutor-Kommentaren je Zug und – falls ein Zug
-  zurückgenommen und anders fortgesetzt wurde – der verworfenen Fortsetzung als Nebenvariante.
-- **Lokale Partie-Bibliothek:** jede beendete Partie wird automatisch als PGN gespeichert,
-  ohne manuellen Schritt.
-- **Schachuhr** mit Turnier-Voreinstellungen (Klassisch/Rapid/Blitz/Bullet) oder frei ohne
-  Zeitkontrolle.
-- Figurinen-Notation, Board-Preview (Angriffe/Deckungen/Fesselungen/schwache Felder) und
-  ein synthetisierter Zug-Sound runden die Bedienung ab.
+- **LLM chess tutor** (Anthropic/OpenAI/Google, freely selectable): explains moves,
+  answers follow-up questions in a streamed chat, suggests moves and writes an end-of-game
+  report with recurring mistake patterns and takeaways.
+- **Live analysis:** Stockfish running in the background (MultiPV 3) with an eval bar and
+  automatic move classification (blunder/mistake/inaccuracy/best move).
+- **Opponent engines:** classic Stockfish with Elo limiting, or Maia (lc0) for human-like
+  play, plus a weighted opening book and live opening recognition.
+- **Chessnut Air via Web Bluetooth:** the physical board is the primary input device, with
+  LED feedback after every move, correction hints on discrepancies, and blinking move
+  suggestions.
+- **PGN export/import:** including per-move tutor comments and — if a move was taken back
+  and continued differently — the discarded continuation as a side variation.
+- **Local game library:** every finished game is saved automatically as a PGN, no manual
+  step required.
+- **Chess clock** with tournament presets (classical/rapid/blitz/bullet) or free play
+  without a time control.
+- Figurine notation, board preview (attacks/defenses/pins/weak squares) and a synthesized
+  move sound round out the experience.
 
-## Setup und Entwicklung
+## Setup and development
 
-Eine gemeinsame Codebasis für **macOS arm64, Windows x64 und Linux x64**.
-Voraussetzung für Entwickler: Node.js ≥ 22.12. Im Projektordner einmal das passende
-Setup ausführen:
+One shared codebase for **macOS arm64, Windows x64 and Linux x64**.
+Developers need Node.js ≥ 22.12. Run the matching setup once in the project folder:
 
 | System | Setup |
 | --- | --- |
-| macOS mit Apple Silicon, Homebrew vorhanden | `bash setup-macos.sh` |
+| macOS with Apple Silicon, Homebrew installed | `bash setup-macos.sh` |
 | Windows 11, PowerShell | `powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-windows.ps1` |
 | Ubuntu 24.04 LTS Desktop | `bash setup-linux.sh` |
 
-Die Skripte installieren die Projektabhängigkeiten und stellen Stockfish 19,
-lc0 0.32.1 und alle neun Maia-Netze bereit. macOS bezieht lc0 aus Homebrew,
-Windows verwendet das CPU-Release mit seinen DLLs, Linux baut das Eigen-CPU-Backend.
-Unter Windows installieren Setup und Installer bei Bedarf außerdem die Microsoft-
-C++-Laufzeit direkt von Microsoft; dafür werden Internetzugang und Administratorrechte
-benötigt.
-Danach gelten auf allen drei Systemen dieselben Befehle:
+The scripts install the project dependencies and provide Stockfish 19, lc0 0.32.1 and all
+nine Maia networks. macOS gets lc0 from Homebrew, Windows uses the CPU release with its
+DLLs, Linux builds the Eigen CPU backend. On Windows, setup and the installer also install
+the Microsoft C++ runtime directly from Microsoft when needed, which requires internet
+access and administrator rights.
+After that, the same commands apply on all three systems:
 
 ```bash
-npm run dev                    # Dev-Modus mit HMR
-npm run build                  # Produktionsbuild nach out/
+npm run dev                    # Dev mode with HMR
+npm run build                  # Production build into out/
 npm run typecheck
-npm test                       # Gemeinsame Regressionstests einschließlich Browser
-npm run verify-engines         # Echte UCI-Suchläufe mit Stockfish und Maia
-npm run smoke                  # Starttest der gebauten Electron-App, isoliertes Profil
+npm test                       # Shared regression tests, including the browser test
+npm run verify-engines         # Real UCI search runs with Stockfish and Maia
+npm run smoke                  # Startup test of the built Electron app, isolated profile
 ```
 
-Die React-Tests suchen Chrome/Chromium oder unter Windows auch Edge. Mit `CHROME_PATH`
-lässt sich der ausführbare Browser explizit angeben. Ohne Browser wird lokal der
-Browser-Test übersprungen; in der CI gilt das als Fehler. Für die Tests werden keine
-LLM-API-Keys und kein verbundenes Chessnut-Brett benötigt.
+The React tests look for Chrome/Chromium, or Edge on Windows. `CHROME_PATH` lets you point
+at a specific browser executable. Without a browser, the browser test is skipped locally;
+in CI, that counts as a failure. The tests need no LLM API keys and no connected Chessnut
+board.
 
 ## Installer
 
 ```bash
-npm run dist                   # Native Installer unter dist/
-npm run dist -- --dir          # Nur das entpackte Anwendungspaket
-npm run smoke -- --packaged    # Starttest der gepackten App
+npm run dist                   # Native installer under dist/
+npm run dist -- --dir          # Unpacked application bundle only
+npm run smoke -- --packaged    # Startup test of the packaged app
 ```
 
-Aus derselben Source entstehen auf dem jeweiligen Buildsystem eine **DMG** (macOS),
-eine **NSIS-Setup-EXE** (Windows) oder **DEB und AppImage** (Linux). Die passende
-Plattform und Architektur werden automatisch erkannt. Die Pakete enthalten Engines,
-Maia-Netze und Lizenzdateien; Endnutzer brauchen keine Entwicklungsumgebung.
-Auch im Dev-Modus werden nach dem Setup dieselben lokalen Engine-Ressourcen erkannt.
+The same source produces a **DMG** (macOS), an **NSIS setup EXE** (Windows), or a **DEB and
+AppImage** (Linux) on the respective build system. The matching platform and architecture
+are detected automatically. The packages include engines, Maia networks and license files;
+end users need no development environment.
+In dev mode, the same local engine resources are recognized right after setup.
 
-**Prüfstand:** macOS-Build, DMG und Starttest wurden lokal erfolgreich geprüft.
-Der gemeinsame [CI-Workflow](.github/workflows/platforms.yml) für alle drei Systeme
-ist eingerichtet; echte Windows-/Linux-Läufe und Chessnut-Hardwaretests stehen noch
-aus. Release-Signierung und macOS-Notarisierung sind nicht eingerichtet.
+**Test status:** the macOS build, DMG and startup test have been verified successfully
+locally. The shared [CI workflow](.github/workflows/platforms.yml) for all three systems is
+set up; real Windows/Linux runs and Chessnut hardware tests are still outstanding. Release
+signing and macOS notarization are not set up.
 
-Details zu Voraussetzungen, Implementierung und offenen Abnahmeschritten stehen in
-[PLATTFORMEN.md](PLATTFORMEN.md).
+Details on prerequisites, implementation and open acceptance steps are in
+[PLATTFORMEN.md](PLATTFORMEN.md) (German only).
 
-## Aufbau
+## Structure
 
 ```
 src/
-  main/            Electron-Main-Prozess
-    engine/        UciEngine (Prozess-Wrapper) + EngineManager (Gegner + Analyse)
-    tutor/         TutorService (Orchestrierung) + providers/ (Anthropic, OpenAI, Google)
-  preload/         IPC-Bridge (window.api)
+  main/            Electron main process
+    engine/        UciEngine (process wrapper) + EngineManager (opponent + analysis)
+    tutor/         TutorService (orchestration) + providers/ (Anthropic, OpenAI, Google)
+  preload/         IPC bridge (window.api)
   renderer/src/
-    game/          useGame (Partie-Zustand), classify, openingBook, pgn (Export/Import)
-    chessnut/      Web-Bluetooth-Anbindung: protocol (Byte-Kodierung), inferMove
-                   (Zugableitung), useChessnutBoard (Verbindung), useChessnutSync
-                   (LED-Feedback/Korrekturhinweise), useChessnutPreview (blinkende
-                   LEDs für Zugvorschläge), useChessnutBestMove (blinkender bester
-                   Analysezug, Von-/Ziel-Feld im Wechsel)
+    game/          useGame (game state), classify, openingBook, pgn (export/import)
+    chessnut/      Web Bluetooth integration: protocol (byte encoding), inferMove
+                   (move derivation), useChessnutBoard (connection), useChessnutSync
+                   (LED feedback/correction hints), useChessnutPreview (blinking
+                   LEDs for move suggestions), useChessnutBestMove (blinking best
+                   analysis move, alternating from/to square)
     components/    Board, EvalBar, AnalysisPanel, MoveList, SettingsDialog
-  shared/          gemeinsame IPC-Typen
+  shared/          shared IPC types
 ```
 
-## LLM-Tutor
+## LLM tutor
 
-- **Provider** (⚙︎ → „LLM-Tutor“ → Anbieter): **Anthropic** (`@anthropic-ai/sdk`,
-  Default `claude-opus-5`), **OpenAI** (`openai`-SDK, Responses API, Default `gpt-5.1`),
-  **Google** (`@google/genai`, Default `gemini-3.1-pro`). Modell je Provider frei konfigurierbar.
-  Jeder Provider hat sein eigenes Modell + API-Key; ein Wechsel überschreibt die anderen nicht.
-- **Architektur:** `TutorService` orchestriert providerneutral (Prompt-Bau, Gesprächshistorie,
-  Trigger-Logik); `src/main/tutor/providers/*` übersetzt in das jeweilige SDK-Format. Neue
-  Provider brauchen nur eine weitere Klasse, die das `LlmProvider`-Interface implementiert.
-- **API-Keys:** je Provider einzeln per Electron `safeStorage` verschlüsselt unter
-  `userData/tutor-config.json` (macOS-Schlüsselbund, Windows-DPAPI, Linux-Schlüsselbund).
-  Ohne sicheren Speicher bleibt ein neu eingegebener Key nur für die Sitzung verfügbar;
-  die Einstellungen zeigen dies an. Für Anthropic wird zusätzlich `ANTHROPIC_API_KEY`
-  aus der Umgebung genutzt, wenn kein Key gespeichert ist.
-- **Trigger-Modi** (im Tutor-Panel): *Still* (nur auf Nachfrage), *Fehler* (kommentiert eigene
-  Fehler/Blunder), *Aktiv* (auch Ungenauigkeiten und Engine-Patzer).
-- **Prompt-Prinzip:** Das LLM rechnet nie selbst – es bekommt FEN, Partieverlauf (SAN),
-  Stockfish-Bewertungen vor/nach dem Zug und die beste Engine-Variante vorformatiert und
-  erklärt nur didaktisch. Zugkommentare laufen mit niedrigem Effort, Antworten werden gestreamt.
-- **Effort/Reasoning:** Bei Anthropic steuert `output_config.effort`, bei OpenAI (Reasoning-
-  Modelle) `reasoning.effort` die Denktiefe – bei Google gibt es kein Äquivalent, wird ignoriert.
-- Anthropic-Refusal-Fallbacks (`fallbacks: "default"`, Beta) sind aktiviert; bei einer 400 fällt
-  der Service automatisch auf einen Aufruf ohne Fallbacks zurück.
+- **Provider** (⚙︎ → "LLM tutor" → provider): **Anthropic** (`@anthropic-ai/sdk`,
+  default `claude-opus-5`), **OpenAI** (`openai` SDK, Responses API, default `gpt-5.1`),
+  **Google** (`@google/genai`, default `gemini-3.1-pro`). Model freely configurable per
+  provider. Each provider has its own model + API key; switching providers doesn't
+  overwrite the others.
+- **Architecture:** `TutorService` orchestrates provider-agnostically (prompt building,
+  conversation history, trigger logic); `src/main/tutor/providers/*` translates into the
+  respective SDK format. New providers only need another class implementing the
+  `LlmProvider` interface.
+- **API keys:** encrypted per provider via Electron `safeStorage` under
+  `userData/tutor-config.json` (macOS Keychain, Windows DPAPI, Linux keyring). Without
+  secure storage, a newly entered key is only available for the current session; the
+  settings dialog indicates this. For Anthropic, `ANTHROPIC_API_KEY` from the environment
+  is also used if no key is stored.
+- **Trigger modes** (in the tutor panel): *Silent* (only on request), *Mistakes* (comments
+  on your own mistakes/blunders), *Active* (also inaccuracies and engine slips).
+- **Prompt principle:** the LLM never calculates itself — it receives the FEN, game history
+  (SAN), Stockfish evaluations before/after the move, and the best engine line, all
+  pre-formatted, and only explains didactically. Move comments run at low effort, responses
+  are streamed.
+- **Effort/reasoning:** for Anthropic, `output_config.effort` controls the depth of
+  thinking; for OpenAI (reasoning models), `reasoning.effort` does — Google has no
+  equivalent and it's ignored there.
+- Anthropic refusal fallbacks (`fallbacks: "default"`, beta) are enabled; on a 400 error the
+  service automatically retries without fallbacks.
 
-## Gegner-Engine & Eröffnungen
+## Opponent engine & openings
 
-⚙︎ → „Gegner-Engine“ bietet drei Engine-Arten:
+⚙︎ → "Opponent engine" offers three engine types:
 
-- **Stockfish** (Default): wie bisher, mit Elo-Begrenzung.
-- **Maia** ([lc0](https://github.com/LeelaChessZero/lc0) + [Maia-Netz](https://github.com/CSSLab/maia-chess)):
-  spielt menschenähnlich, da auf Millionen menschlicher Partien trainiert. Läuft mit
-  `go nodes 1` (Suche deaktiviert, reine Netz-Vorhersage) statt Bedenkzeit – die Spielstärke
-  (1100–1900) steckt in der gewählten `.pb.gz`-Datei, nicht in einer Elo-Option; im
-  gepackten Installer sind lc0 und alle neun Stärken bereits enthalten und über die
-  Stärkeauswahl in den Einstellungen wählbar (siehe „Installer" oben). Nach dem
-  gemeinsamen Setup sind lc0 und die Gewichte auch im Dev-Modus automatisch verfügbar.
-- **Andere UCI-Engine:** freier Pfad, wie zuvor.
+- **Stockfish** (default): as before, with Elo limiting.
+- **Maia** ([lc0](https://github.com/LeelaChessZero/lc0) +
+  [Maia network](https://github.com/CSSLab/maia-chess)): plays human-like, since it's
+  trained on millions of human games. Runs with `go nodes 1` (search disabled, pure network
+  prediction) instead of thinking time — playing strength (1100–1900) lives in the chosen
+  `.pb.gz` file, not in an Elo option; the packaged installer already includes lc0 and all
+  nine strengths, selectable via the strength picker in settings (see "Installer" above).
+  After the shared setup, lc0 and the weights are also automatically available in dev mode.
+- **Other UCI engine:** free path, as before.
 
-**Eröffnungsbuch** (Checkbox, Default an): Der Gegner zieht in den ersten 10 Vollzügen nach
-Möglichkeit aus einer Datenbank von rund 3.800 benannten Eröffnungen
-([lichess-org/chess-openings](https://github.com/lichess-org/chess-openings)) statt immer nach
-Engine-Bestzug – gewichtet nach Häufigkeit in der Datenbank. Kein Treffer mehr → Engine übernimmt.
+**Opening book** (checkbox, default on): for the first 10 full moves, the opponent plays
+from a database of roughly 3,800 named openings
+([lichess-org/chess-openings](https://github.com/lichess-org/chess-openings)) instead of
+always playing the engine's best move — weighted by frequency in the database. No more
+matches → the engine takes over.
 
-**Live-Eröffnungserkennung:** Über der Stockfish-Analyse zeigt „📖 Name (ECO-Code)“ die am
-weitesten passende bekannte Eröffnung für die gespielten Züge – bleibt nach Verlassen der
-Theorie auf dem letzten bekannten Stand stehen, statt zu verschwinden.
+**Live opening recognition:** above the Stockfish analysis, "📖 Name (ECO code)" shows the
+best-matching known opening for the moves played so far — it stays on the last known state
+after leaving theory instead of disappearing.
 
 ## Chessnut Air
 
-Anbindung per **Web Bluetooth** (läuft direkt in Chromium/Electron, kein natives
-Node-Modul wie `noble` nötig – dadurch kein Neukompilieren bei Electron-Updates).
+Connected via **Web Bluetooth** (runs directly in Chromium/Electron, no native Node module
+like `noble` needed — so no recompiling on Electron updates).
 
-- **„Verbinden“** im Chessnut-Einzeiler direkt unter dem Brett öffnet den
-  Bluetooth-Geräteauswahl-Dialog; bei genau einem gefundenen Brett wird automatisch
-  verbunden. Chromium merkt sich die Freigabe pro Anwendung, danach verbindet sich die
-  App beim Start still im Hintergrund
-  wieder, ohne erneut zu fragen (dort, wo der Browser das unterstützt).
-- **Solange verbunden ist, ist das Bildschirm-Brett nur noch Spiegel:** Eigene Züge kommen
-  ausschließlich vom physischen Brett; die Maus ist deaktiviert, um kein widersprüchliches
-  zweites Eingabegerät zu haben.
-- **LED-Feedback:** Nach jedem Zug (eigenem wie Engine-Zug) leuchten die betroffenen Felder,
-  bis die physische Stellung wieder mit der Soll-Stellung übereinstimmt – bei einem
-  Gegnerzug ist das die Aufforderung, ihn von Hand nachzuziehen. Die LEDs zeigen dabei immer
-  genau die Felder des bekannten letzten Zugs, nicht die volle beobachtete Abweichung – ein
-  einzelner fehlerhafter RFID-Lesevorgang auf einem unbeteiligten Feld kann so keine falschen
-  LEDs mehr auslösen. Das LED-Kommando wird bei jeder neuen Stellungsmeldung vom Brett (alle
-  ~200ms) erneut gesendet, nicht nur einmal direkt nach dem Zug – ein einzelner verlorener
-  oder mit einer sofortigen Folgeaktion kollidierender Schreibbefehl korrigiert sich so von
-  selbst, statt die LEDs dauerhaft falsch stehen zu lassen.
-- **Korrekturhinweise:** Weicht das Brett von der erwarteten Stellung ab (z. B. beim
-  Nachziehen vertan), zeigt der Einzeiler die betroffenen Felder als Text-Hinweis – erst,
-  nachdem dieselbe Abweichung zweimal in Folge beobachtet wurde, damit ein einzelner
-  RFID-Fehlmesswert nicht sofort eine (falsche) Meldung auslöst.
-- **Gilt auch für „Neue Partie“, PGN-Import und Zug-Rücknahme:** Nicht nur nach einem
-  einzelnen Zug, sondern nach jeder Stellungsänderung wird geprüft, ob das physische Brett
-  noch mit der App übereinstimmt. Steht das Brett z. B. nach „Neue Partie“ noch mitten in
-  der alten Partie, leuchten die fehlenden/überzähligen Felder und ein neuer Zug wird erst
-  wieder erkannt, sobald die Grundstellung tatsächlich aufgebaut ist. Das gilt auch, wenn
-  unmittelbar danach schon der nächste Zug eintrifft, bevor das Brett geprüft werden konnte
-  (z. B. „Neue Partie als Schwarz“, wo die Engine als Weiß sofort automatisch zieht) – dann
-  zeigen die LEDs weiterhin die vollständige Abweichung statt nur der zwei Felder des
-  jüngsten Zugs, bis das Brett wirklich passt.
-- **Zugvorschläge blinken auf dem Brett:** Der „💡 Zugvorschlag“ des Tutors und jede
-  angeklickte Analyse-Linie – dieselbe Quelle, die auch den Pfeil auf dem Bildschirm-Brett
-  zeichnet – lässt zusätzlich die betroffenen Felder auf dem physischen Brett blinken
-  (500&nbsp;ms An/Aus; die Hardware kann selbst nicht blinken, das übernimmt die Software).
-  Tritt zurück, solange noch ein Zug physisch nachzuziehen ist.
-- **Zug-Erkennung:** Statt einzelne Felder zu diffen, wird die komplette beobachtete
-  Stellung gegen jeden legal möglichen Zug aus der aktuellen Stellung verglichen (der
-  simulierte Zug muss exakt zur beobachteten Stellung führen) – deckt Schlagzüge, Rochade,
-  En-passant und Bauernumwandlung (inklusive gewählter Figur) ohne Sonderfälle ab. Ein
-  Kandidat wird erst nach zwei aufeinanderfolgenden übereinstimmenden Lesungen übernommen,
-  als Schutz gegen einen einzelnen fehlerhaften RFID-Lesevorgang.
-- **Bester Analysezug als Blinken (optional):** Solange der Spieler am Zug ist, blinkt der
-  beste Zug der mitlaufenden Stockfish-Analyse auf dem Brett – Von-Feld und Ziel-Feld im
-  Wechsel (je 500&nbsp;ms), nie gleichzeitig. Per Toggle-Schalter „Bester Zug“ im
-  Chessnut-Einzeiler ein-/abschaltbar (Default: an), persistiert wie die übrigen
-  Einstellungen. Gezeigt wird nur eine Analyse zur aktuellen Stellung ab Tiefe 10 (sonst
-  würde bei jedem Tiefensprung ein anderer Kandidat aufblitzen); tritt zurück, solange
-  noch ein Zug physisch nachzuziehen ist oder eine angeklickte Zugvorschau blinkt.
-  **Warum im Wechsel (Hardware-Eigenheit des Bretts):** Die LED-Matrix des Chessnut Air
-  ist gemultiplext – leuchten gleichzeitig Felder in mehreren Reihen *und* mehreren Linien,
-  glimmen an den übrigen Kreuzungspunkten aktiver Reihen mit aktiven Linien schwache,
-  leicht flimmernde "Geister-LEDs" mit, die gar nicht angesteuert wurden (Beispiel
-  Springer g1 → e2/f3/h3: zusätzlich glimmen e1, g3, h1; per Video Bild für Bild
-  nachgewiesen; das Protokoll kennt pro Feld nur an/aus, eine Helligkeitssteuerung gibt es
-  nicht). Ein einzelnes Feld ist immer geisterfrei. Aus demselben Grund wurde ein früheres
-  Feature wieder entfernt, das beim Anheben einer Figur alle legalen Zielfelder zeigte:
-  Bei Schwerfiguren zu viele Felder auf einmal (Geister), als reihenweises Lauflicht zu
-  unruhig. Zusätzlich schreibt `setLeds` ein unverändertes Muster gar nicht erst erneut
-  ans Board (Vergleich gegen das zuletzt tatsächlich gesendete Muster), sodass die
-  ~200-ms-Brett-Meldungen keine überflüssigen Schreibbefehle auslösen. Der Schreibvorgang
-  selbst läuft, wie in der Community-Referenzimplementierung
-  ([paulvonallwoerden/chessnut-air](https://github.com/paulvonallwoerden/chessnut-air)),
-  wo möglich "ohne Antwort" (`writeValueWithoutResponse`) statt mit
-  Bestätigungs-Roundtrip – schneller und schließt das (kleine) Zeitfenster, in dem sich
-  zwei praktisch zeitgleiche Schreibvorgänge mit demselben Muster hätten überlappen
-  können (das zuletzt gesendete Muster wird dafür schon vor dem eigentlichen
-  Schreibvorgang gemerkt, nicht erst danach).
-- **Protokoll:** Zwei BLE-GATT-Services (Stellungs-Übertragung + Schreiben/Bestätigung),
-  32-Byte-Stellungspaket (2 Felder pro Byte), LED-Kommando mit einem Byte pro Reihe.
-  Reverse-engineered von der Community, hier verifiziert gegen die offizielle
-  Protokolldokumentation "Chessnut chess board communications" von Graham O'Neill sowie
-  drei unabhängige Open-Source-Implementierungen
+- **"Connect"** in the Chessnut status line right below the board opens the Bluetooth device
+  picker; if exactly one board is found, it connects automatically. Chromium remembers the
+  permission per app, so afterwards the app reconnects quietly in the background on
+  startup without asking again (where the browser supports that).
+- **While connected, the on-screen board is a mirror only:** your own moves come exclusively
+  from the physical board; the mouse is disabled to avoid a conflicting second input device.
+- **LED feedback:** after every move (yours or the engine's), the affected squares light up
+  until the physical position matches the target position again — for an opponent's move,
+  that's the prompt to replay it by hand. The LEDs always show exactly the squares of the
+  known last move, not the full observed discrepancy — so a single faulty RFID read on an
+  unrelated square can't trigger wrong LEDs. The LED command is resent on every new position
+  report from the board (roughly every 200ms), not just once right after the move — so a
+  single lost write, or one colliding with an immediate follow-up action, self-corrects
+  instead of leaving the LEDs permanently wrong.
+- **Correction hints:** if the board deviates from the expected position (e.g. a mistake
+  while replaying a move), the status line shows the affected squares as a text hint — only
+  after the same discrepancy has been observed twice in a row, so a single faulty RFID
+  reading doesn't immediately trigger a (false) report.
+- **Also applies to "New game", PGN import and taking back a move:** not just after a single
+  move, but after every position change, the app checks whether the physical board still
+  matches. If the board is still mid-way through the old game after "New game", for example,
+  the missing/extra squares light up and a new move is only recognized once the starting
+  position has actually been set up. This also holds when the next move arrives immediately
+  afterwards, before the board could be checked (e.g. "New game as Black", where the engine
+  as White moves automatically right away) — then the LEDs keep showing the full discrepancy
+  instead of just the two squares of the latest move, until the board actually matches.
+- **Move suggestions blink on the board:** the tutor's "💡 Move suggestion" and any clicked
+  analysis line — the same source that also draws the arrow on the on-screen board — also
+  makes the affected squares blink on the physical board (500ms on/off; the hardware can't
+  blink by itself, the software handles that). Steps back while a move still needs to be
+  replayed physically.
+- **Move detection:** instead of diffing individual squares, the full observed position is
+  compared against every legal move from the current position (the simulated move must lead
+  exactly to the observed position) — this covers captures, castling, en passant and
+  promotion (including the chosen piece) without special cases. A candidate is only accepted
+  after two consecutive matching reads, as protection against a single faulty RFID read.
+- **Best analysis move as blinking (optional):** while it's the player's turn, the best move
+  from the ongoing Stockfish analysis blinks on the board — from-square and to-square
+  alternating (500ms each), never simultaneously. Toggleable via the "Best move" switch in
+  the Chessnut status line (default: on), persisted like the other settings. Only an analysis
+  of the current position from depth 10 onward is shown (otherwise a different candidate
+  would flash at every depth jump); it steps back while a move still needs to be replayed
+  physically or a clicked move preview is blinking.
+  **Why alternating (a hardware quirk of the board):** the Chessnut Air's LED matrix is
+  multiplexed — if squares in multiple rows *and* multiple files light up at the same time,
+  the remaining intersections of active rows with active files also glow faintly and
+  flicker as "ghost LEDs" that were never actually addressed (example: knight g1 →
+  e2/f3/h3: e1, g3, h1 also glow; verified frame by frame via video; the protocol only knows
+  on/off per square, there's no brightness control). A single square is always ghost-free.
+  For the same reason, an earlier feature was removed that showed all legal target squares
+  when a piece was lifted: too many squares at once for major pieces (ghosts), too unsettled
+  as a row-by-row chaser light. Additionally, `setLeds` doesn't resend an unchanged pattern
+  to the board at all (comparing against the last pattern actually sent), so the ~200ms board
+  reports don't trigger redundant writes. The write itself, where possible, runs "without
+  response" (`writeValueWithoutResponse`) instead of with a confirmation round-trip, as in the
+  community reference implementation
+  ([paulvonallwoerden/chessnut-air](https://github.com/paulvonallwoerden/chessnut-air)) —
+  faster, and it closes the (small) window in which two nearly simultaneous writes with the
+  same pattern could otherwise overlap (the last pattern sent is remembered before the actual
+  write, not only afterward).
+- **Protocol:** two BLE GATT services (position transmission + write/acknowledgment), a
+  32-byte position packet (2 squares per byte), LED command with one byte per row.
+  Reverse-engineered by the community, verified here against the official protocol
+  documentation "Chessnut chess board communications" by Graham O'Neill, as well as three
+  independent open-source implementations
   ([paulvonallwoerden/chessnut-air](https://github.com/paulvonallwoerden/chessnut-air),
   [NSStudent/EasyLinkSwiftSDK](https://github.com/NSStudent/EasyLinkSwiftSDK),
-  [Dash1971/chessnut-maia-cli](https://github.com/Dash1971/chessnut-maia-cli)) – alle
-  liefern exakt dieselben Konstanten.
-- **Wichtiger Hinweis zum Teststand:** Das Byte-Protokoll (Stellungs-Dekodierung,
-  LED-Kodierung) und die Zugableitungslogik sind isoliert gegen die offiziellen
-  Protokollbeispiele und diverse Szenarien (Schlagzug, Rochade, En-passant,
-  Unterverwandlung, Übergangsstellungen) verifiziert. Der eigentliche
-  Bluetooth-Verbindungsaufbau mit einem echten Brett ist in dieser Entwicklungsumgebung
-  **nicht** testbar (keine Bluetooth-Hardware) und braucht noch die Verifikation mit dem
-  echten Chessnut Air.
-- **Plattformanbindung:** Die Bluetooth-Nutzungsbeschreibung ist im macOS-Bundle
-  eingerichtet. Windows und Linux haben einen gemeinsamen Pairing-Dialog für Bestätigung
-  und PIN-Eingabe. Unter Linux wird Web Bluetooth im Main-Prozess zusätzlich aktiviert;
-  BlueZ und ein funktionierender Bluetooth-LE-Adapter werden vorausgesetzt. Details und
-  noch offene Hardwaretests stehen in [PLATTFORMEN.md](PLATTFORMEN.md).
+  [Dash1971/chessnut-maia-cli](https://github.com/Dash1971/chessnut-maia-cli)) — all of them
+  yield exactly the same constants.
+- **Important note on test coverage:** the byte protocol (position decoding, LED encoding)
+  and the move-derivation logic are verified in isolation against the official protocol
+  examples and various scenarios (capture, castling, en passant, underpromotion,
+  intermediate positions). Actually establishing a Bluetooth connection with a real board is
+  **not** testable in this development environment (no Bluetooth hardware) and still needs
+  verification with a real Chessnut Air.
+- **Platform integration:** the Bluetooth usage description is set up in the macOS bundle.
+  Windows and Linux share a pairing dialog for confirmation and PIN entry. On Linux, Web
+  Bluetooth is additionally enabled in the main process; BlueZ and a working Bluetooth LE
+  adapter are assumed. Details and still-open hardware tests are in
+  [PLATTFORMEN.md](PLATTFORMEN.md) (German only).
 
-## Partie-Report
+## Game report
 
-„Partie-Report" in der Kopfleiste (ab 2 Zügen aktiv) öffnet einen Dialog mit rein lokal
-berechneten Statistiken (Blunder/Fehler/Ungenauigkeiten/beste Züge, jeweils eigene Züge) und
-den bis zu vier gravierendsten eigenen Fehlern als „kritische Momente" – beides ohne LLM-Aufruf.
-„Report erstellen" schickt das an den Tutor (`effort: high`, bis zu 4000 Tokens) für eine
-gestreamte Zusammenfassung: wiederkehrende Fehlermuster, die kritischsten Momente erklärt,
-2–3 konkrete Lernpunkte.
+"Game report" in the header (active from move 2 onward) opens a dialog with purely
+locally-computed statistics (blunders/mistakes/inaccuracies/best moves, each for your own
+moves) and up to four of your most serious mistakes as "critical moments" — both without any
+LLM call. "Create report" sends this to the tutor (`effort: high`, up to 4000 tokens) for a
+streamed summary: recurring mistake patterns, the most critical moments explained, 2–3
+concrete takeaways.
 
-## PGN-Export & -Import
+## PGN export & import
 
-- **„PGN exportieren“** (Kopfleiste → „Datei", ab 1 Zug aktiv): schreibt die aktuelle Partie
-  inkl. Kopfzeilen (Datum, Spieler/Engine-Name, Ergebnis inklusive Zeitüberschreitung) über
-  einen nativen Speichern-Dialog auf die Platte. Zugkommentare des Tutors landen als
-  PGN-Kommentar am jeweiligen Zug; wurde ein Zug zurückgenommen und später anders
-  fortgesetzt, bleibt die verworfene Fortsetzung als Klammer-Variante erhalten.
-- **„PGN importieren“** (Kopfleiste → „Datei"): erhält auch FEN-Startstellungen, Zugkommentare und gespeicherte
-  Ergebnisse. Lädt eine beliebige PGN-Datei (eigene Exporte oder von anderswo,
-  z. B. Lichess/Chess.com) und zeigt sie im **Review-Modus**: Brett, Zugliste, Stockfish-Analyse,
-  Eröffnungserkennung und Tutor (Zugvorschlag, Rückfragen, Partie-Report) funktionieren normal
-  auf der importierten Partie, das Brett ist aber schreibgeschützt und der Gegner zieht nicht
-  automatisch weiter.
-- **„▶ Weiterspielen“** beendet den Review-Modus – die Partie läuft ab der importierten
-  Endstellung normal weiter (die Seite, die dort am Zug ist, wird zur Spielerfarbe).
+- **"Export PGN"** (header → "File", active from move 1 onward): writes the current game,
+  including headers (date, player/engine name, result including timeout), to disk via a
+  native save dialog. The tutor's move comments end up as PGN comments on the respective
+  move; if a move was taken back and later continued differently, the discarded continuation
+  is kept as a bracketed variation.
+- **"Import PGN"** (header → "File"): also picks up FEN starting positions, move comments and
+  stored results. Loads any PGN file (your own exports or from elsewhere, e.g.
+  Lichess/Chess.com) and shows it in **review mode**: the board, move list, Stockfish
+  analysis, opening recognition and tutor (move suggestion, follow-up questions, game report)
+  all work normally on the imported game, but the board is read-only and the opponent doesn't
+  move automatically.
+- **"▶ Continue playing"** ends review mode — the game continues normally from the imported
+  final position (whichever side is to move there becomes the player's color).
 
-## Partie-Bibliothek
+## Game library
 
-- Jede tatsächlich zu Ende gespielte Partie (Matt, Patt, Remis per Regel …) wird automatisch
-  als PGN unter `userData/games/<Zeitstempel>.pgn` abgelegt – kein manueller Schritt nötig.
-  Importierte Partien im Review-Modus lösen dabei **kein** erneutes Speichern aus, auch nicht
-  beim anschließenden „Weiterspielen“ einer bereits beendeten Partie.
-- **„Bibliothek“** (Kopfleiste → „Datei") öffnet eine Liste aller gespeicherten Partien
-  (neueste zuerst) mit Datum, Spielern, Ergebnis und Halbzug-Anzahl.
-- **„Öffnen“** lädt die Partie in den Review-Modus (wie ein PGN-Import); **„Löschen“**
-  entfernt die Datei dauerhaft von der Platte.
-- Bewusst kein vollständiges Datenbank-Feature (keine Suche/Filter/Tags).
+- Every game actually played to completion (checkmate, stalemate, draw by rule, ...) is
+  automatically saved as a PGN under `userData/games/<timestamp>.pgn` — no manual step
+  required. Games imported in review mode do **not** trigger another save, not even when
+  subsequently "continuing" an already-finished game.
+- **"Library"** (header → "File") opens a list of all saved games (newest first) with date,
+  players, result and half-move count.
+- **"Open"** loads the game into review mode (like a PGN import); **"Delete"** permanently
+  removes the file from disk.
+- Deliberately not a full database feature (no search/filter/tags).
 
-## Schachuhr
+## Chess clock
 
-⚙︎ → „Bedenkzeit (Schachuhr)“:
+⚙︎ → "Thinking time (chess clock)":
 
-- **Frei** (Default): keine Zeitkontrolle, kein Uhr-Badge sichtbar.
-- **Klassisch** (60 min + 30 s), **Schnellschach/Rapid** (15 min + 10 s), **Blitzschach**
-  (5 min + 3 s), **Bullet-Schach** (1 min + 1 s) – jede Kategorie befüllt Grundzeit/Inkrement
-  mit einem sinnvollen Voreinstellungswert, beides bleibt danach frei editierbar (z. B. für
-  ein individuelles Inkrement).
-- Beide Uhren zeigen sich als Badge neben der jeweiligen Geschlagene-Figuren-Leiste,
-  zählen für die jeweils am Zug befindliche Seite in Echtzeit herunter (auch während die
-  Engine denkt) und werden unter 20 Sekunden rot/pulsierend. Der allererste Zug der Partie
-  ist unbegrenzt bedenkbar – die Uhr steht bis dahin auf der vollen Grundzeit still und
-  startet erst mit dem ersten gespielten Zug.
-- Inkrement wird der ziehenden Seite direkt nach ihrem Zug gutgeschrieben.
-- Läuft eine Uhr ab, endet die Partie sofort mit „… gewinnt durch Zeitüberschreitung“ –
-  unabhängig vom Stellungswert.
-- „Speichern & anwenden“ setzt beide Uhren auf die dort gewählte Grundzeit zurück (wie die
-  übrigen Engine-Einstellungen wirkt auch das sofort, nicht erst mit der nächsten Partie).
+- **Free** (default): no time control, no clock badge shown.
+- **Classical** (60 min + 30s), **Rapid** (15 min + 10s), **Blitz** (5 min + 3s), **Bullet**
+  (1 min + 1s) — each category fills in a sensible base time/increment preset, both remain
+  freely editable afterward (e.g. for a custom increment).
+- Both clocks show up as a badge next to the respective captured-pieces bar, count down in
+  real time for whichever side is to move (even while the engine is thinking), and turn
+  red/pulsing under 20 seconds. The very first move of the game has unlimited thinking time —
+  the clock stands still at the full base time until then and only starts with the first
+  move played.
+- The increment is credited to the moving side right after their move.
+- If a clock runs out, the game ends immediately with "... wins on time" — regardless of the
+  position's evaluation.
+- "Save & apply" resets both clocks to the base time chosen there (like the other engine
+  settings, this takes effect immediately, not only with the next game).
 
-## Zug-Sound
+## Move sound
 
-Bei jedem gespielten Zug (eigener Zug, Engine-Antwort, Redo) erklingt ein kurzes „Klack“
-(Figur auf Holzbrett) – rein synthetisiert per Web-Audio-API (gefilterter Rausch-Burst +
-kurzer Tonimpuls), keine Audiodatei nötig. Abschaltbar über ⚙︎ → „Sound“.
+Every move played (your own move, engine response, redo) triggers a short "clack" (piece on
+a wooden board) — purely synthesized via the Web Audio API (filtered noise burst + short
+tone pulse), no audio file needed. Can be turned off via ⚙︎ → "Sound".
 
-Hinweise:
+Notes:
 
-- Zwei getrennte Engine-Prozesse: Gegner (konfigurierbar, optional Elo-limitiert) und
-  Analyse (immer Stockfish, `go infinite` mit MultiPV 3 auf der aktuellen Stellung).
-- Zugklassifikation über Verlust an Gewinnwahrscheinlichkeit (Lichess-Formel):
-  ≥30 % Blunder, ≥20 % Fehler, ≥10 % Ungenauigkeit; ★ = Engine-Bestzug. Läuft die Stellung
-  weiter, bevor die Mindesttiefe erreicht ist, wird die bis dahin erreichte Tiefe als
-  endgültig akzeptiert (sonst bliebe ein sehr schnell gespielter Zug für immer unklassifiziert).
-- Umwandlung ist aktuell immer Dame (Promotion-Dialog steht noch aus).
-- Die Durchsuchen-Dialoge für lc0-Binary und Maia-Gewichtsdatei öffnen sich standardmäßig im
-  zuletzt gewählten bzw. erkannten Ordner, statt immer im Home-Verzeichnis zu starten.
+- Two separate engine processes: opponent (configurable, optionally Elo-limited) and
+  analysis (always Stockfish, `go infinite` with MultiPV 3 on the current position).
+- Move classification via win-probability loss (Lichess formula): ≥30% blunder, ≥20%
+  mistake, ≥10% inaccuracy; ★ = engine's best move. If the position changes before the
+  minimum depth is reached, the depth reached so far is accepted as final (otherwise a very
+  quickly played move would remain unclassified forever).
+- Promotion is currently always to a queen (a promotion dialog is still pending).
+- The browse dialogs for the lc0 binary and Maia weights file open by default in the last
+  chosen or detected folder, instead of always starting in the home directory.
 
-## Lizenz
+## License
 
-AI Chess Tutor ist freie Software unter der **GNU General Public License v3.0 (oder später)**
-– Copyright © 2026 Daniel Buch. Der vollständige Lizenztext liegt in [LICENSE](./LICENSE);
-kurz gefasst: Du darfst die App frei nutzen, weitergeben und verändern, jede Weitergabe
-(auch von Forks/abgeleiteten Werken) muss aber wieder unter der GPL-3.0 samt Quellcode
-erfolgen. Die App selbst weist im Info-Overlay beim Start ebenfalls auf die Lizenz hin.
+AI Chess Tutor is free software under the **GNU General Public License v3.0 (or later)** —
+Copyright © 2026 Daniel Buch. The full license text is in [LICENSE](./LICENSE); in short: you
+may freely use, redistribute and modify the app, but any redistribution (including of
+forks/derivative works) must again be under GPL-3.0 including source code. The app itself
+also points to the license in the info overlay on startup.
 
-### Drittanbieter-Lizenzen
+### Third-party licenses
 
-| Komponente | Lizenz | Einbindung |
+| Component | License | Integration |
 | --- | --- | --- |
-| [Stockfish](https://github.com/official-stockfish/Stockfish) | GPL-3.0 | gebündeltes Binary (eigener Prozess, UCI) |
-| [lc0](https://github.com/LeelaChessZero/lc0) | GPL-3.0 | gebündeltes Binary (eigener Prozess, UCI) |
-| [Maia-Gewichte](https://github.com/CSSLab/maia-chess) | GPL-3.0 | gebündelte Netz-Dateien (für lc0) |
-| [chessground](https://github.com/lichess-org/chessground) | GPL-3.0-or-later | npm-Abhängigkeit, ins Bundle kompiliert |
-| [chess.js](https://github.com/jhlywa/chess.js) | BSD-2-Clause | npm-Abhängigkeit |
-| React / React DOM | MIT | npm-Abhängigkeit |
-| Electron | MIT | Laufzeitumgebung |
-| @anthropic-ai/sdk | MIT | npm-Abhängigkeit |
-| openai | Apache-2.0 | npm-Abhängigkeit |
-| @google/genai | Apache-2.0 | npm-Abhängigkeit |
+| [Stockfish](https://github.com/official-stockfish/Stockfish) | GPL-3.0 | bundled binary (own process, UCI) |
+| [lc0](https://github.com/LeelaChessZero/lc0) | GPL-3.0 | bundled binary (own process, UCI) |
+| [Maia weights](https://github.com/CSSLab/maia-chess) | GPL-3.0 | bundled network files (for lc0) |
+| [chessground](https://github.com/lichess-org/chessground) | GPL-3.0-or-later | npm dependency, compiled into the bundle |
+| [chess.js](https://github.com/jhlywa/chess.js) | BSD-2-Clause | npm dependency |
+| React / React DOM | MIT | npm dependency |
+| Electron | MIT | runtime environment |
+| @anthropic-ai/sdk | MIT | npm dependency |
+| openai | Apache-2.0 | npm dependency |
+| @google/genai | Apache-2.0 | npm dependency |
 
-Stockfish und lc0 bringen beim Herunterladen (`npm run fetch-engines`) ihre jeweilige
-`COPYING`/`LICENSE`-Datei nach `resources/engines/mac-arm64/` mit (nicht eingecheckt, siehe
-`.gitignore`) und werden im Installer als eigenständige Binaries mitgeliefert, nicht in den
-App-Code eingebunden. chessground ist selbst GPL-3.0-or-later und wird direkt ins JS-Bundle
-kompiliert – schon dadurch ist GPL-3.0 für das Gesamtwerk die passende (und nötige) Wahl,
-nicht nur eine Präferenz.
+When downloaded (`npm run fetch-engines`), Stockfish and lc0 bring their respective
+`COPYING`/`LICENSE` file into `resources/engines/mac-arm64/` (not checked in, see
+`.gitignore`) and are shipped in the installer as standalone binaries, not embedded in the
+app code. chessground itself is GPL-3.0-or-later and is compiled directly into the JS
+bundle — that alone makes GPL-3.0 the fitting (and necessary) choice for the overall work,
+not just a preference.
