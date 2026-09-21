@@ -66,3 +66,42 @@ jobs:
             dist/*.exe
             dist/*.deb
             dist/*.AppImage
+
+  # Runs only for a pushed tag like "v0.1.0" (the "v" plus the exact package.json
+  # version) — draft, not published: the required signing/notarization note below
+  # still needs a human to review and confirm the release text before it goes live.
+  release:
+    needs: desktop
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify tag matches package.json version
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          version=$(node -p "require('./package.json').version")
+          if [ "$tag" != "$version" ]; then
+            echo "Tag v$tag does not match package.json version $version" >&2
+            exit 1
+          fi
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: installers-*
+          path: installers
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: installers/*
+          body: |
+            ⚠️ Unsigned build: macOS Gatekeeper and Windows SmartScreen will warn before
+            first launch (code signing/notarization not set up yet).
+
+            ⚠️ Unsignierter Build: macOS Gatekeeper und Windows SmartScreen warnen vor dem
+            ersten Start (Code-Signierung/Notarisierung ist noch nicht eingerichtet).

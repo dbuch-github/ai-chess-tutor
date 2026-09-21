@@ -29,6 +29,20 @@ Gegner, Live-Stockfish-Analyse und einen LLM-Schachtutor miteinander verbindet.
 
 ## Setup und Entwicklung
 
+**Für Einsteiger:** Die folgenden Terminal-Schritte richten sich an alle, die die App aus
+dem Quellcode bauen – aktuell der einzige Weg, weil es noch keinen fertigen Download zum
+Doppelklicken gibt (siehe „Prüfstand" im Abschnitt „Installer" unten). Gäbe es bereits
+einen fertigen Installer (DMG/EXE/AppImage) zum Herunterladen, würde ein Doppelklick
+reichen – kein Terminal, kein Homebrew, da die Schach-Engines dann schon fertig in der App
+stecken. Der Grund für den Umweg: AI Chess Tutor bringt zwei vollwertige Schach-Engines mit
+(Stockfish und lc0 für Maia) – echte, für jedes Betriebssystem einzeln kompilierte
+Programme, keine paar Zeilen JavaScript. Weil sie deshalb nicht im Quellcode-Repository
+liegen können, werden sie beim Setup passend zur eigenen Plattform heruntergeladen und per
+Prüfsumme verifiziert; genau das erledigen die Setup-Skripte unten automatisch. Auf dem Mac
+kommt eine Besonderheit hinzu: Die schnelle, Grafikkarten-beschleunigte Variante von lc0
+gibt es dort nur als Homebrew-Paket – einen einfachen Download wie unter Windows gibt es
+dafür nicht, daher der zusätzliche Homebrew-Schritt.
+
 Eine gemeinsame Codebasis für **macOS arm64, Windows x64 und Linux x64**.
 Voraussetzung für Entwickler: Node.js ≥ 22.12. Im Projektordner einmal das passende
 Setup ausführen:
@@ -74,6 +88,13 @@ eine **NSIS-Setup-EXE** (Windows) oder **DEB und AppImage** (Linux). Die passend
 Plattform und Architektur werden automatisch erkannt. Die Pakete enthalten Engines,
 Maia-Netze und Lizenzdateien; Endnutzer brauchen keine Entwicklungsumgebung.
 Auch im Dev-Modus werden nach dem Setup dieselben lokalen Engine-Ressourcen erkannt.
+
+**Downloads ohne Terminal:** Ein Tag im Format `vX.Y.Z` (passend zur `version` in
+`package.json`) löst in der CI zusätzlich einen `release`-Job aus, der alle drei
+Installer als Entwurf eines [GitHub Release](/dbuch-github/ai-chess-tutor/releases)
+zusammenführt – zum Prüfen durch einen Menschen, bevor er öffentlich sichtbar wird
+(siehe [PLATTFORMEN.md](PLATTFORMEN.md)). Bis zum ersten veröffentlichten Release
+bleibt das Setup-Skript oben der einzige Weg.
 
 **Prüfstand:** macOS-Build, DMG und Starttest wurden lokal erfolgreich geprüft.
 Der gemeinsame [CI-Workflow](.github/workflows/platforms.yml) für alle drei Systeme

@@ -30,6 +30,19 @@ engines as opponents, live Stockfish analysis and an LLM chess tutor.
 
 ## Setup and development
 
+**New to this:** the terminal steps below are for building the app from source — currently
+the only way, since there's no ready-made download to double-click yet (see "Test status"
+in the "Installer" section below). If a pre-built installer (DMG/EXE/AppImage) were already
+available to download, a double-click would be enough — no terminal, no Homebrew, since the
+chess engines would already be packaged inside the app. The reason for the detour: AI Chess
+Tutor bundles two full-fledged chess engines (Stockfish and lc0 for Maia) — real programs
+compiled separately for each operating system, not a few lines of JavaScript. Because of
+that, they can't live in the source repository; instead they're downloaded to match your
+platform during setup and verified by checksum — that's exactly what the setup scripts
+below do automatically. macOS has one extra wrinkle: the fast, graphics-card-accelerated
+build of lc0 is only available there as a Homebrew package — there's no simple download for
+it like on Windows, hence the extra Homebrew step.
+
 One shared codebase for **macOS arm64, Windows x64 and Linux x64**.
 Developers need Node.js ≥ 22.12. Run the matching setup once in the project folder:
 
@@ -73,6 +86,12 @@ AppImage** (Linux) on the respective build system. The matching platform and arc
 are detected automatically. The packages include engines, Maia networks and license files;
 end users need no development environment.
 In dev mode, the same local engine resources are recognized right after setup.
+
+**Downloads without a terminal:** pushing a tag formatted `vX.Y.Z` (matching the `version`
+in `package.json`) additionally triggers a `release` job in CI that bundles all three
+installers into a draft [GitHub Release](/dbuch-github/ai-chess-tutor/releases) — for a
+human to review before it goes public (see [PLATTFORMEN.md](PLATTFORMEN.md), German only).
+Until the first release is published, the setup script above remains the only way in.
 
 **Test status:** the macOS build, DMG and startup test have been verified successfully
 locally. The shared [CI workflow](.github/workflows/platforms.yml) for all three systems is

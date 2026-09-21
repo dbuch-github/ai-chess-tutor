@@ -189,6 +189,16 @@ aus; unter Windows wird zuvor die NSIS-EXE installiert, unter Linux das DEB.
 Danach werden die Installer als CI-Artefakte gespeichert. Der Windows-Runner
 prüft Windows Server 2022; ein separater Windows-11-Desktoptest bleibt erforderlich.
 
+Ein Tag im Format `vX.Y.Z`, das exakt der `version` in [package.json](package.json)
+entspricht (aktuell `0.1.0`, also Tag `v0.1.0`), löst zusätzlich den `release`-Job aus:
+Er wartet auf alle drei erfolgreichen Matrix-Läufe, lädt deren Installer-Artefakte
+zusammen und legt daraus einen **Draft**-GitHub-Release mit allen vier Dateien (DMG,
+NSIS-EXE, DEB, AppImage) an. Bewusst als Entwurf statt sofort veröffentlicht: Der
+Release-Text warnt zwar bereits vor der fehlenden Code-Signierung/Notarisierung
+(siehe unten), ein Mensch soll den Entwurf aber vor der Veröffentlichung trotzdem
+sichten. Ein Tag mit abweichender Version bricht den Job kontrolliert ab, bevor ein
+Release entsteht.
+
 In dieser Sitzung erfolgreich auf macOS arm64 geprüft:
 
 - 51 Tests, ohne Fehler oder übersprungene Tests; darunter Pfade, Schlüsselablage,
