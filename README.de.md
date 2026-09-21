@@ -96,6 +96,29 @@ zusammenführt – zum Prüfen durch einen Menschen, bevor er öffentlich sichtb
 (siehe [PLATTFORMEN.md](PLATTFORMEN.md)). Bis zum ersten veröffentlichten Release
 bleibt das Setup-Skript oben der einzige Weg.
 
+**macOS: „… ist beschädigt und kann nicht geöffnet werden"** – dieser Dialog nach dem
+Download ist keine echte Beschädigung, sondern Gatekeepers Reaktion auf eine
+unsignierte, nicht notarisierte App (kein Apple-Developer-Konto für dieses Projekt
+vorhanden, siehe „Prüfstand" unten). Zwei Wege, die App trotzdem zu starten:
+
+- **Per Homebrew** (empfohlen – kein Terminal-Kommando nach der Installation mehr
+  nötig):
+  ```bash
+  brew tap dbuch-github/ai-chess-tutor https://github.com/dbuch-github/ai-chess-tutor
+  brew install --cask ai-chess-tutor
+  ```
+  Das Cask ([Casks/ai-chess-tutor.rb](Casks/ai-chess-tutor.rb)) lädt dieselbe DMG
+  und entfernt danach automatisch die Quarantäne-Markierung – die App startet
+  anschließend ganz normal per Doppelklick/Spotlight.
+- **Per manuellem DMG-Download**: nach dem Öffnen der DMG und dem Verschieben in
+  „Programme" einmalig im Terminal:
+  ```bash
+  xattr -cr "/Applications/AI Chess Tutor.app"
+  ```
+  Danach lässt sich die App normal starten. Ein Rechtsklick → „Öffnen" reicht bei
+  dieser „beschädigt"-Meldung (anders als beim älteren „unbekannter Entwickler"-
+  Dialog) auf aktuellem macOS meist nicht mehr aus.
+
 **Prüfstand:** macOS-Build, DMG und Starttest wurden lokal erfolgreich geprüft.
 Der gemeinsame [CI-Workflow](.github/workflows/platforms.yml) für alle drei Systeme
 ist eingerichtet; echte Windows-/Linux-Läufe und Chessnut-Hardwaretests stehen noch

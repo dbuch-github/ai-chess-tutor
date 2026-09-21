@@ -199,6 +199,18 @@ Release-Text warnt zwar bereits vor der fehlenden Code-Signierung/Notarisierung
 sichten. Ein Tag mit abweichender Version bricht den Job kontrolliert ab, bevor ein
 Release entsteht.
 
+[Casks/ai-chess-tutor.rb](Casks/ai-chess-tutor.rb) bietet zusätzlich einen Homebrew-
+Cask-Installationsweg für macOS an (`brew tap dbuch-github/ai-chess-tutor
+https://github.com/dbuch-github/ai-chess-tutor && brew install --cask ai-chess-tutor`).
+Sein `postflight`-Hook entfernt nach der Installation automatisch die Quarantäne-
+Markierung der DMG (`xattr -cr`) – ohne das würde Gatekeeper die unsignierte,
+nicht notarisierte App beim ersten Start als „beschädigt" melden (siehe README).
+`version` und `sha256` im Cask sind pro Release fest eingetragen und **nicht**
+automatisiert; nach jedem neuen Tag müssen beide Werte von Hand auf die neue DMG
+aktualisiert werden (`shasum -a 256 <dmg>`). Außerdem funktioniert der Cask erst,
+sobald das zugehörige GitHub Release tatsächlich veröffentlicht (nicht mehr Draft)
+ist, da die `url` direkt auf ein Release-Asset zeigt.
+
 In dieser Sitzung erfolgreich auf macOS arm64 geprüft:
 
 - 51 Tests, ohne Fehler oder übersprungene Tests; darunter Pfade, Schlüsselablage,
