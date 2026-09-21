@@ -49,6 +49,18 @@ export interface PgnImportResult {
 
 /* ---- Chessnut Air (Web-Bluetooth-Geräteauswahl) ---- */
 
+export interface BluetoothPairingRequest {
+  id: number
+  deviceId: string
+  kind: 'confirm' | 'confirmPin' | 'providePin'
+  pin?: string
+}
+
+export interface BluetoothPairingResponse {
+  confirmed: boolean
+  pin?: string
+}
+
 export interface BluetoothDeviceInfo {
   id: string
   name: string
@@ -113,6 +125,7 @@ export interface TutorConfig {
 }
 
 export interface TutorStatus {
+  keyPersistence: 'secure' | 'session-only'
   provider: LlmProviderId
   /** Hat der aktive Provider einen Key? (Kurzform für bestehende Verbraucher.) */
   hasApiKey: boolean

@@ -151,7 +151,9 @@
     "apiKeyAvailableAt": "API key available at {{hint}}.",
     "deleteStoredKey": "Delete stored key",
     "cancel": "Cancel",
-    "saveAndApply": "Save & apply"
+    "saveAndApply": "Save & apply",
+    "apiKeyAvailable": "(key available)",
+    "apiKeySessionOnly": "No secure system key storage is available. New API keys are used for this session only and must be entered again after restarting."
   },
   "clock": {
     "presets": {
@@ -206,7 +208,12 @@
   "bluetooth": {
     "chooseDevice": "Choose Bluetooth device",
     "multipleFound": "Several matching devices found – which one should be connected?",
-    "connect": "Connect"
+    "connect": "Connect",
+    "pairingTitle": "Pair Bluetooth device",
+    "pairingDevice": "Allow pairing with {{device}}?",
+    "confirmPin": "Does the device show this PIN: {{pin}}?",
+    "enterPin": "Enter the device PIN",
+    "pair": "Pair"
   },
   "chessnut": {
     "statusUnsupported": "Not supported",

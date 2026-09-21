@@ -9,7 +9,7 @@ const fixture = fileURLToPath(new URL('./fixtures/fake-uci.mjs', import.meta.url
 
 test('stopping a search settles all stop callers and leaves the next move intact', { timeout: 10_000 }, async () => {
   const engine = new UciEngine()
-  await engine.start(fixture)
+  await engine.start(process.execPath, [fixture])
   try {
     const first = engine.goMovetime(5000)
     const started = Date.now()
@@ -22,20 +22,20 @@ test('stopping a search settles all stop callers and leaves the next move intact
 
 test('a stop timeout rejects the pending move and prevents late answers contaminating a restart', { timeout: 10_000 }, async () => {
   const engine = new UciEngine()
-  await engine.start(fixture)
+  await engine.start(process.execPath, [fixture])
   await engine.setOptions({ IgnoreStop: true })
   const move = assert.rejects(engine.goMovetime(5000), /stop timeout/)
   await assert.rejects(engine.stopSearch(), /stop timeout/)
   await move
   assert.equal(engine.running, false)
-  await engine.start(fixture)
+  await engine.start(process.execPath, [fixture])
   try { assert.equal(await engine.goNodes(1), 'e2e4') }
   finally { await engine.quit() }
 })
 
 test('quitting settles a pending move instead of leaving its caller busy', { timeout: 10_000 }, async () => {
   const engine = new UciEngine()
-  await engine.start(fixture)
+  await engine.start(process.execPath, [fixture])
   const move = assert.rejects(engine.goMovetime(5000), /Engine stopped/)
   await engine.quit()
   await move
@@ -98,4 +98,13 @@ test('custom starting FEN reaches UCI, opponent and resumed analysis', { timeout
   const expected = JSON.stringify({ moves: ['e2e4'], initialFen: fen })
   assert.ok(opponent.commands.includes(expected))
   assert.equal(analysis.commands.filter(c => c === expected).length, 2)
+})
+
+test('a failed spawn can be followed by a working engine configuration', { timeout: 5000 }, async () => {
+  const engine = new UciEngine()
+  await assert.rejects(engine.start(`${fixture}.missing`), /ENOENT/)
+  assert.equal(engine.running, false)
+  await engine.start(process.execPath, [fixture])
+  try { assert.equal(await engine.goNodes(1), 'e2e4') }
+  finally { await engine.quit() }
 })

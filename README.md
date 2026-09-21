@@ -25,57 +25,61 @@ Gegner, Live-Stockfish-Analyse und einen LLM-Schachtutor miteinander verbindet.
 - Figurinen-Notation, Board-Preview (Angriffe/Deckungen/Fesselungen/schwache Felder) und
   ein synthetisierter Zug-Sound runden die Bedienung ab.
 
-## Voraussetzungen
+## Setup und Entwicklung
 
-- Node.js ≥ 22
-- Für die Entwicklung (`npm run dev`): Stockfish (`brew install stockfish`) – wird automatisch
-  unter `/opt/homebrew/bin/stockfish` gefunden; andere Pfade über die Einstellungen (⚙︎) setzen.
-  Der gepackte Installer (siehe unten) bringt Stockfish, lc0 und Maia bereits mit.
+Eine gemeinsame Codebasis für **macOS arm64, Windows x64 und Linux x64**.
+Voraussetzung für Entwickler: Node.js ≥ 22.12. Im Projektordner einmal das passende
+Setup ausführen:
 
-## Entwicklung
+| System | Setup |
+| --- | --- |
+| macOS mit Apple Silicon, Homebrew vorhanden | `bash setup-macos.sh` |
+| Windows 11, PowerShell | `powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-windows.ps1` |
+| Ubuntu 24.04 LTS Desktop | `bash setup-linux.sh` |
+
+Die Skripte installieren die Projektabhängigkeiten und stellen Stockfish 19,
+lc0 0.32.1 und alle neun Maia-Netze bereit. macOS bezieht lc0 aus Homebrew,
+Windows verwendet das CPU-Release mit seinen DLLs, Linux baut das Eigen-CPU-Backend.
+Unter Windows installieren Setup und Installer bei Bedarf außerdem die Microsoft-
+C++-Laufzeit direkt von Microsoft; dafür werden Internetzugang und Administratorrechte
+benötigt.
+Danach gelten auf allen drei Systemen dieselben Befehle:
 
 ```bash
-npm install
-npm run dev        # Dev-Modus mit HMR
-npm run build      # Produktionsbuild nach out/
+npm run dev                    # Dev-Modus mit HMR
+npm run build                  # Produktionsbuild nach out/
 npm run typecheck
-npm test           # Engine-, PGN-, Chessnut- und React-Regressionstests
+npm test                       # Gemeinsame Regressionstests einschließlich Browser
+npm run verify-engines         # Echte UCI-Suchläufe mit Stockfish und Maia
+npm run smoke                  # Starttest der gebauten Electron-App, isoliertes Profil
 ```
 
-## Installer (macOS, Apple Silicon)
+Die React-Tests suchen Chrome/Chromium oder unter Windows auch Edge. Mit `CHROME_PATH`
+lässt sich der ausführbare Browser explizit angeben. Ohne Browser wird lokal der
+Browser-Test übersprungen; in der CI gilt das als Fehler. Für die Tests werden keine
+LLM-API-Keys und kein verbundenes Chessnut-Brett benötigt.
+
+## Installer
 
 ```bash
-npm run dist        # lädt Engines + Netze, baut die .app und packt sie als .dmg unter dist/
+npm run dist                   # Native Installer unter dist/
+npm run dist -- --dir          # Nur das entpackte Anwendungspaket
+npm run smoke -- --packaged    # Starttest der gepackten App
 ```
 
-`npm run dist` ruft zuerst `scripts/fetch-engines.mjs` auf, das einmalig (danach werden
-vorhandene Dateien übersprungen) nach `resources/engines/mac-arm64/` lädt:
+Aus derselben Source entstehen auf dem jeweiligen Buildsystem eine **DMG** (macOS),
+eine **NSIS-Setup-EXE** (Windows) oder **DEB und AppImage** (Linux). Die passende
+Plattform und Architektur werden automatisch erkannt. Die Pakete enthalten Engines,
+Maia-Netze und Lizenzdateien; Endnutzer brauchen keine Entwicklungsumgebung.
+Auch im Dev-Modus werden nach dem Setup dieselben lokalen Engine-Ressourcen erkannt.
 
-- **Stockfish** – offizielles GitHub-Release (`sf_19`, macOS-Binary, auf die arm64-Slice
-  verkleinert)
-- **lc0** – aus der lokalen Homebrew-Bottle kopiert (`brew install lc0`, falls noch nicht
-  vorhanden); die Homebrew-Metal-Variante bindet nur macOS-Systemframeworks, läuft also auch
-  ohne Homebrew auf dem Zielrechner
-- **Maia-Netze** – alle neun offiziellen Spielstärken 1100–1900 von
-  [CSSLab/maia-chess](https://github.com/CSSLab/maia-chess/releases) (v1.0)
+**Prüfstand:** macOS-Build, DMG und Starttest wurden lokal erfolgreich geprüft.
+Der gemeinsame [CI-Workflow](.github/workflows/platforms.yml) für alle drei Systeme
+ist eingerichtet; echte Windows-/Linux-Läufe und Chessnut-Hardwaretests stehen noch
+aus. Release-Signierung und macOS-Notarisierung sind nicht eingerichtet.
 
-Diese Dateien werden nicht eingecheckt (siehe `.gitignore`) und landen über `extraResources`
-in `Contents/Resources/engines/` der gepackten App; die Einstellungen (⚙︎) finden Stockfish/lc0
-und die gewählte Maia-Stärke dort automatisch, kein manuelles Setup nötig. In der App gibt's
-unter „Gegner-Engine → Maia" eine Stärkeauswahl (Elo ≈ 1100–1900), die den passenden
-Netz-Pfad setzt.
-
-Die App ist **unsigniert** (kein Apple-Developer-Zertifikat hinterlegt) – beim ersten Start
-zeigt macOS eine Gatekeeper-Warnung. Öffnen per Rechtsklick → „Öffnen" (statt Doppelklick),
-oder vorher `xattr -cr "AI Chess Tutor.app"` ausführen. Gebaut wird nur für Apple Silicon
-(arm64) – lc0 gibt es für macOS ausschließlich als Homebrew-Bottle, und die aktuellen
-Bottles sind arm64-only.
-
-Die React-Tests starten einen isolierten Headless-Chrome-Prozess. Chrome/Chromium wird
-an üblichen macOS-/Linux-Pfaden gesucht; alternativ den Binary-Pfad über `CHROME_PATH`
-setzen. Ohne verfügbaren Browser wird nur dieser Test als übersprungen gemeldet.
-Die Tests verwenden eine lokale Test-Engine und simulierte Brettmeldungen; sie benötigen
-weder LLM-API-Keys noch ein verbundenes Chessnut-Brett.
+Details zu Voraussetzungen, Implementierung und offenen Abnahmeschritten stehen in
+[PLATTFORMEN.md](PLATTFORMEN.md).
 
 ## Aufbau
 
@@ -105,8 +109,10 @@ src/
 - **Architektur:** `TutorService` orchestriert providerneutral (Prompt-Bau, Gesprächshistorie,
   Trigger-Logik); `src/main/tutor/providers/*` übersetzt in das jeweilige SDK-Format. Neue
   Provider brauchen nur eine weitere Klasse, die das `LlmProvider`-Interface implementiert.
-- **API-Keys:** je Provider einzeln per Electron `safeStorage` verschlüsselt (macOS-Keychain-
-  gestützt) unter `userData/tutor-config.json`. Für Anthropic wird zusätzlich `ANTHROPIC_API_KEY`
+- **API-Keys:** je Provider einzeln per Electron `safeStorage` verschlüsselt unter
+  `userData/tutor-config.json` (macOS-Schlüsselbund, Windows-DPAPI, Linux-Schlüsselbund).
+  Ohne sicheren Speicher bleibt ein neu eingegebener Key nur für die Sitzung verfügbar;
+  die Einstellungen zeigen dies an. Für Anthropic wird zusätzlich `ANTHROPIC_API_KEY`
   aus der Umgebung genutzt, wenn kein Key gespeichert ist.
 - **Trigger-Modi** (im Tutor-Panel): *Still* (nur auf Nachfrage), *Fehler* (kommentiert eigene
   Fehler/Blunder), *Aktiv* (auch Ungenauigkeiten und Engine-Patzer).
@@ -128,9 +134,8 @@ src/
   `go nodes 1` (Suche deaktiviert, reine Netz-Vorhersage) statt Bedenkzeit – die Spielstärke
   (1100–1900) steckt in der gewählten `.pb.gz`-Datei, nicht in einer Elo-Option; im
   gepackten Installer sind lc0 und alle neun Stärken bereits enthalten und über die
-  Stärkeauswahl in den Einstellungen wählbar (siehe „Installer" oben). Im Dev-Modus
-  (`npm run dev`) braucht es stattdessen `brew install lc0` und manuell heruntergeladene
-  Gewichte.
+  Stärkeauswahl in den Einstellungen wählbar (siehe „Installer" oben). Nach dem
+  gemeinsamen Setup sind lc0 und die Gewichte auch im Dev-Modus automatisch verfügbar.
 - **Andere UCI-Engine:** freier Pfad, wie zuvor.
 
 **Eröffnungsbuch** (Checkbox, Default an): Der Gegner zieht in den ersten 10 Vollzügen nach
@@ -230,10 +235,11 @@ Node-Modul wie `noble` nötig – dadurch kein Neukompilieren bei Electron-Updat
   Bluetooth-Verbindungsaufbau mit einem echten Brett ist in dieser Entwicklungsumgebung
   **nicht** testbar (keine Bluetooth-Hardware) und braucht noch die Verifikation mit dem
   echten Chessnut Air.
-- **Für später (Distribution):** Ein gepacktes macOS-App-Bundle (electron-builder, noch
-  nicht eingerichtet) braucht `NSBluetoothAlwaysUsageDescription` in der Info.plist, sonst
-  verweigert macOS den Bluetooth-Zugriff kommentarlos. Im Dev-Modus (`npm run dev`) ist das
-  nicht nötig.
+- **Plattformanbindung:** Die Bluetooth-Nutzungsbeschreibung ist im macOS-Bundle
+  eingerichtet. Windows und Linux haben einen gemeinsamen Pairing-Dialog für Bestätigung
+  und PIN-Eingabe. Unter Linux wird Web Bluetooth im Main-Prozess zusätzlich aktiviert;
+  BlueZ und ein funktionierender Bluetooth-LE-Adapter werden vorausgesetzt. Details und
+  noch offene Hardwaretests stehen in [PLATTFORMEN.md](PLATTFORMEN.md).
 
 ## Partie-Report
 

@@ -1,0 +1,68 @@
+name: Desktop platforms
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, windows-2022, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Setup macOS
+        if: runner.os == 'macOS'
+        run: bash setup-macos.sh
+      - name: Setup Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./setup-windows.ps1
+      - name: Setup Linux
+        if: runner.os == 'Linux'
+        run: bash setup-linux.sh
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run dist
+      - name: Packaged app smoke test (macOS)
+        if: runner.os == 'macOS'
+        run: npm run smoke -- --packaged
+      - name: Installed app smoke test (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $installer = (Get-ChildItem dist -Filter '*.exe' | Select-Object -First 1).FullName
+          $destination = Join-Path $env:RUNNER_TEMP 'AI Chess Tutor'
+          $result = Start-Process -FilePath $installer -ArgumentList "/S /D=$destination" -Wait -PassThru
+          if ($result.ExitCode -ne 0) { throw "Installer failed: $($result.ExitCode)" }
+          $env:CHESS_SMOKE_EXECUTABLE = Join-Path $destination 'AI Chess Tutor.exe'
+          npm run smoke -- --packaged
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Install Linux package
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y ./dist/*.deb xvfb
+      - name: Installed app smoke test (Linux)
+        if: runner.os == 'Linux'
+        env:
+          CHESS_SMOKE_EXECUTABLE: /usr/bin/ai-chess-tutor
+        run: xvfb-run -a npm run smoke -- --packaged
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}
+          if-no-files-found: error
+          path: |
+            dist/*.dmg
+            dist/*.exe
+            dist/*.deb
+            dist/*.AppImage

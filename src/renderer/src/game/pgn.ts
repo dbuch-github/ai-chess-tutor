@@ -1,7 +1,7 @@
 import { Chess } from 'chess.js'
 import { CLASSIFY_LABELS, type LabeledClassification } from '../../../shared/classifyLabels'
 import type { SupportedLocale } from '../../../shared/types'
-import type { CapturablePiece, MoveRecord } from './useGame'
+import type { CapturablePiece, MoveRecord, MoveVariation } from './useGame'
 import { boardOutcome, importedOutcome, type GameOutcome } from './result'
 import i18n from '../i18n'
 
@@ -70,8 +70,9 @@ function renderMoveText(moves: MoveRecord[], locale: SupportedLocale): string {
       tokens.push(`{${sanitizeComment(comment)}}`)
       needsMoveNumber = true
     }
-    if (move.variation?.length) {
-      tokens.push(`(${renderMoveText(move.variation, locale)})`)
+    for (const variation of move.variations ?? []) {
+      const prefix = variation.initialComment ? `{${sanitizeComment(variation.initialComment)}} ` : ''
+      tokens.push(`(${prefix}${renderMoveText(variation.moves, locale)})`)
       needsMoveNumber = true
     }
   }
@@ -142,22 +143,70 @@ export interface ImportedGame {
   chess: Chess
 }
 
+/** chess.js lädt nur die Hauptlinie. Den Zugtext deshalb zusätzlich rekursiv
+ * lesen, wobei jeder Abzweig seine eigene Stellung und Kommentare behält. */
+function parseMoveText(tokens: string[], initialFen: string): MoveVariation {
+  let cursor = 0
+  function readLine(fen: string, nested: boolean): MoveVariation {
+    const chess = new Chess(fen)
+    const line: MoveVariation = { moves: [] }
+    while (cursor < tokens.length) {
+      const token = tokens[cursor++]
+      const last = line.moves.at(-1)
+      if (token === ')') {
+        if (!nested) throw new Error('Unexpected PGN variation end')
+        return line
+      }
+      if (token === '(') {
+        if (!last) throw new Error('PGN variation has no preceding move')
+        const branch = readLine(last.fenBefore, true)
+        ;(last.variations ??= []).push(branch)
+        continue
+      }
+      if (token.startsWith('{') || token.startsWith(';')) {
+        const comment = (token[0] === '{' ? token.slice(1, -1) : token.slice(1)).trim()
+        if (last) last.comment = [last.comment, comment].filter(Boolean).join(' ')
+        else line.initialComment = [line.initialComment, comment].filter(Boolean).join(' ')
+        continue
+      }
+      if (/^(?:\d+\.+|\$\d+|[!?]+|1-0|0-1|1\/2-1\/2|\*)$/.test(token)) continue
+      const move = chess.move(token.replace(/[!?]+$/, ''))
+      line.moves.push({
+        san: move.san,
+        uci: move.from + move.to + (move.promotion ?? ''),
+        color: move.color,
+        fenBefore: move.before,
+        fenAfter: move.after,
+        captured: move.captured as CapturablePiece | undefined
+      })
+    }
+    if (nested) throw new Error('Unclosed PGN variation')
+    return line
+  }
+  return readLine(initialFen, false)
+}
+
 /** Lädt eine PGN-Zeichenkette und rekonstruiert die Zugliste inkl. FEN je Zug. Wirft bei ungültigem PGN. */
 export function parsePgn(pgn: string): ImportedGame {
+  const headers = pgn.match(/^\s*(?:\[\w+\s+"(?:\\.|[^"\\])*"\]\s*)*/)?.[0] ?? ''
+  const tokens = pgn.slice(headers.length).match(/\{[^}]*\}|;[^\r\n]*|\(|\)|\$\d+|\d+\.(?:\.\.)?|1-0|0-1|1\/2-1\/2|\*|[^\s(){};$]+|[{}$]/g) ?? []
+  // chess.js akzeptiert nicht alle Variantenformen (z. B. einleitende
+  // Kommentare). Es erhält nur die Hauptlinie; Abzweige validieren wir selbst.
+  let depth = 0
+  const mainline = tokens.filter(token => {
+    if (token === '(') { depth++; return false }
+    if (token === ')') {
+      if (--depth < 0) throw new Error('Unexpected PGN variation end')
+      return false
+    }
+    return depth === 0
+  })
+  if (depth !== 0) throw new Error('Unclosed PGN variation')
   const check = new Chess()
-  check.loadPgn(pgn) // wirft eine aussagekräftige Fehlermeldung bei ungültigem PGN
+  check.loadPgn(`${headers}\n${mainline.join('\n')}`)
 
   const history = check.history({ verbose: true })
-  const comments = new Map(check.getComments().map(({ fen, comment }) => [fen, comment]))
   const initialFen = history[0]?.before ?? check.fen()
-  const moves: MoveRecord[] = history.map((move) => ({
-    san: move.san,
-    uci: move.from + move.to + (move.promotion ?? ''),
-    color: move.color,
-    fenBefore: move.before,
-    fenAfter: move.after,
-    captured: move.captured as CapturablePiece | undefined,
-    comment: comments.get(move.after)
-  }))
-  return { moves, chess: check, initialFen, initialComment: comments.get(initialFen), outcome: importedOutcome(check) }
+  const { moves, initialComment } = parseMoveText(tokens, initialFen)
+  return { moves, chess: check, initialFen, initialComment, outcome: importedOutcome(check) }
 }

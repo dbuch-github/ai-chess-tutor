@@ -3,6 +3,8 @@ import type {
   AnalysisConfig,
   AnalysisSnapshot,
   BluetoothDeviceInfo,
+  BluetoothPairingRequest,
+  BluetoothPairingResponse,
   ConfigureResult,
   LibraryGameSummary,
   LibraryLoadResult,
@@ -32,6 +34,13 @@ const api = {
   libraryList: (): Promise<LibraryGameSummary[]> => ipcRenderer.invoke('library:list'),
   libraryLoad: (filePath: string): Promise<LibraryLoadResult> => ipcRenderer.invoke('library:load', filePath),
   libraryDelete: (filePath: string): Promise<{ ok: boolean }> => ipcRenderer.invoke('library:delete', filePath),
+  respondBluetoothPairing: (id: number, response: BluetoothPairingResponse): void =>
+    ipcRenderer.send('bluetooth:pairing-response', id, response),
+  onBluetoothPairing: (callback: (request: BluetoothPairingRequest | null) => void): (() => void) => {
+    const listener = (_event: Electron.IpcRendererEvent, request: BluetoothPairingRequest | null): void => callback(request)
+    ipcRenderer.on('bluetooth:pairing-request', listener)
+    return () => ipcRenderer.removeListener('bluetooth:pairing-request', listener)
+  },
   selectBluetoothDevice: (deviceId: string): void => ipcRenderer.send('bluetooth:select-device', deviceId),
   onBluetoothDeviceList: (callback: (devices: BluetoothDeviceInfo[]) => void): (() => void) => {
     const listener = (_e: Electron.IpcRendererEvent, devices: BluetoothDeviceInfo[]): void => callback(devices)

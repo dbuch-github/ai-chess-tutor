@@ -24,7 +24,12 @@ export interface MoveRecord {
   /** Zuvor gespielte, dann per Zugrücknahme verworfene Fortsetzung ab genau dieser Stellung –
    *  wird beim erneuten Ziehen mit einem abweichenden Zug hier als Nebenvariante abgelegt,
    *  damit sie in der Zugliste und im PGN-Export (als Klammer-Variante) erhalten bleibt. */
-  variation?: MoveRecord[]
+  variations?: MoveVariation[]
+}
+
+export interface MoveVariation {
+  moves: MoveRecord[]
+  initialComment?: string
 }
 
 export interface GameApi {
@@ -165,7 +170,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
             fenBefore,
             fenAfter: chess.fen(),
             captured: move.captured as CapturablePiece | undefined,
-            ...(variation ? { variation } : {})
+            ...(variation ? { variations: [{ moves: variation }] } : {})
           }
         ])
         // Ein echter neuer Zug macht eine zuvor zurückgenommene Zukunft ungültig
@@ -277,7 +282,7 @@ export function useGame(engineReady: boolean, useOpeningBook: boolean): GameApi 
     if (chess.turn() !== playerColor) {
       requestEngineMove()
     }
-  }, [engineReady, fen, playerColor, result, reviewMode, twoPlayerMode, requestEngineMove])
+  }, [engineReady, fen, playerColor, result, reviewMode, twoPlayerMode, requestEngineMove, startedAt])
 
   const newGame = useCallback(
     (color: 'w' | 'b') => {

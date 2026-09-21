@@ -39,6 +39,7 @@ export function useChessClock(game: GameApi, config: ClockConfig): ClockApi {
   const [remaining, setRemaining] = useState<{ w: number; b: number }>({ w: 0, b: 0 })
   const remainingRef = useRef(remaining)
   const prevMoveCountRef = useRef(0)
+  const historyRef = useRef<{ uci?: string; remaining: { w: number; b: number } }[]>([])
 
   // Neue/importierte Partie oder geänderte Zeitkontrolle -> Uhr auf Grundzeit zurücksetzen
   useEffect(() => {
@@ -47,19 +48,39 @@ export function useChessClock(game: GameApi, config: ClockConfig): ClockApi {
     remainingRef.current = initial
     setRemaining(initial)
     prevMoveCountRef.current = game.moves.length
+    historyRef.current = [
+      { remaining: initial },
+      ...game.moves.map(move => ({ uci: move.uci, remaining: { ...initial } }))
+    ]
     // game.startedAt identifiziert eindeutig eine neue Partie (newGame/importGame)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [game.startedAt, config.mode, config.baseMinutes])
 
-  // Inkrement gutschreiben, sobald ein echter neuer Zug gespielt wurde (nicht bei Undo)
+  // Zeitstände für Rücknahme/Wiederherstellung behalten. Ein neuer Zweig ersetzt
+  // die alte Zukunft; Redo stellt deren Zeit wieder her, ohne erneut Inkrement.
   useEffect(() => {
     const prevCount = prevMoveCountRef.current
-    prevMoveCountRef.current = game.moves.length
-    if (!enabled || game.moves.length <= prevCount) return
-    const mover = game.moves[game.moves.length - 1]?.color
-    const incMs = config.incrementSeconds * 1000
-    if (!mover || incMs <= 0) return
-    const next = { ...remainingRef.current, [mover]: remainingRef.current[mover] + incMs }
+    const count = game.moves.length
+    prevMoveCountRef.current = count
+    if (!enabled || count === prevCount) return
+    const history = historyRef.current
+    history[prevCount].remaining = { ...remainingRef.current }
+    let next = { ...remainingRef.current }
+    if (count < prevCount) {
+      next = { ...history[count].remaining }
+    } else {
+      for (let i = prevCount; i < count; i++) {
+        const move = game.moves[i]
+        const saved = history[i + 1]
+        if (saved?.uci === move.uci) {
+          next = { ...saved.remaining }
+        } else {
+          history.length = i + 1
+          next = { ...next, [move.color]: next[move.color] + config.incrementSeconds * 1000 }
+          history.push({ uci: move.uci, remaining: { ...next } })
+        }
+      }
+    }
     remainingRef.current = next
     setRemaining(next)
     // eslint-disable-next-line react-hooks/exhaustive-deps

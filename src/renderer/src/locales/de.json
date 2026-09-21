@@ -151,7 +151,9 @@
     "apiKeyAvailableAt": "API-Key erhältlich unter {{hint}}.",
     "deleteStoredKey": "Gespeicherten Key löschen",
     "cancel": "Abbrechen",
-    "saveAndApply": "Speichern & anwenden"
+    "saveAndApply": "Speichern & anwenden",
+    "apiKeyAvailable": "(Schlüssel vorhanden)",
+    "apiKeySessionOnly": "Kein sicherer System-Schlüsselspeicher verfügbar. Neue API-Schlüssel gelten nur für diese Sitzung und müssen nach einem Neustart erneut eingegeben werden."
   },
   "clock": {
     "presets": {
@@ -206,7 +208,12 @@
   "bluetooth": {
     "chooseDevice": "Bluetooth-Gerät wählen",
     "multipleFound": "Mehrere passende Geräte gefunden – welches soll verbunden werden?",
-    "connect": "Verbinden"
+    "connect": "Verbinden",
+    "pairingTitle": "Bluetooth-Gerät koppeln",
+    "pairingDevice": "Kopplung mit {{device}} erlauben?",
+    "confirmPin": "Zeigt das Gerät diese PIN: {{pin}}?",
+    "enterPin": "PIN des Geräts eingeben",
+    "pair": "Koppeln"
   },
   "chessnut": {
     "statusUnsupported": "Nicht unterstützt",

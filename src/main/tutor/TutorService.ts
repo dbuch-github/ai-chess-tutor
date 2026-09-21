@@ -1,4 +1,5 @@
 import { app, safeStorage } from 'electron'
+import { canPersistSecrets } from './keyStorage'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { AnthropicProvider } from './providers/AnthropicProvider'
@@ -117,6 +118,7 @@ export class TutorService {
   private activeProvider: LlmProviderId = 'anthropic'
   private models: Record<LlmProviderId, string> = { ...DEFAULT_MODELS }
   private history: ChatTurn[] = []
+  private generation = 0
   private busy = false
   private configPath = join(app.getPath('userData'), 'tutor-config.json')
 
@@ -131,6 +133,7 @@ export class TutorService {
 
   status(): TutorStatus {
     return {
+      keyPersistence: canPersistSecrets(safeStorage) ? 'secure' : 'session-only',
       provider: this.activeProvider,
       hasApiKey: this.providers[this.activeProvider].isConfigured(),
       model: this.models[this.activeProvider],
@@ -160,6 +163,7 @@ export class TutorService {
 
   /** Neue Partie: Gesprächskontext verwerfen. */
   reset(): void {
+    this.generation += 1
     this.history = []
   }
 
@@ -172,6 +176,7 @@ export class TutorService {
       return { ok: false, error: TUTOR_BUSY_MESSAGE[request.locale] }
     }
     this.busy = true
+    const generation = this.generation
     try {
       const userText = buildPrompt(request)
       this.history.push({ role: 'user', text: userText })
@@ -188,13 +193,15 @@ export class TutorService {
         history: this.history,
         maxTokens: effort === 'high' ? 4000 : 2000,
         effort,
-        onDelta
+        onDelta: (delta) => {
+          if (generation === this.generation) onDelta(delta)
+        }
       })
-      this.history.push({ role: 'assistant', text })
+      if (generation === this.generation) this.history.push({ role: 'assistant', text })
       return { ok: true, text }
     } catch (err) {
       // fehlgeschlagene Anfrage nicht in der Historie lassen
-      if (this.history.at(-1)?.role === 'user') this.history.pop()
+      if (generation === this.generation && this.history.at(-1)?.role === 'user') this.history.pop()
       return { ok: false, error: provider.describeError(err) }
     } finally {
       this.busy = false
@@ -240,7 +247,7 @@ export class TutorService {
   }
 
   private decryptAndConfigure(provider: LlmProviderId, encryptedKey: string): void {
-    if (!safeStorage.isEncryptionAvailable()) return
+    if (!canPersistSecrets(safeStorage)) return
     try {
       const key = safeStorage.decryptString(Buffer.from(encryptedKey, 'base64'))
       this.providers[provider].configure(key)
@@ -263,8 +270,11 @@ export class TutorService {
       if (change) {
         if (change.apiKey === '') {
           delete stored.encryptedKeys[change.provider]
-        } else if (safeStorage.isEncryptionAvailable()) {
+        } else if (canPersistSecrets(safeStorage)) {
           stored.encryptedKeys[change.provider] = safeStorage.encryptString(change.apiKey).toString('base64')
+        } else {
+          // A session-only replacement must not resurrect an older stored key.
+          delete stored.encryptedKeys[change.provider]
         }
       }
       writeFileSync(this.configPath, JSON.stringify(stored))

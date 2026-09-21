@@ -89,8 +89,8 @@ export function MoveList({ moves }: { moves: MoveRecord[] }): React.JSX.Element 
                 {row.white ? <MoveCell record={row.white} locale={locale} /> : <span />}
                 {row.black ? <MoveCell record={row.black} locale={locale} /> : <span />}
               </div>
-              {row.white?.variation && <VariationRow variation={row.white.variation} />}
-              {row.black?.variation && <VariationRow variation={row.black.variation} />}
+              {row.white?.variations?.map((v, i) => <VariationRow key={`w-${i}`} variation={v.moves} />)}
+              {row.black?.variations?.map((v, i) => <VariationRow key={`b-${i}`} variation={v.moves} />)}
             </Fragment>
           ))}
           <div ref={endRef} />

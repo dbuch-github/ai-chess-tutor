@@ -1,109 +1,184 @@
 #!/usr/bin/env node
-/**
- * Lädt Stockfish, lc0 und die Maia-Gewichtsdateien (Spielstärken 1100-1900) nach
- * resources/engines/mac-arm64/, damit electron-builder sie als extraResources in den
- * Installer packen kann. Wird nicht eingecheckt (siehe .gitignore) - vor `npm run dist`
- * einmal ausführen.
- *
- * lc0 gibt es offiziell nur für Windows/Android als Fertig-Binary; auf macOS kommt es
- * daher aus der Homebrew-Bottle (`brew install lc0`). Die Homebrew-Metal-Variante bindet
- * nur System-Frameworks (Accelerate/Metal/Foundation), keine Homebrew-eigenen dylibs -
- * das Binary läuft daher auch ohne Homebrew auf dem Zielrechner.
- */
 import { execFileSync } from 'node:child_process'
-import { createWriteStream, chmodSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { chmodSync, copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-import { pipeline } from 'node:stream/promises'
-import { Readable } from 'node:stream'
+import { basename, dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { platformInfo } from '../src/shared/platform.mjs'
+import { STOCKFISH, LC0_VERSION, LC0_WINDOWS, MAIA_LEVELS, MAIA_BASE_URL } from './engine-sources.mjs'
+import { run } from './process.mjs'
 
-const ROOT = join(import.meta.dirname, '..')
-const OUT_DIR = join(ROOT, 'resources', 'engines', 'mac-arm64')
-const MAIA_DIR = join(OUT_DIR, 'maia')
+const ROOT = fileURLToPath(new URL('..', import.meta.url))
+export const sha256 = data => createHash('sha256').update(data).digest('hex')
 
-const STOCKFISH_URL =
-  'https://github.com/official-stockfish/Stockfish/releases/download/sf_19/stockfish-macos-universal.tar.gz'
-const MAIA_LEVELS = [1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
-const MAIA_BASE_URL = 'https://github.com/CSSLab/maia-chess/releases/download/v1.0'
-
-async function download(url, destPath) {
-  const res = await fetch(url, { redirect: 'follow' })
-  if (!res.ok) throw new Error(`Download fehlgeschlagen (${res.status}): ${url}`)
-  await pipeline(Readable.fromWeb(res.body), createWriteStream(destPath))
-}
-
-function fetchStockfish() {
-  const dest = join(OUT_DIR, 'stockfish')
-  if (existsSync(dest)) {
-    console.log('[stockfish] bereits vorhanden, übersprungen')
-    return Promise.resolve()
-  }
-  return (async () => {
-    console.log('[stockfish] lade sf_19 (macOS universal)...')
-    const tmpTar = join(tmpdir(), 'stockfish-macos-universal.tar.gz')
-    await download(STOCKFISH_URL, tmpTar)
-    const extractDir = join(tmpdir(), `stockfish-extract-${Date.now()}`)
-    mkdirSync(extractDir, { recursive: true })
-    execFileSync('tar', ['-xzf', tmpTar, '-C', extractDir])
-    const fatBinary = join(extractDir, 'stockfish', 'stockfish-macos-universal')
-    // Nur die arm64-Slice behalten - lc0 (s.u.) gibt es ohnehin nur für Apple Silicon,
-    // ein universelles Stockfish brächte hier keinen Zusatznutzen.
-    execFileSync('lipo', ['-thin', 'arm64', fatBinary, '-output', dest])
-    chmodSync(dest, 0o755)
-    execFileSync('cp', [join(extractDir, 'stockfish', 'Copying.txt'), join(OUT_DIR, 'stockfish-LICENSE.txt')])
-    rmSync(tmpTar, { force: true })
-    rmSync(extractDir, { recursive: true, force: true })
-    console.log('[stockfish] fertig')
-  })()
-}
-
-function fetchLc0() {
-  const dest = join(OUT_DIR, 'lc0')
-  if (existsSync(dest)) {
-    console.log('[lc0] bereits vorhanden, übersprungen')
-    return
-  }
-  console.log('[lc0] prüfe Homebrew-Installation...')
+/** Atomic downloads: interrupted files are never mistaken for valid cache entries. */
+export async function download(url, destination, expectedHash) {
+  const response = await fetch(url, { signal: AbortSignal.timeout(300_000) })
+  if (!response.ok) throw new Error(`Download failed (${response.status}): ${url}`)
+  const data = Buffer.from(await response.arrayBuffer())
+  if (expectedHash && sha256(data) !== expectedHash) throw new Error(`SHA-256 mismatch: ${url}`)
+  mkdirSync(dirname(destination), { recursive: true })
+  const temporary = destination + '.part'
   try {
-    execFileSync('brew', ['list', 'lc0'], { stdio: 'ignore' })
-  } catch {
-    console.log('[lc0] nicht installiert - installiere via Homebrew...')
-    execFileSync('brew', ['install', 'lc0'], { stdio: 'inherit' })
-  }
-  const prefix = execFileSync('brew', ['--prefix', 'lc0']).toString().trim()
-  const libexecBinary = join(prefix, 'libexec', 'lc0')
-  const binBinary = join(prefix, 'bin', 'lc0')
-  const source = existsSync(libexecBinary) ? libexecBinary : binBinary
-  execFileSync('cp', [source, dest])
-  chmodSync(dest, 0o755)
-  const licenseSrc = readdirSync(prefix).find((f) => /^(COPYING|LICENSE)/i.test(f))
-  if (licenseSrc) execFileSync('cp', [join(prefix, licenseSrc), join(OUT_DIR, 'lc0-LICENSE.txt')])
-  console.log('[lc0] fertig (kopiert aus Homebrew-Cellar, läuft eigenständig)')
+    writeFileSync(temporary, data)
+    renameSync(temporary, destination)
+  } finally { rmSync(temporary, { force: true }) }
 }
 
-async function fetchMaiaWeights() {
-  mkdirSync(MAIA_DIR, { recursive: true })
-  for (const level of MAIA_LEVELS) {
-    const dest = join(MAIA_DIR, `maia-${level}.pb.gz`)
-    if (existsSync(dest)) {
-      console.log(`[maia-${level}] bereits vorhanden, übersprungen`)
-      continue
+function filesBelow(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+    const path = join(dir, entry.name)
+    return entry.isDirectory() ? filesBelow(path) : [path]
+  })
+}
+
+function extract(archive, destination) {
+  mkdirSync(destination, { recursive: true })
+  if (archive.endsWith('.zip') && process.platform === 'win32') {
+    run('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+      'Expand-Archive -LiteralPath $env:CHESS_ARCHIVE -DestinationPath $env:CHESS_EXTRACT -Force'],
+    { env: { ...process.env, CHESS_ARCHIVE: archive, CHESS_EXTRACT: destination } })
+  } else run('tar', ['-xf', archive, '-C', destination])
+}
+
+function copyLicense(files, destination) {
+  const license = files.find(file => /^(copying|license)(\..*)?$/i.test(basename(file)))
+  if (!license) throw new Error(`No upstream license found for ${destination}`)
+  copyFileSync(license, destination)
+}
+
+function makeExecutable(target, binary) {
+  if (target.platform !== 'win32') chmodSync(binary, 0o755)
+}
+
+/** Guards against a cached (or manually swapped) lc0 binary that now depends on
+ *  non-system libraries – must run on every invocation, not only after a fresh
+ *  download, since a stale cache stamp would otherwise never be re-checked. */
+function verifyMacSystemLinkage(binary) {
+  const linked = execFileSync('otool', ['-L', binary], { encoding: 'utf8' })
+  if (linked.split('\n').slice(1).some(line => line.trim() && !/^\s*\/(System\/Library|usr\/lib)\//.test(line))) {
+    throw new Error('lc0 links non-system macOS libraries; bundle those before distributing.')
+  }
+}
+
+async function stockfish(target, out, work) {
+  const source = STOCKFISH[target.id]
+  const stamp = join(out, 'stockfish-source.json')
+  const binary = join(out, 'stockfish' + target.suffix)
+  if (cached(stamp, source.sha256, [binary, join(out, 'stockfish-LICENSE.txt')])) return
+  console.log('[stockfish] downloading sf_19 for', target.id)
+  const archive = join(work, source.archive)
+  await download(source.url, archive, source.sha256)
+  const extracted = join(work, 'stockfish')
+  extract(archive, extracted)
+  const files = filesBelow(extracted)
+  const expectedName = source.archive.replace(/\.tar\.gz$|\.zip$/, '') + target.suffix
+  const sourceBinary = files.find(file => basename(file) === expectedName)
+  if (!sourceBinary) throw new Error(`Missing binary in archive: ${expectedName}`)
+  // Keep upstream universal dispatch; it chooses instructions supported by the CPU.
+  copyFileSync(sourceBinary, binary)
+  makeExecutable(target, binary)
+  copyLicense(files, join(out, 'stockfish-LICENSE.txt'))
+  writeFileSync(stamp, JSON.stringify({ source: source.sha256 }))
+}
+
+function cached(stamp, source, required) {
+  try { return JSON.parse(readFileSync(stamp, 'utf8')).source === source && required.every(existsSync) }
+  catch { return false }
+}
+
+async function lc0(target, out, work) {
+  const binary = join(out, 'lc0' + target.suffix)
+  const license = join(out, 'lc0-LICENSE.txt')
+  const stamp = join(out, 'lc0-source.json')
+  const source = target.platform === 'win32' ? LC0_WINDOWS.sha256 : `v${LC0_VERSION}-${target.id}-cpu-v1`
+  const required = [binary, license]
+  if (target.platform === 'win32') {
+    required.push(...['libopenblas.dll', 'mimalloc-override.dll', 'mimalloc-redirect.dll'].map(name => join(out, name)))
+  }
+  if (target.platform === 'linux') required.push(join(out, 'lc0-source.tar.gz'))
+  if (!cached(stamp, source, required)) {
+    if (target.platform === 'win32') {
+      const archive = join(work, 'lc0.zip')
+      await download(LC0_WINDOWS.url, archive, LC0_WINDOWS.sha256)
+      const extracted = join(work, 'lc0')
+      extract(archive, extracted)
+      const files = filesBelow(extracted)
+      const sourceBinary = files.find(file => basename(file).toLowerCase() === 'lc0.exe')
+      if (!sourceBinary) throw new Error('lc0.exe missing from upstream archive')
+      // Include DLLs and supporting files next to the executable, not only lc0.exe.
+      cpSync(dirname(sourceBinary), out, { recursive: true })
+      copyLicense(files, license)
+    } else if (target.platform === 'darwin') {
+      // The existing Homebrew Metal build only links to macOS system frameworks.
+      const prefix = execFileSync('brew', ['--prefix', 'lc0'], { encoding: 'utf8' }).trim()
+      const sourceBinary = join(prefix, 'libexec', 'lc0')
+      // Version also appears on stderr on some lc0 builds; inspect brew's installed version.
+      const installed = execFileSync('brew', ['list', '--versions', 'lc0'], { encoding: 'utf8' }).trim()
+      if (!installed.split(/\s+/).some(v => v === LC0_VERSION || v.startsWith(LC0_VERSION + '_'))) {
+        throw new Error(`Expected Homebrew lc0 ${LC0_VERSION}; found ${installed}. Update the shared engine version deliberately.`)
+      }
+      copyFileSync(sourceBinary, binary)
+      copyLicense(filesBelow(prefix).filter(file => !file.includes('/share/')), license)
+    } else {
+      console.log('[lc0] building pinned CPU backend; this can take several minutes')
+      const sourceDir = join(work, 'lc0-source')
+      run('git', ['clone', '--branch', `v${LC0_VERSION}`, '--depth', '1', '--recurse-submodules',
+        'https://github.com/LeelaChessZero/lc0.git', sourceDir])
+      run('meson', ['setup', 'build/release', '--buildtype=release',
+        '-Dnative_arch=false', '-Dpopcnt=false', '-Df16c=false', '-Dpext=false',
+        '-Dblas=true', '-Dopenblas=false', '-Daccelerate=false', '-Dmkl=false', '-Ddnnl=false', '-Dispc=false',
+        '-Dplain_cuda=false', '-Dcudnn=false', '-Dopencl=false', '-Donnx=false',
+        '-Dmetal=disabled', '-Dgtest=false', '-Ddefault_backend=eigen'], { cwd: sourceDir })
+      run('meson', ['compile', '-C', 'build/release', '-j', '2'], { cwd: sourceDir })
+      copyFileSync(join(sourceDir, 'build/release/lc0'), binary)
+      copyLicense(filesBelow(sourceDir).filter(file => dirname(file) === sourceDir), license)
+      // Keep source beside the binary for reproducibility and downstream distribution.
+      run('tar', ['-czf', join(out, 'lc0-source.tar.gz'), '--exclude=.git', '--exclude=build', '-C', sourceDir, '.'])
     }
-    console.log(`[maia-${level}] lade Gewichtsdatei...`)
+    makeExecutable(target, binary)
+    writeFileSync(stamp, JSON.stringify({ source }))
+  }
+  // Re-checked on every run (cached or not): a swapped-in or corrupted cache
+  // entry with a matching stamp would otherwise never be re-validated.
+  if (target.platform === 'darwin') verifyMacSystemLinkage(binary)
+}
+
+async function maia(out) {
+  const dir = join(out, 'maia')
+  mkdirSync(dir, { recursive: true })
+  for (const level of MAIA_LEVELS) {
+    const dest = join(dir, `maia-${level}.pb.gz`)
+    if (existsSync(dest)) {
+      // Existing downloads from older setups must at least be valid gzip files.
+      const { gunzipSync } = await import('node:zlib')
+      try { gunzipSync(readFileSync(dest)); continue } catch { /* replace incomplete download */ }
+    }
+    console.log(`[maia] downloading ${level}`)
     await download(`${MAIA_BASE_URL}/maia-${level}.pb.gz`, dest)
   }
-  console.log('[maia] fertig (CSSLab/maia-chess v1.0, Lizenz: siehe Repo-README)')
+  writeFileSync(join(out, 'ENGINE-SOURCES.txt'), [
+    'Stockfish sf_19: https://github.com/official-stockfish/Stockfish/tree/sf_19',
+    `lc0 v${LC0_VERSION}: https://github.com/LeelaChessZero/lc0/tree/v${LC0_VERSION}`,
+    'Maia v1.0: https://github.com/CSSLab/maia-chess/releases/tag/v1.0',
+    'Maia uses the lc0 network format; see upstream repositories for licenses and sources.'
+  ].join('\n') + '\n')
 }
 
-async function main() {
-  mkdirSync(OUT_DIR, { recursive: true })
-  await fetchStockfish()
-  fetchLc0()
-  await fetchMaiaWeights()
-  console.log(`\nAlle Engines liegen in ${OUT_DIR}`)
+export async function fetchEngines() {
+  const target = platformInfo()
+  const out = join(ROOT, 'resources', 'engines', target.id)
+  mkdirSync(out, { recursive: true })
+  const work = mkdtempSync(join(tmpdir(), 'chess-engines-'))
+  try {
+    await stockfish(target, out, work)
+    await lc0(target, out, work)
+    await maia(out)
+    console.log(`Engines ready: ${out}`)
+  } finally { rmSync(work, { recursive: true, force: true }) }
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  fetchEngines().catch(error => { console.error(error.message); process.exitCode = 1 })
+}

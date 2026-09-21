@@ -7,8 +7,11 @@ import { chromium } from 'playwright-core'
 test('React hook regressions in a real browser', { timeout: 30_000 }, async t => {
   const executablePath = process.env.CHROME_PATH ?? [
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    ...[process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.LOCALAPPDATA]
+      .filter(Boolean).flatMap(base => [`${base}/Google/Chrome/Application/chrome.exe`, `${base}/Microsoft/Edge/Application/msedge.exe`]),
     '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome'
   ].find(existsSync)
+  if (!executablePath && process.env.CI) throw new Error('CI requires Chrome/Chromium; set CHROME_PATH')
   if (!executablePath) { t.skip('Set CHROME_PATH to run the browser hook tests'); return }
   const bundle = await build({
     entryPoints: ['tests/hooks.browser.tsx'], bundle: true, write: false,
@@ -25,6 +28,6 @@ test('React hook regressions in a real browser', { timeout: 30_000 }, async t =>
     const passed = await page.evaluate(() => (window as any).HookTests.runHookTests())
     passed.forEach((name: string) => t.diagnostic(name))
     assert.deepEqual(errors, [])
-    assert.equal(passed.length, 4)
+    assert.equal(passed.length, 6)
   } finally { await browser.close() }
 })

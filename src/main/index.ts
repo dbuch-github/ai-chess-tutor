@@ -1,8 +1,9 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
-import { execFile } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { EngineManager } from './engine/EngineManager'
+import { engineResourceDir, findEngine } from './platform'
+import { installBluetoothPairing } from './bluetooth'
 import { TutorService } from './tutor/TutorService'
 import { libraryDelete, libraryList, libraryLoad, librarySave } from './library'
 import type {
@@ -15,7 +16,17 @@ import type {
   TutorRequest
 } from '../shared/types'
 
+// Optional isolated profile for automated smoke tests and separate local sessions.
+if (process.env.AI_CHESS_TUTOR_USER_DATA) app.setPath('userData', process.env.AI_CHESS_TUTOR_USER_DATA)
+
+// Chromium requires this opt-in for Web Bluetooth on Linux.
+if (process.platform === 'linux') app.commandLine.appendSwitch('enable-experimental-web-platform-features')
+
 let mainWindow: BrowserWindow | null = null
+
+function enginesDir(): string {
+  return engineResourceDir(app.isPackaged, process.resourcesPath, join(import.meta.dirname, '../..'))
+}
 
 /**
  * Im gepackten Build liefert build/icon.icns (electron-builder-Konvention) das App-Icon
@@ -55,7 +66,11 @@ function createWindow(): void {
     }
   })
 
+  installBluetoothPairing(mainWindow)
+
   mainWindow.on('closed', () => {
+    pendingBluetoothCallback?.('')
+    pendingBluetoothCallback = null
     mainWindow = null
   })
 
@@ -91,35 +106,6 @@ function createWindow(): void {
   }
 }
 
-/**
- * Von scripts/fetch-engines.mjs in resources/engines/ abgelegte Binaries, die
- * electron-builder als extraResources in Contents/Resources/engines/ packt - dort
- * laufen sie ohne Homebrew auf jedem Zielrechner. Nur im gepackten Build vorhanden.
- */
-function bundledEnginePath(binaryName: string): string | null {
-  if (!app.isPackaged) return null
-  const p = join(process.resourcesPath, 'engines', binaryName)
-  return existsSync(p) ? p : null
-}
-
-/** Sucht ein Kommandozeilen-Binary zuerst gebündelt, sonst an den üblichen Homebrew-/System-Pfaden. */
-function detectEnginePath(binaryName: string): Promise<string | null> {
-  const bundled = bundledEnginePath(binaryName)
-  if (bundled) return Promise.resolve(bundled)
-  const candidates = [
-    `/opt/homebrew/bin/${binaryName}`,
-    `/usr/local/bin/${binaryName}`,
-    `/usr/bin/${binaryName}`
-  ]
-  const found = candidates.find((p) => existsSync(p))
-  if (found) return Promise.resolve(found)
-  return new Promise((resolve) => {
-    execFile('which', [binaryName], (err, stdout) => {
-      resolve(err ? null : stdout.trim() || null)
-    })
-  })
-}
-
 /** Öffnet einen http(s)-Link im System-Browser – nie im Electron-Fenster selbst. */
 function openExternalLink(url: string): void {
   if (url.startsWith('https://') || url.startsWith('http://')) void shell.openExternal(url)
@@ -143,9 +129,7 @@ async function selectFile(title: string, defaultPath?: string): Promise<string |
  * hartcodiert, damit "~/Library/…" auf jedem Rechner/Betriebssystem stimmt.
  */
 function defaultMaiaWeightsPath(level = 1200): string {
-  const bundled = app.isPackaged
-    ? join(process.resourcesPath, 'engines', 'maia', `maia-${level}.pb.gz`)
-    : null
+  const bundled = join(enginesDir(), 'maia', `maia-${level}.pb.gz`)
   if (bundled && existsSync(bundled)) return bundled
   return join(app.getPath('userData'), 'maia', `maia-${level}.pb.gz`)
 }
@@ -182,7 +166,7 @@ async function importPgn(dialogTitle: string): Promise<PgnImportResult> {
 }
 
 app.whenReady().then(() => {
-  ipcMain.handle('engine:defaultPath', (_e, binaryName?: string) => detectEnginePath(binaryName || 'stockfish'))
+  ipcMain.handle('engine:defaultPath', (_e, binaryName?: string) => findEngine(binaryName || 'stockfish', enginesDir()))
   ipcMain.handle('dialog:selectFile', (_e, title: string, defaultPath?: string) => selectFile(title, defaultPath))
   ipcMain.handle('engine:defaultMaiaWeightsPath', (_e, level?: number) => defaultMaiaWeightsPath(level))
   ipcMain.on('shell:openExternal', (_e, url: string) => openExternalLink(url))

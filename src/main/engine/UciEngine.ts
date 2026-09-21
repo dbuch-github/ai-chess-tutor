@@ -19,12 +19,14 @@ export class UciEngine extends EventEmitter {
     return this.proc !== null
   }
 
-  async start(enginePath: string): Promise<void> {
+  async start(enginePath: string, args: string[] = []): Promise<void> {
     await this.quit()
-    const proc = spawn(enginePath, [], { stdio: ['pipe', 'pipe', 'pipe'] })
+    const proc = spawn(enginePath, args, { stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true })
     this.proc = proc
     proc.on('error', (err) => {
       if (this.proc !== proc) return
+      // Bei einem fehlgeschlagenen spawn folgt kein exit-Ereignis.
+      if (proc.pid === undefined) this.proc = null
       this.finishSearch(undefined, err)
       this.emit('error', err)
     })
@@ -161,6 +163,7 @@ export class UciEngine extends EventEmitter {
     if (!proc) return
     this.proc = null
     this.finishSearch(undefined, new Error('Engine stopped'))
+    if (proc.pid === undefined || proc.exitCode !== null || proc.signalCode !== null) return
     try {
       proc.stdin.write('quit\n')
     } catch {

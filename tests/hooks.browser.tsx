@@ -2,6 +2,7 @@ import React, { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Chess } from 'chess.js'
 import { useGame, type GameApi } from '../src/renderer/src/game/useGame'
+import { useChessClock } from '../src/renderer/src/game/useClock'
 import { useGameLibrary } from '../src/renderer/src/game/useGameLibrary'
 import { useTutor } from '../src/renderer/src/game/useTutor'
 import { parsePgn } from '../src/renderer/src/game/pgn'
@@ -121,14 +122,65 @@ export async function runHookTests() {
     await act(async () => game.makeUserMove('f1', 'c4'))
     assert(game.moves.length === 3 && game.moves[2].san === 'Bc4', 'a different move replaces the undone one')
     assert(
-      game.moves[2].variation?.map(m => m.san).join(' ') === 'Nf3',
+      game.moves[2].variations?.[0].moves.map(m => m.san).join(' ') === 'Nf3',
       'the discarded continuation is kept as a variation on the new move'
     )
     await act(async () => game.undoMove())
     await act(async () => game.makeUserMove('f1', 'c4'))
-    assert(!game.moves[2].variation, 'replaying the exact same move must not attach a variation')
+    assert(!game.moves[2].variations, 'replaying the exact same move must not attach a variation')
     await ui.close()
     passed.push('Undo followed by a different move records the discarded continuation as a variation')
+  }
+  {
+    const pending: ((move: string) => void)[] = []
+    mockApi({ requestOpponentMove: () => new Promise<string>(resolve => pending.push(resolve)) })
+    let game!: GameApi
+    const ui = await mount(() => { game = useGame(true, false); return null })
+    await act(async () => game.newGame('b'))
+    assert(pending.length === 1, 'black game must request the first engine move')
+    await act(async () => game.newGame('b'))
+    assert(pending.length === 2, 'same-position restart must request a new engine move')
+    await act(async () => pending[0]('d2d4'))
+    assert(game.moves.length === 0 && game.thinking, 'old answer must not move or clear the new search')
+    await act(async () => pending[1]('e2e4'))
+    assert(game.moves[0]?.san === 'e4' && !game.thinking, 'new engine answer must be applied')
+    await ui.close()
+    passed.push('Restart as black replaces the pending first engine move')
+  }
+  {
+    mockApi()
+    let game!: GameApi
+    let clock!: ReturnType<typeof useChessClock>
+    const ui = await mount(() => {
+      game = useGame(true, false)
+      clock = useChessClock(game, { mode: 'rapid', baseMinutes: 15, incrementSeconds: 10 })
+      return null
+    })
+    await act(async () => game.startTwoPlayerGame())
+    await act(async () => game.makeUserMove('e2', 'e4'))
+    const first = { ...clock.remainingMs }
+    await act(async () => game.undoMove())
+    assert(clock.remainingMs.w === 900000, 'undo must restore the clock before the move')
+    await act(async () => game.redoMove())
+    assert(clock.remainingMs.w === first.w, 'redo must not grant another increment')
+    await act(async () => game.makeUserMove('e7', 'e5'))
+    const pair = { ...clock.remainingMs }
+    for (let i = 0; i < 3; i++) {
+      await act(async () => game.undoMove())
+      assert(game.moves.length === 0, 'undo must remove the whole pair')
+      await act(async () => game.redoMove())
+      assert(Math.abs(clock.remainingMs.w - pair.w) < 100, 'pair redo must restore white clock')
+      assert(Math.abs(clock.remainingMs.b - pair.b) < 100, 'pair redo must restore black clock')
+    }
+    await act(async () => game.undoMove())
+    await act(async () => game.makeUserMove('d2', 'd4'))
+    assert(clock.remainingMs.w === 910000, 'a replacement move receives exactly one increment')
+    await act(async () => game.makeUserMove('d7', 'd5'))
+    assert(clock.remainingMs.b === 910000, 'new branch credits the black move as well')
+    await act(async () => game.newGame('w'))
+    assert(clock.remainingMs.w === 900000 && clock.remainingMs.b === 900000, 'new game resets clock history')
+    await ui.close()
+    passed.push('Clock undo and redo restore times for individual moves, pairs and new branches')
   }
   return passed
 }

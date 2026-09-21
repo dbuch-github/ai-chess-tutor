@@ -33,6 +33,7 @@ import { TutorPanel } from './components/TutorPanel'
 import { GameReportDialog } from './components/GameReportDialog'
 import { GameLibraryDialog } from './components/GameLibraryDialog'
 import { ChessnutPanel } from './components/ChessnutPanel'
+import { BluetoothPairingDialog } from './components/BluetoothPairingDialog'
 import { BluetoothDevicePicker } from './components/BluetoothDevicePicker'
 import { useGame, type CapturablePiece } from './game/useGame'
 import { useTutor } from './game/useTutor'
@@ -63,7 +64,7 @@ import {
   type AppSettings,
   type TutorMode
 } from './settings'
-import type { BluetoothDeviceInfo } from '../../shared/types'
+import type { BluetoothDeviceInfo, BluetoothPairingRequest } from '../../shared/types'
 
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1']
@@ -82,6 +83,7 @@ export function App(): React.JSX.Element {
   const [showLibrary, setShowLibrary] = useState(false)
   const [pgnNotice, setPgnNotice] = useState<{ ok: boolean; text: string } | null>(null)
   const [bluetoothDevices, setBluetoothDevices] = useState<BluetoothDeviceInfo[] | null>(null)
+  const [bluetoothPairing, setBluetoothPairing] = useState<BluetoothPairingRequest | null>(null)
   const configureSeq = useRef(0)
   /** Elo, mit der der Gegner für die gerade laufende Partie tatsächlich konfiguriert wurde
    *  (null = unbekannt, z. B. "custom"-Engine oder Stockfish ohne limitStrength) – separat
@@ -90,6 +92,7 @@ export function App(): React.JSX.Element {
   const activeOpponentEloRef = useRef<number | null>(null)
 
   useEffect(() => window.api.onBluetoothDeviceList(setBluetoothDevices), [])
+  useEffect(() => window.api.onBluetoothPairing(setBluetoothPairing), [])
 
   const game = useGame(opponentStatus.ready, settings.useOpeningBook)
   const boardPreview = useBoardPreview(game.fen)
@@ -676,6 +679,13 @@ export function App(): React.JSX.Element {
           onOpenGame={handleOpenLibraryGame}
           onClose={() => setShowLibrary(false)}
         />
+      )}
+
+      {bluetoothPairing && (
+        <BluetoothPairingDialog key={bluetoothPairing.id} request={bluetoothPairing} onRespond={response => {
+          window.api.respondBluetoothPairing(bluetoothPairing.id, response)
+          setBluetoothPairing(null)
+        }} />
       )}
 
       {bluetoothDevices && (

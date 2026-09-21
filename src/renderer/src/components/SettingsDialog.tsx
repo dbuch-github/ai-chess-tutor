@@ -1,3 +1,4 @@
+import { dirnameOf } from '../../../shared/paths'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { EngineKind, LlmProviderId, TutorStatus } from '../../../shared/types'
@@ -24,12 +25,6 @@ const TUTOR_KEY_HINTS: Record<LlmProviderId, { label: string; keyPlaceholder: st
   google: { label: 'Google (Gemini)', keyPlaceholder: 'AIza…', keyHint: 'aistudio.google.com' }
 }
 const TUTOR_PROVIDER_IDS: LlmProviderId[] = ['anthropic', 'openai', 'google']
-
-/** Verzeichnis eines Pfads, oder undefined bei einem bereits reinen Ordner-/Leerstring. */
-function dirnameOf(path: string): string | undefined {
-  const idx = path.lastIndexOf('/')
-  return idx > 0 ? path.slice(0, idx) : undefined
-}
 
 export function SettingsDialog({
   settings,
@@ -129,7 +124,7 @@ export function SettingsDialog({
                   type="text"
                   value={draft.opponentPath}
                   onChange={(e) => update('opponentPath', e.target.value)}
-                  placeholder="/opt/homebrew/bin/lc0"
+                  placeholder="lc0 / lc0.exe"
                   spellCheck={false}
                 />
                 <button
@@ -209,7 +204,7 @@ export function SettingsDialog({
                   type="text"
                   value={draft.opponentPath}
                   onChange={(e) => update('opponentPath', e.target.value)}
-                  placeholder="/opt/homebrew/bin/stockfish"
+                  placeholder="stockfish / stockfish.exe"
                   spellCheck={false}
                 />
                 <button
@@ -367,7 +362,7 @@ export function SettingsDialog({
               type="text"
               value={draft.analysisPath}
               onChange={(e) => update('analysisPath', e.target.value)}
-              placeholder="/opt/homebrew/bin/stockfish"
+              placeholder="stockfish / stockfish.exe"
               spellCheck={false}
             />
             <button type="button" className="btn" onClick={() => browse(t('settings.chooseStockfish'), 'analysisPath')}>
@@ -404,7 +399,7 @@ export function SettingsDialog({
         </label>
         <label>
           {t('settings.apiKey')}{' '}
-          {tutorHasKey && !deleteKey && <span className="key-state">{t('settings.apiKeySavedKeychain')}</span>}
+          {tutorHasKey && !deleteKey && <span className="key-state">{t('settings.apiKeyAvailable')}</span>}
           <input
             id="tutor-api-key"
             type="password"
@@ -417,6 +412,9 @@ export function SettingsDialog({
             spellCheck={false}
           />
         </label>
+        {tutorStatus?.keyPersistence === 'session-only' && (
+          <p className="field-hint" role="status">{t('settings.apiKeySessionOnly')}</p>
+        )}
         <p className="field-hint">{t('settings.apiKeyAvailableAt', { hint: activeTutorProvider.keyHint })}</p>
         {tutorHasKey && (
           <label className="row">
