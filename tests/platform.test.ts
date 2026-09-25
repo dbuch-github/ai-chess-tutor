@@ -63,6 +63,20 @@ test('Linux rejects plaintext key storage while retaining GNOME and KDE support'
   }
 })
 
+test('CHESS_TUTOR_NO_SAFE_STORAGE opts out before the OS key store is touched', () => {
+  const exploding = {
+    isEncryptionAvailable: (): boolean => { throw new Error('keychain prompt') },
+    getSelectedStorageBackend: (): string => { throw new Error('keychain prompt') }
+  }
+  for (const platform of ['darwin', 'win32', 'linux'] as const) {
+    assert.equal(canPersistSecrets(exploding, platform, { CHESS_TUTOR_NO_SAFE_STORAGE: '1' }), false)
+  }
+  const working = { isEncryptionAvailable: () => true, getSelectedStorageBackend: () => 'gnome_libsecret' }
+  for (const env of [{}, { CHESS_TUTOR_NO_SAFE_STORAGE: '' }, { CHESS_TUTOR_NO_SAFE_STORAGE: '0' }]) {
+    assert.equal(canPersistSecrets(working, 'darwin', env), true)
+  }
+})
+
 test('an invalid download never replaces a previously working file', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'chess-download-'))
   const dest = join(dir, 'engine')

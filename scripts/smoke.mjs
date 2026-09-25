@@ -21,7 +21,16 @@ try {
   app = await _electron.launch({
     executablePath: packaged ? (process.env.CHESS_SMOKE_EXECUTABLE || join(root, executable)) : createRequire(import.meta.url)('electron'),
     args: packaged ? [] : [join(root, 'out/main/index.js')],
-    env: { ...process.env, AI_CHESS_TUTOR_USER_DATA: profile, ANTHROPIC_API_KEY: '', ANTHROPIC_AUTH_TOKEN: '' },
+    // CHESS_TUTOR_NO_SAFE_STORAGE keeps the run away from the OS key store: the
+    // ad-hoc signature changes with every build, so macOS would ask for the
+    // login keychain password and stall this unattended test.
+    env: {
+      ...process.env,
+      AI_CHESS_TUTOR_USER_DATA: profile,
+      CHESS_TUTOR_NO_SAFE_STORAGE: '1',
+      ANTHROPIC_API_KEY: '',
+      ANTHROPIC_AUTH_TOKEN: ''
+    },
     timeout: 30_000
   })
   // Attach the pageerror listener via the 'window' event (fired the moment the
@@ -51,6 +60,16 @@ try {
   }))
   for (const path of Object.values(paths)) assert.ok(path && existsSync(path), `Engine resource missing: ${path}`)
   assert.equal(await page.locator('cg-board piece').count(), 32)
+  // Opting out of the key store must degrade to session-only keys, not fail.
+  // The spy stands in for the blocking password dialog: if anything still asks
+  // the OS key store, the status call throws here instead of hanging a CI run.
+  await app.evaluate(({ safeStorage }) => {
+    const refuse = () => { throw new Error('OS key store queried despite CHESS_TUTOR_NO_SAFE_STORAGE=1') }
+    safeStorage.isEncryptionAvailable = refuse
+    safeStorage.getSelectedStorageBackend = refuse
+  })
+  const tutorStatus = await page.evaluate(() => window.api.tutorStatus())
+  assert.equal(tutorStatus.keyPersistence, 'session-only')
   if (process.env.CHESS_SMOKE_SCREENSHOT) await page.screenshot({ path: process.env.CHESS_SMOKE_SCREENSHOT })
   // Verify renderer/preload pairing flows on every host without radio hardware.
   await app.evaluate(({ ipcMain, BrowserWindow }) => {
