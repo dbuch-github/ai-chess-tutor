@@ -1,0 +1,8 @@
+# Blendet den "Sponsor"-Button über dem Repository ein.
+# Doku: https://docs.github.com/sponsors/receiving-sponsorships-through-github-sponsors/displaying-a-sponsor-button-in-your-repository
+buy_me_a_coffee: daniel_buch
+
+# GitHub Sponsors läuft parallel zu Buy Me a Coffee, nicht stattdessen.
+# Erst einkommentieren, wenn das Sponsors-Profil freigeschaltet ist: solange es
+# das nicht ist, zeigt GitHub für diesen Eintrag keinen Link an.
+# github: [dbuch-github]

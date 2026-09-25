@@ -1,6 +1,7 @@
 # AI Chess Tutor
 
 [![License: GPL-3.0](https://img.shields.io/github/license/dbuch-github/ai-chess-tutor)](LICENSE)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-unterst%C3%BCtzen-ffdd00?logo=buymeacoffee&logoColor=1a1a1a)](https://buymeacoffee.com/daniel_buch)
 
 *[English](README.md) | Deutsch*
 
@@ -365,6 +366,27 @@ Hinweise:
 - Umwandlung ist aktuell immer Dame (Promotion-Dialog steht noch aus).
 - Die Durchsuchen-Dialoge für lc0-Binary und Maia-Gewichtsdatei öffnen sich standardmäßig im
   zuletzt gewählten bzw. erkannten Ordner, statt immer im Home-Verzeichnis zu starten.
+
+## Projekt unterstützen
+
+AI Chess Tutor ist freie Software und bleibt es – GPL-3.0, nichts hinter einer Zahlschranke,
+keine Bezahlversion, kein Konto. Dahinter steht keine Firma, sondern ein Entwickler.
+
+Zwei Punkte aus dem Abschnitt „Prüfstand" oben kosten nicht Zeit, sondern Geld – dorthin
+geht Unterstützung zuerst:
+
+- **Testhardware:** die Windows- und Linux-Installer werden in der CI gebaut, aber noch nicht
+  auf echten Rechnern verifiziert, und die Chessnut-Air-Bluetooth-Verbindung lief noch nie
+  gegen ein echtes Brett – hier ist keines vorhanden.
+- **Code-Signierung:** der macOS-Dialog „ist beschädigt und kann nicht geöffnet werden" und
+  die Windows-SmartScreen-Warnung kommen beide daher, dass der Build unsigniert ist. Eine
+  Mitgliedschaft im Apple Developer Program kostet 99 USD pro Jahr.
+
+☕ **[Buy me a coffee](https://buymeacoffee.com/daniel_buch)** – einmalig, in der Höhe, die
+dir angemessen erscheint.
+
+Kostenlose Alternativen, die ungefähr genauso viel helfen: ein ⭐ auf diesem Repository, ein
+Bug-Report oder ein Hinweis an einen Vereinskollegen.
 
 ## Lizenz
 
