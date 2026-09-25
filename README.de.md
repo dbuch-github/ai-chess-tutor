@@ -31,14 +31,37 @@ Gegner, Live-Stockfish-Analyse und einen LLM-Schachtutor miteinander verbindet.
 - Figurinen-Notation, Board-Preview (Angriffe/Deckungen/Fesselungen/schwache Felder) und
   ein synthetisierter Zug-Sound runden die Bedienung ab.
 
+## Download
+
+Fertige Installer liegen auf der
+[Release-Seite](https://github.com/dbuch-github/ai-chess-tutor/releases/latest) –
+herunterladen, installieren, fertig. Kein Terminal, kein Node.js, kein Homebrew: Beide
+Schach-Engines (Stockfish und lc0 für Maia) und alle neun Maia-Netze stecken bereits im
+Paket. Daher sind die Dateien auch so groß (jeweils rund 200–240 MB).
+
+| Dein System | Datei zum Herunterladen | Vor dem ersten Start |
+| --- | --- | --- |
+| macOS, Apple Silicon (M1–M4) | `AI.Chess.Tutor-<Version>-arm64.dmg` | Erst [„… ist beschädigt und kann nicht geöffnet werden"](#installer) unten lesen – sonst verweigert macOS den Start |
+| Windows 11, x64 | `AI.Chess.Tutor.Setup.<Version>.exe` | – |
+| Ubuntu/Debian, x64 | `ai-chess-tutor_<Version>_amd64.deb` | Installation mit `sudo apt install ./ai-chess-tutor_<Version>_amd64.deb` |
+| Anderes Linux, x64 | `AI.Chess.Tutor-<Version>.AppImage` | Einmal `chmod +x`, danach direkt starten |
+
+Für Intel-Macs (x64) und für 32-Bit-Systeme gibt es keinen Build.
+
+**Was geprüft ist und was nicht:** Der macOS-Build wurde installiert und erfolgreich
+gestartet. Die Installer für Windows und Linux entstehen im selben CI-Workflow, wurden aber
+noch von niemandem auf echten Windows- oder Linux-Rechnern installiert und ausprobiert –
+wenn einer davon bei dir scheitert, ist ein
+[Issue](https://github.com/dbuch-github/ai-chess-tutor/issues) wirklich hilfreich. Siehe
+„Prüfstand" im Abschnitt „Installer" unten.
+
 ## Setup und Entwicklung
 
-**Für Einsteiger:** Die folgenden Terminal-Schritte richten sich an alle, die die App aus
-dem Quellcode bauen – aktuell der einzige Weg, weil es noch keinen fertigen Download zum
-Doppelklicken gibt (siehe „Prüfstand" im Abschnitt „Installer" unten). Gäbe es bereits
-einen fertigen Installer (DMG/EXE/AppImage) zum Herunterladen, würde ein Doppelklick
-reichen – kein Terminal, kein Homebrew, da die Schach-Engines dann schon fertig in der App
-stecken. Der Grund für den Umweg: AI Chess Tutor bringt zwei vollwertige Schach-Engines mit
+**Dieser Abschnitt richtet sich ans Bauen aus dem Quellcode** – als Mitwirkender oder auf
+einer Plattform, für die es keinen passenden Installer gibt. Wer die App nur benutzen will,
+kommt über den Download oben schneller ans Ziel.
+
+Der Grund für den Umweg beim Bauen: AI Chess Tutor bringt zwei vollwertige Schach-Engines mit
 (Stockfish und lc0 für Maia) – echte, für jedes Betriebssystem einzeln kompilierte
 Programme, keine paar Zeilen JavaScript. Weil sie deshalb nicht im Quellcode-Repository
 liegen können, werden sie beim Setup passend zur eigenen Plattform heruntergeladen und per
@@ -93,12 +116,13 @@ Plattform und Architektur werden automatisch erkannt. Die Pakete enthalten Engin
 Maia-Netze und Lizenzdateien; Endnutzer brauchen keine Entwicklungsumgebung.
 Auch im Dev-Modus werden nach dem Setup dieselben lokalen Engine-Ressourcen erkannt.
 
-**Downloads ohne Terminal:** Ein Tag im Format `vX.Y.Z` (passend zur `version` in
-`package.json`) löst in der CI zusätzlich einen `release`-Job aus, der alle drei
-Installer als Entwurf eines [GitHub Release](/dbuch-github/ai-chess-tutor/releases)
+**Wie Releases entstehen:** Ein Tag im Format `vX.Y.Z` (passend zur `version` in
+`package.json`) löst in der CI zusätzlich einen `release`-Job aus, der alle vier
+Installer als Entwurf eines
+[GitHub Release](https://github.com/dbuch-github/ai-chess-tutor/releases)
 zusammenführt – zum Prüfen durch einen Menschen, bevor er öffentlich sichtbar wird
-(siehe [PLATTFORMEN.md](PLATTFORMEN.md)). Bis zum ersten veröffentlichten Release
-bleibt das Setup-Skript oben der einzige Weg.
+(siehe [PLATTFORMEN.md](PLATTFORMEN.md)). Auf die veröffentlichten Releases verweist der
+Abschnitt [„Download"](#download) oben.
 
 **macOS: „… ist beschädigt und kann nicht geöffnet werden"** – dieser Dialog nach dem
 Download ist keine echte Beschädigung, sondern Gatekeepers Reaktion auf eine

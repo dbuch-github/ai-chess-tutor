@@ -32,20 +32,41 @@ engines as opponents, live Stockfish analysis and an LLM chess tutor.
 - Figurine notation, board preview (attacks/defenses/pins/weak squares) and a synthesized
   move sound round out the experience.
 
+## Download
+
+Ready-made installers are on the
+[releases page](https://github.com/dbuch-github/ai-chess-tutor/releases/latest) — download,
+install, done. No terminal, no Node.js, no Homebrew: both chess engines (Stockfish and lc0
+for Maia) and all nine Maia networks are already packaged inside. That's also why the files
+are large (roughly 200–240 MB each).
+
+| Your system | File to download | Before the first launch |
+| --- | --- | --- |
+| macOS, Apple Silicon (M1–M4) | `AI.Chess.Tutor-<version>-arm64.dmg` | Read ["... is damaged and can't be opened"](#installer) below — otherwise macOS refuses to start the app |
+| Windows 11, x64 | `AI.Chess.Tutor.Setup.<version>.exe` | — |
+| Ubuntu/Debian, x64 | `ai-chess-tutor_<version>_amd64.deb` | Install with `sudo apt install ./ai-chess-tutor_<version>_amd64.deb` |
+| Any other Linux, x64 | `AI.Chess.Tutor-<version>.AppImage` | `chmod +x` once, then run it directly |
+
+There is no build for Intel Macs (x64) and none for 32-bit systems.
+
+**What is verified, and what isn't:** the macOS build has been installed and started
+successfully. The Windows and Linux installers are produced by the same CI workflow, but no
+one has yet installed and run them on real Windows or Linux machines — if one of them fails
+for you, an [issue](https://github.com/dbuch-github/ai-chess-tutor/issues) is genuinely
+useful. See "Test status" under "Installer" below.
+
 ## Setup and development
 
-**New to this:** the terminal steps below are for building the app from source — currently
-the only way, since there's no ready-made download to double-click yet (see "Test status"
-in the "Installer" section below). If a pre-built installer (DMG/EXE/AppImage) were already
-available to download, a double-click would be enough — no terminal, no Homebrew, since the
-chess engines would already be packaged inside the app. The reason for the detour: AI Chess
-Tutor bundles two full-fledged chess engines (Stockfish and lc0 for Maia) — real programs
-compiled separately for each operating system, not a few lines of JavaScript. Because of
-that, they can't live in the source repository; instead they're downloaded to match your
-platform during setup and verified by checksum — that's exactly what the setup scripts
-below do automatically. macOS has one extra wrinkle: the fast, graphics-card-accelerated
-build of lc0 is only available there as a Homebrew package — there's no simple download for
-it like on Windows, hence the extra Homebrew step.
+**This section is for building from source** — as a contributor, or on a platform without a
+matching installer. If you just want to use the app, the download above is the shorter way.
+
+The reason building takes a detour: AI Chess Tutor bundles two full-fledged chess engines
+(Stockfish and lc0 for Maia) — real programs compiled separately for each operating system,
+not a few lines of JavaScript. Because of that, they can't live in the source repository;
+instead they're downloaded to match your platform during setup and verified by checksum —
+that's exactly what the setup scripts below do automatically. macOS has one extra wrinkle:
+the fast, graphics-card-accelerated build of lc0 is only available there as a Homebrew
+package — there's no simple download for it like on Windows, hence the extra Homebrew step.
 
 One shared codebase for **macOS arm64, Windows x64 and Linux x64**.
 Developers need Node.js ≥ 22.12. Run the matching setup once in the project folder:
@@ -91,11 +112,11 @@ are detected automatically. The packages include engines, Maia networks and lice
 end users need no development environment.
 In dev mode, the same local engine resources are recognized right after setup.
 
-**Downloads without a terminal:** pushing a tag formatted `vX.Y.Z` (matching the `version`
-in `package.json`) additionally triggers a `release` job in CI that bundles all three
-installers into a draft [GitHub Release](/dbuch-github/ai-chess-tutor/releases) — for a
-human to review before it goes public (see [PLATTFORMEN.md](PLATTFORMEN.md), German only).
-Until the first release is published, the setup script above remains the only way in.
+**How releases are built:** pushing a tag formatted `vX.Y.Z` (matching the `version` in
+`package.json`) additionally triggers a `release` job in CI that bundles all four installers
+into a draft [GitHub Release](https://github.com/dbuch-github/ai-chess-tutor/releases) — for
+a human to review before it goes public (see [PLATTFORMEN.md](PLATTFORMEN.md), German only).
+The published releases are what the ["Download"](#download) section above points to.
 
 **macOS: "... is damaged and can't be opened"** — this dialog after downloading isn't an
 actual corruption, it's Gatekeeper's reaction to an unsigned, unnotarized app (there's no
