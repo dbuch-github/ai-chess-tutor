@@ -1290,6 +1290,14 @@ piece.figurine.black {
   background: #ffe642;
 }
 
+.info-donate-note {
+  margin: 9px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  max-width: 34em;
+}
+
 .info-dialog .dialog-actions {
   width: 100%;
   justify-content: center;

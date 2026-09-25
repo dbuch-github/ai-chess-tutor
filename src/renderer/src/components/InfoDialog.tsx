@@ -37,6 +37,10 @@ export function InfoDialog({ onClose, onOpenHelp }: InfoDialogProps): React.JSX.
         >
           ☕ Buy Me a Coffee
         </button>
+        {/* Bewusst entlastend formuliert: der Spendenknopf steht in einem Overlay, das bei
+            jedem Start erscheint - ohne den Hinweis, dass nichts hinter einer Zahlschranke
+            liegt, liest sich das wie eine Aufforderung statt wie ein Angebot. */}
+        <p className="info-donate-note">{t('info.donateVoluntary')}</p>
         <div className="dialog-actions">
           <button className="btn" onClick={onOpenHelp}>
             {t('info.help')}
