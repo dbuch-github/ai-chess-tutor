@@ -17,6 +17,7 @@
     "dist": "node scripts/dist.mjs",
     "setup": "node scripts/setup.mjs",
     "verify-engines": "node scripts/verify-engines.mjs",
+    "verify-signature": "node scripts/verify-signature.mjs",
     "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
@@ -58,7 +59,7 @@
       }
     ],
     "mac": {
-      "identity": null,
+      "identity": "-",
       "category": "public.app-category.board-games",
       "target": [
         {
