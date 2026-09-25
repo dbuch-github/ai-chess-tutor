@@ -108,6 +108,14 @@ Distributionsbefehl beschafft fehlende Engines, prüft sie, baut die Anwendung u
 wählt das zur laufenden Plattform passende electron-builder-Ziel. Für Endnutzer
 sind Engine-Dateien und Maia-Gewichte im Installer enthalten.
 
+Die Starttests setzen `CHESS_TUTOR_NO_SAFE_STORAGE=1`. Ohne diesen Schalter fragt
+`safeStorage.isEncryptionAvailable()` den Schlüsselbund des Betriebssystems ab; weil
+die Anwendung nur ad hoc signiert ist, wechselt die Signatur mit jedem Build und
+macOS verlangt erneut das Anmeldepasswort — ein unbeaufsichtigter Lauf bliebe daran
+hängen. Mit dem Schalter meldet die Anwendung `keyPersistence: 'session-only'`,
+API-Schlüssel gelten dann nur für die laufende Sitzung. Im normalen Betrieb ist die
+Variable nicht gesetzt und die Speicherung bleibt unverändert.
+
 Auf einem Linux-Testserver brauchen die grafischen Tests eine Sitzung, beispielsweise
 über `xvfb-run`. Der CI-Test installiert das DEB vor dem Start, damit auch die
 Paketinstallation und ihre Sandbox-Einrichtung geprüft werden. Mit
