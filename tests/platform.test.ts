@@ -16,6 +16,10 @@ test('the three native resource layouts match electron-builder packaging', () =>
     assert.equal(config.extraResources[0].from.replace('${os}', builderOs).replace('${arch}', arch), `resources/engines/${target.id}`)
     assert.ok(config[builderOs].target.every((entry: any) => entry.arch.includes(arch)))
   }
+  // "-" ist die Ad-hoc-Signierung. `null` hieße „gar nicht signieren" und hinterließe
+  // ein Bundle ohne gesiegelte Resources, das Gatekeeper als beschädigt meldet – ein
+  // Dialog ohne Ausweg. Die gebaute App prüft zusätzlich npm run verify-signature.
+  assert.equal(config.mac.identity, '-')
   assert.throws(() => platformInfo('win32', 'arm64'), /Unsupported platform/)
   assert.throws(() => platformInfo('linux', 'ia32'), /Unsupported platform/)
 })

@@ -199,12 +199,50 @@ Release-Text warnt zwar bereits vor der fehlenden Code-Signierung/Notarisierung
 sichten. Ein Tag mit abweichender Version bricht den Job kontrolliert ab, bevor ein
 Release entsteht.
 
+## macOS-Signatur
+
+Die macOS-App wird **ad-hoc signiert**: `build.mac.identity: "-"` in
+[package.json](package.json). Das kostet nichts, braucht kein Apple-Konto und keine
+Secrets – electron-builder signiert das Bundle mit einer Signatur ohne Zertifikat.
+Notarisierung ist damit ausdrücklich **nicht** erledigt; sie braucht eine bezahlte
+Apple-Mitgliedschaft und ist eine offene Entscheidung.
+
+Der Unterschied ist trotzdem erheblich. Vorher stand dort `identity: null`, womit
+electron-builder das Bundle gar nicht signierte; sichtbar war nur die
+Linker-Ad-hoc-Signatur des arm64-Binaries, und die ist strukturell kaputt:
+`Identifier=Electron` statt der eigenen Bundle-ID, `Sealed Resources=none`, und
+`codesign --verify --strict` antwortete mit „code has no resources but signature
+indicates they must be present". Gatekeeper behandelt so etwas nicht als
+Policy-Frage, sondern als Beschädigung – der Dialog „ist beschädigt und kann nicht
+geöffnet werden" hat keinen Ausweg im UI.
+
+Geprüft wird das in der CI bei jedem macOS-Lauf über `npm run verify-signature`
+([scripts/verify-signature.mjs](scripts/verify-signature.mjs)), damit ein Rückfall
+auf den unsignierten Zustand nicht unbemerkt bleibt: Die App startet auch
+unsigniert, der Schaden zeigt sich erst auf einem fremden Rechner. Das Skript
+verlangt die eigene Bundle-ID, gesiegelte Resources und `codesign --verify
+--strict --deep`.
+
+`CSC_IDENTITY_AUTO_DISCOVERY: 'false'` bleibt gesetzt, damit kein Zertifikat aus
+einem Runner-Keychain einspringt; die Ad-hoc-Signierung läuft davon unabhängig über
+`identity`. Zusätzlich steht `CSC_FOR_PULL_REQUEST: 'true'` im Workflow, weil
+electron-builder die macOS-Signierung bei `pull_request`-Läufen sonst überspringt –
+ohne den Schalter käme aus dem PR-Lauf eine unsignierte DMG, während der Push- oder
+Tag-Lauf desselben Commits eine signierte liefert.
+
+`hardenedRuntime` bleibt aktiv (Voreinstellung von electron-builder). Die von
+electron-builder mitgelieferten Standard-Entitlements enthalten
+`com.apple.security.cs.disable-library-validation`, weshalb die von electron-builder
+ausgegebene Warnung zur Kombination Ad-hoc + Hardened Runtime hier ohne Folgen
+bleibt: Die gepackte App startet, und die mitgelieferten Engines laufen nach der
+Signierung weiter (osx-sign signiert `stockfish` und `lc0` mit).
+
 [Casks/ai-chess-tutor.rb](Casks/ai-chess-tutor.rb) bietet zusätzlich einen Homebrew-
 Cask-Installationsweg für macOS an (`brew tap dbuch-github/ai-chess-tutor
 https://github.com/dbuch-github/ai-chess-tutor && brew install --cask ai-chess-tutor`).
 Sein `postflight`-Hook entfernt nach der Installation automatisch die Quarantäne-
-Markierung der DMG (`xattr -cr`) – ohne das würde Gatekeeper die unsignierte,
-nicht notarisierte App beim ersten Start als „beschädigt" melden (siehe README).
+Markierung der DMG (`xattr -cr`) – die bleibt nötig, solange die App nicht
+notarisiert ist (siehe README und Abschnitt „macOS-Signatur").
 `version` und `sha256` im Cask sind pro Release fest eingetragen und **nicht**
 automatisiert; nach jedem neuen Tag müssen beide Werte von Hand auf die neue DMG
 aktualisiert werden (`shasum -a 256 <dmg>`). Außerdem funktioniert der Cask erst,
@@ -219,14 +257,28 @@ In dieser Sitzung erfolgreich auf macOS arm64 geprüft:
 - Echte UCI-Suchläufe mit Stockfish 19 und lc0/Maia 1200.
 - Vollständige macOS-Paketierung als DMG und Start der gepackten Anwendung,
   einschließlich Pairing-Abbruch und PIN-Eingabe über Renderer und Preload.
+- Ad-hoc-Signatur an der neu gebauten DMG: `Identifier=de.dbuch.aichesstutor`,
+  `Sealed Resources version=2`, `codesign --verify --strict --deep` meldet
+  „valid on disk" und „satisfies its Designated Requirement". Die aus der DMG
+  kopierte App startet, `npm run smoke -- --packaged` läuft gegen sie durch, und
+  `stockfish` wie `lc0` antworten nach der Signierung weiter auf `uci`.
+- `syspolicy_check distribution` an derselben App: nur noch Policy-Befunde
+  („Adhoc Signed App" als Warnung, „Notary Ticket Missing" als Fatal), kein
+  Strukturfehler mehr. `spctl -a -t exec` lehnt die App mit gesetztem
+  Quarantäne-Flag weiterhin ab – das bleibt so, bis notarisiert wird.
 
 Noch offen sind die tatsächlichen Windows-/Linux-CI-Läufe, die Installation auf
 sauberen Zielsystemen, der Linux-AppImage-Lauf und die manuelle Desktop-/Chessnut-
 Abnahme. Dabei auch PGN-/Bibliotheksdateien mit Leerzeichen und Umlauten, Sound,
 Skalierung, Schlüsselbund-Neustart und unter Linux X11/Wayland prüfen.
 
-Die erzeugten Pakete haben derzeit keine eingerichtete Release-Signierung oder
-macOS-Notarisierung. Der Quellcode ist für die drei Ziele vorbereitet; die vollständige
+Die erzeugten Pakete sind nicht mit einem Entwicklerzertifikat signiert und nicht
+notarisiert; macOS erhält lediglich die Ad-hoc-Signatur aus dem Abschnitt
+„macOS-Signatur", der Windows-Installer ist unsigniert. Ob der Gatekeeper-Dialog
+auf einem fremden Mac dadurch tatsächlich von „ist beschädigt" auf „Apple kann
+nicht überprüfen …" wechselt, ist bislang nur auf Ebene der Ablehnungsart belegt
+(Strukturfehler → Policy-Ablehnung), nicht am GUI-Dialog nach einem frischen
+Browser-Download gegengeprüft. Der Quellcode ist für die drei Ziele vorbereitet; die vollständige
 Freigabe aller drei Plattformen setzt die noch offenen nativen Tests voraus.
 
 Quelle zur Windows-Laufzeit: [Microsoft Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).

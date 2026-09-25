@@ -14,7 +14,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     env:
+      # Kein Zertifikat aus dem Runner-Keychain verwenden. Die Ad-hoc-Signierung
+      # steuert `build.mac.identity: "-"` in package.json, unabhängig davon.
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      # electron-builder überspringt die macOS-Signierung bei `pull_request`-Läufen
+      # (GITHUB_BASE_REF gesetzt), sonst käme aus dem PR-Lauf eine unsignierte DMG,
+      # während der Push-/Tag-Lauf desselben Commits eine signierte liefert. Der
+      # Sicherheitsvorbehalt hinter diesem Schalter betrifft Signatur-Secrets im
+      # Fork-PR – die Ad-hoc-Signierung braucht keine.
+      CSC_FOR_PULL_REQUEST: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,6 +43,9 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run dist
+      - name: Verify macOS signature
+        if: runner.os == 'macOS'
+        run: npm run verify-signature
       - name: Packaged app smoke test (macOS)
         if: runner.os == 'macOS'
         run: npm run smoke -- --packaged
@@ -100,8 +111,12 @@ jobs:
           generate_release_notes: true
           files: installers/*
           body: |
-            ⚠️ Unsigned build: macOS Gatekeeper and Windows SmartScreen will warn before
-            first launch (code signing/notarization not set up yet).
+            ⚠️ Not notarized, no developer certificate: the macOS app carries a valid ad-hoc
+            signature but no Apple notarization, the Windows installer is unsigned. macOS
+            Gatekeeper and Windows SmartScreen therefore warn before first launch — see the
+            README for how to allow the app.
 
-            ⚠️ Unsignierter Build: macOS Gatekeeper und Windows SmartScreen warnen vor dem
-            ersten Start (Code-Signierung/Notarisierung ist noch nicht eingerichtet).
+            ⚠️ Nicht notarisiert, kein Entwicklerzertifikat: Die macOS-App trägt eine gültige
+            Ad-hoc-Signatur, aber keine Apple-Notarisierung; der Windows-Installer ist
+            unsigniert. macOS Gatekeeper und Windows SmartScreen warnen deshalb vor dem ersten
+            Start — wie man die App freigibt, steht in der README.
